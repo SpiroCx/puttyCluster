@@ -2,7 +2,7 @@
 #NoTrayIcon
 
 Gui, Add, Text,, Windows Title Pattern (RegEx):
-Gui, Add, Edit,  vtitle1 w200, 
+Gui, Add, Edit,  vtitle1 w200, .*
 Gui, Add, Edit,  vtitle2 w200, 
 Gui, Add, Edit,  vtitle3 w200, 
 Gui, Add, Edit,  vtitle4 w200, 
@@ -16,17 +16,50 @@ Gui, Add, Edit,x10 WantTab ReadOnly,
 Gui, Add, button, X140 y255 gGoPaste -default, paste clipboard
 Gui, Add, button, X10 y295 gTile -default, Tile
 Gui, Add, button, X40 y295 gCascade -default, Cascade
-Gui, Add, Edit, x100 y297 vwidth w30 Number, 800
-Gui, Add, Text,x138 y299, X
-Gui, Add, Edit, x150 y297 vheight w30 Number, 400
+;Gui, Add, Edit, x100 y297 vwidth0 w30 Number, 800
+;Gui, Add, Text,x138 y299, X
+;Gui, Add, Edit, x150 y297 vheight0 w30 Number, 400
 ;Gui, Add, Checkbox, x190 y300 vauto, auto
-Gui, Add, Checkbox, x220 y30 vcheck1
+
+Gui, Add, Checkbox, x220 y30 vcheck1 Checked
 Gui, Add, Checkbox, x220 y57 vcheck2
 Gui, Add, Checkbox, x220 y84 vcheck3
 Gui, Add, Checkbox, x220 y111 vcheck4
 Gui, Add, Checkbox, x220 y138 vcheck5
+
+Gui, Add, Radio, x05 y340 gRadioCheck vRadioGroup
+Gui, Add, Radio, x05 y367 gRadioCheck
+Gui, Add, Radio, x05 y394 gRadioCheck
+Gui, Add, Radio, x120 y340 gRadioCheck
+Gui, Add, Radio, x120 y367 gRadioCheck
+Gui, Add, Radio, x120 y394 gRadioCheck
+Gui, Add, Radio, x180 y340 gRadioCheck
+Gui, Add, Radio, x180 y367 gRadioCheck
+Gui, Add, Radio, x180 y394 gRadioCheck
+
+Gui, Add, Edit,  x35 y335 vwidth1 w30 Number, 400
+Gui, Add, Edit,  x35 y362 vwidth2 w30 Number, 400
+Gui, Add, Edit,  x35 y389 vwidth3 w30 Number, 400
+Gui, Add, Text,  x150 y337, 1x2
+Gui, Add, Text,  x150 y364, 1x3
+Gui, Add, Text,  x150 y391, 2x2
+Gui, Add, Text,  x210 y337, 2x3
+Gui, Add, Text,  x210 y364, 3x3
+Gui, Add, Text,  x210 y391, 3x4
+
+Gui, Add, Text,  x66 y337, X
+Gui, Add, Text,  x66 y364, X
+Gui, Add, Text,  x66 y391, X
+
+Gui, Add, Edit,  x75 y335 vheight1 w30 Number, 500
+Gui, Add, Edit,  x75 y362 vheight2 w30 Number, 600
+Gui, Add, Edit,  x75 y389 vheight3 w30 Number, 700
+
 Gui, +AlwaysOnTop
-Gui, Show, h325 w250, Mingbo's cluster Putty
+Gui, Show, h425 w250, Mingbo's cluster Putty
+
+global width := 400
+global heght := 800
 
 onMessage(0x100,"key")  ; key down
 onMessage(0x101,"key")  ; key up
@@ -40,6 +73,10 @@ SetTitleMatchMode, RegEx
 
 xstep := 50
 ystep := 40
+SysGet, VirtualScreenWidth, 78
+SysGet, VirtualScreenHeight, 79
+global ScreenWidth := VirtualScreenWidth / 2
+global ScreenHeight := VirtualScreenHeight - 40
 
 key(wParam, lParam,msg, hwnd)
 { 
@@ -62,6 +99,49 @@ key(wParam, lParam,msg, hwnd)
    }
 }
 return 
+
+RadioCheck:
+wmargin := 1
+hmargin := 0
+gui, submit, nohide
+if (RadioGroup = 1) {
+	width := width1
+	height := height1
+}
+else if (RadioGroup = 2) {
+	width := width2
+	height := height2
+}
+else if (RadioGroup = 3) {
+	width := width3
+	height := height3
+}
+else if (RadioGroup = 4) {
+	width := ScreenWidth / 2 - wmargin
+	height := ScreenHeight
+}
+else if (RadioGroup = 5) {
+	width := ScreenWidth / 3 - wmargin
+	height := ScreenHeight
+}
+else if (RadioGroup = 6) {
+	width := ScreenWidth / 2 - wmargin
+	height := ScreenHeight / 2 - hmargin
+}
+else if (RadioGroup = 7) {
+	width := ScreenWidth / 3 - wmargin
+	height := ScreenHeight / 2 - hmargin
+}
+else if (RadioGroup = 8) {
+	width := ScreenWidth / 3 - wmargin
+	height := ScreenHeight / 3 - hmargin
+}
+else if (RadioGroup = 9) {
+	width := ScreenWidth / 4 - wmargin
+	height := ScreenHeight / 3 - hmargin
+}
+Return
+
 
 GuiClose:
 ExitApp
