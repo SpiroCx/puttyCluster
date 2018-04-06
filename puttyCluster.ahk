@@ -2,22 +2,31 @@
 #NoTrayIcon
 
 Gui, Add, Text,, Windows Title Pattern (RegEx):
-Gui, Add, Edit,  vtitle w200, 
+Gui, Add, Edit,  vtitle1 w200, 
+Gui, Add, Edit,  vtitle2 w200, 
+Gui, Add, Edit,  vtitle3 w200, 
+Gui, Add, Edit,  vtitle4 w200, 
+Gui, Add, Edit,  vtitle5 w200, 
 Gui, Add, Text,, found 0 window(s)
-Gui, Add, button, X130 y50 gLocate -default, locate window(s)
+Gui, Add, button, X130 y160 gLocate -default, locate window(s)
 Gui, Add, Text, x10, Window transparency:
 GUI, Add, Slider, x10 Range100-255 w200 gFind, 255
 Gui, Add, Text,x10 vignore w100, cluster input:
 Gui, Add, Edit,x10 WantTab ReadOnly, 
-Gui, Add, button, X140 y155 gGoPaste -default, paste clipboard
-Gui, Add, button, X10 y185 gTile -default, Tile
-Gui, Add, button, X40 y185 gCascade -default, Cascade
-Gui, Add, Edit, x100 y187 vwidth w30 Number, 800
-Gui, Add, Text,x138 y189, X
-Gui, Add, Edit, x150 y187 vheight w30 Number, 400
-;Gui, Add, Checkbox, x190 y190 vauto, auto
+Gui, Add, button, X140 y255 gGoPaste -default, paste clipboard
+Gui, Add, button, X10 y295 gTile -default, Tile
+Gui, Add, button, X40 y295 gCascade -default, Cascade
+Gui, Add, Edit, x100 y297 vwidth w30 Number, 800
+Gui, Add, Text,x138 y299, X
+Gui, Add, Edit, x150 y297 vheight w30 Number, 400
+;Gui, Add, Checkbox, x190 y300 vauto, auto
+Gui, Add, Checkbox, x220 y30 vcheck1
+Gui, Add, Checkbox, x220 y57 vcheck2
+Gui, Add, Checkbox, x220 y84 vcheck3
+Gui, Add, Checkbox, x220 y111 vcheck4
+Gui, Add, Checkbox, x220 y138 vcheck5
 Gui, +AlwaysOnTop
-Gui, Show, h215 w250, Mingbo's cluster Putty
+Gui, Show, h325 w250, Mingbo's cluster Putty
 
 onMessage(0x100,"key")  ; key down
 onMessage(0x101,"key")  ; key up
@@ -39,7 +48,7 @@ key(wParam, lParam,msg, hwnd)
 	return
 }
   GuiControlGet, currentInput, Focus  
-  if(currentInput="Edit2"){
+  if(currentInput="Edit6"){
 
 	  global id
 	  Loop, %id%
@@ -49,7 +58,7 @@ key(wParam, lParam,msg, hwnd)
 		  PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
 		}		
 	  } 
-	GuiControl,,Edit2, 
+	GuiControl,,Edit6, 
    }
 }
 return 
@@ -93,7 +102,7 @@ Cascade:
 	
 GoPaste:
     Gosub, Find 
-	ControlSetText, Edit2, no input while pasting....
+	ControlSetText, Edit6, no input while pasting....
 	paste=1
 	clipboard=%clipboard%
 	Loop, %id%
@@ -105,7 +114,7 @@ GoPaste:
 		}
 	  }  
 	paste=0
-	ControlSetText, Edit2, 
+	ControlSetText, Edit6, 
 
 return
 
@@ -124,6 +133,55 @@ return
 
 Find:
   gui, Submit, nohide
+  title := ""
+  if( check1 == 1 && title1 != "" )
+  {
+	title = (%title1%)
+  }
+  if( check2 == 1 && title2 != "" )
+  {
+	if( title == "")
+	{
+		title =  (%title2%)
+	}
+	else
+	{
+		title = %title%|(%title2%)
+	}
+  }
+  if( check3 == 1 && title3 != "" )
+  {
+	if( title == "")
+	{
+		title =  (%title3%)
+	}
+	else
+	{
+		title = %title%|(%title3%)
+	}
+  }
+  if( check4 == 1 && title4 != "" )
+  {
+	if( title == "")
+	{
+		title =  (%title4%)
+	}
+	else
+	{
+		title = %title%|(%title4%)
+	}
+  }
+  if( check5 == 1 && title5 != "" )
+  {
+	if( title == "")
+	{
+		title =  (%title5%)
+	}
+	else
+	{
+		title = %title%|(%title5%)
+	}
+  }
   if( title != "")
   {
      WinGet,id, list, %title%
