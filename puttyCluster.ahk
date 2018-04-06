@@ -14,6 +14,7 @@ GUI, Add, Slider, x10 Range100-255 w200 gFind, 255
 Gui, Add, Text,x10 vignore w100, cluster input:
 Gui, Add, Edit,x10 w80 WantTab ReadOnly, 
 Gui, Add, button, X93 y265 gGoPaste -default, paste clipboard
+Gui, Add, Checkbox, x183 y272 vcrlfcheck Checked, +CrLf
 Gui, Add, button, X10 y295 gTile -default, Tile
 Gui, Add, button, X40 y295 gCascade -default, Cascade
 ;Gui, Add, Edit, x100 y297 vwidth0 w30 Number, 800
@@ -215,6 +216,9 @@ GoPaste:
 	ControlSetText, Edit6, no input while pasting....
 	paste=1
 	clipboard=%clipboard%
+	if ( crlfcheck == 1 ) {
+		clipboard=%clipboard%`r
+	}
 	Loop, %id%
 	  {
 		this_id := id%A_Index%		
