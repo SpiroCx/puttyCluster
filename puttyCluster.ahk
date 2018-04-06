@@ -7,13 +7,13 @@ Gui, Add, Edit,  vtitle2 w200,
 Gui, Add, Edit,  vtitle3 w200, 
 Gui, Add, Edit,  vtitle4 w200, 
 Gui, Add, Edit,  vtitle5 w200, 
-Gui, Add, Text,, found 0 window(s)
+Gui, Add, Text, x10 y165, Found 0 window(s)
 Gui, Add, button, X130 y160 gLocate -default, locate window(s)
 Gui, Add, Text, x10, Window transparency:
 GUI, Add, Slider, x10 Range100-255 w200 gFind, 255
 Gui, Add, Text,x10 vignore w100, cluster input:
-Gui, Add, Edit,x10 WantTab ReadOnly, 
-Gui, Add, button, X140 y265 gGoPaste -default, paste clipboard
+Gui, Add, Edit,x10 w80 WantTab ReadOnly, 
+Gui, Add, button, X93 y265 gGoPaste -default, paste clipboard
 Gui, Add, button, X10 y295 gTile -default, Tile
 Gui, Add, button, X40 y295 gCascade -default, Cascade
 ;Gui, Add, Edit, x100 y297 vwidth0 w30 Number, 800
@@ -306,12 +306,12 @@ Find:
 		}
       }
      found := id - notPutty
-     GuiControl, , Static2,  % "found " found " window(s)"
+     GuiControl, , Static2,  % "Found " found " window(s)"
   }
   else
   {
    id=""
-   GuiControl, , Static2,   found 0 window(s)
+   GuiControl, , Static2,   Found 0 window(s)
   }
 
 
