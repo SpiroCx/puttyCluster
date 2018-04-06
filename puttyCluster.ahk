@@ -40,12 +40,12 @@ Gui, Add, Radio, x180 y394 gRadioCheck
 Gui, Add, Edit,  x35 y335 vwidth1 w30 Number, 400
 Gui, Add, Edit,  x35 y362 vwidth2 w30 Number, 400
 Gui, Add, Edit,  x35 y389 vwidth3 w30 Number, 400
-Gui, Add, Text,  x150 y337, 1x2
-Gui, Add, Text,  x150 y364, 1x3
-Gui, Add, Text,  x150 y391, 2x2
-Gui, Add, Text,  x210 y337, 2x3
-Gui, Add, Text,  x210 y364, 3x3
-Gui, Add, Text,  x210 y391, 3x4
+Gui, Add, Text,  x150 y337, 1x1
+Gui, Add, Text,  x150 y364, 1x2
+Gui, Add, Text,  x150 y391, 1x3
+Gui, Add, Text,  x210 y337, 2x2
+Gui, Add, Text,  x210 y364, 2x3
+Gui, Add, Text,  x210 y391, 3x3
 
 Gui, Add, Text,  x66 y337, X
 Gui, Add, Text,  x66 y364, X
@@ -55,8 +55,8 @@ Gui, Add, Edit,  x75 y335 vheight1 w30 Number, 500
 Gui, Add, Edit,  x75 y362 vheight2 w30 Number, 600
 Gui, Add, Edit,  x75 y389 vheight3 w30 Number, 700
 
-Gui, Add, button, X95 y295 gTile -default, Minimize
-Gui, Add, button, X147 y295 gCascade -default, Forward
+Gui, Add, button, X95 y295 gToBack -default, ToBack
+Gui, Add, button, X147 y295 gToFront -default, ToFront
 
 Gui, +AlwaysOnTop
 Gui, Show, h425 w250, Mingbo's cluster Putty
@@ -120,27 +120,27 @@ else if (RadioGroup = 3) {
 	height := height3
 }
 else if (RadioGroup = 4) {
-	width := ScreenWidth / 2 - wmargin
+	width := ScreenWidth
 	height := ScreenHeight
 }
 else if (RadioGroup = 5) {
-	width := ScreenWidth / 3 - wmargin
+	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight
 }
 else if (RadioGroup = 6) {
-	width := ScreenWidth / 2 - wmargin
-	height := ScreenHeight / 2 - hmargin
+	width := ScreenWidth / 3 - wmargin
+	height := ScreenHeight
 }
 else if (RadioGroup = 7) {
-	width := ScreenWidth / 3 - wmargin
+	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight / 2 - hmargin
 }
 else if (RadioGroup = 8) {
 	width := ScreenWidth / 3 - wmargin
-	height := ScreenHeight / 3 - hmargin
+	height := ScreenHeight / 2 - hmargin
 }
 else if (RadioGroup = 9) {
-	width := ScreenWidth / 4 - wmargin
+	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 3 - hmargin
 }
 Return
@@ -164,6 +164,33 @@ Tile:
 					x:=0
 					y:=y+height
 				}
+		}
+	  }
+	return
+	
+ToFront:
+	Gosub, Find 
+	x:=0
+	y:=0
+	Loop, %id%
+	  {
+		this_id := id%A_Index%		
+		if( this_id > 0){
+				WinActivate, ahk_id %this_id%,				
+		}
+	  }
+	return
+	
+ToBack:
+	Gosub, Find 
+	x:=0
+	y:=0
+	Loop, %id%
+	  {
+		this_id := id%A_Index%		
+		if( this_id > 0){
+				;WinMinimize, ahk_id %this_id%,			
+				WinSet, Bottom,, ahk_id %this_id%,
 		}
 	  }
 	return
