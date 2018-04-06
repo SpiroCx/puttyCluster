@@ -13,7 +13,7 @@ Gui, Add, Text, x10, Window transparency:
 GUI, Add, Slider, x10 Range100-255 w200 gFind, 255
 Gui, Add, Text,x10 vignore w100, cluster input:
 Gui, Add, Edit,x10 WantTab ReadOnly, 
-Gui, Add, button, X140 y255 gGoPaste -default, paste clipboard
+Gui, Add, button, X140 y265 gGoPaste -default, paste clipboard
 Gui, Add, button, X10 y295 gTile -default, Tile
 Gui, Add, button, X40 y295 gCascade -default, Cascade
 ;Gui, Add, Edit, x100 y297 vwidth0 w30 Number, 800
@@ -54,6 +54,9 @@ Gui, Add, Text,  x66 y391, X
 Gui, Add, Edit,  x75 y335 vheight1 w30 Number, 500
 Gui, Add, Edit,  x75 y362 vheight2 w30 Number, 600
 Gui, Add, Edit,  x75 y389 vheight3 w30 Number, 700
+
+Gui, Add, button, X95 y295 gTile -default, Minimize
+Gui, Add, button, X147 y295 gCascade -default, Forward
 
 Gui, +AlwaysOnTop
 Gui, Show, h425 w250, Mingbo's cluster Putty
