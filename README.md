@@ -28,7 +28,7 @@ The last command just confirms that it worked.
 
 ### Usage
 
-![Usage](https://raw.github.com/mingbowan/puttyCluster/master/screenshot.PNG)
+![Usage](https://raw.github.com/SpiroCx/puttyCluster/scMods/screenshot.PNG)
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
