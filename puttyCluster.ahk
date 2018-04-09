@@ -39,17 +39,38 @@ xpos := 130
 ypos := ypos - 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, locate window(s)
 
-; Window transparency slider
+; Found filter radio buttons
 xpos := 10
-swidth := 200
-Gui, Add, Text, x%xpos%, Window transparency:
-GUI, Add, Slider, x%xpos% Range100-255 w%swidth% gFind, 255
+ypos := 200
+Gui, Add, Text,  x%xpos% y%ypos%, Found windows filter (bitfield HEX eg FFFF):
+xpos := xpos + 20
+ypos := ypos + 20
+Gui, Add, Radio, x%xpos% y%ypos% gFilterCheck vFilterGroup Checked
+xpos := xpos + 100
+Gui, Add, Radio, x%xpos% y%ypos% gFilterCheck
+xpos := xpos - 70
+Gui, Add, Text,  x%xpos% y%ypos%, All
+xpos := xpos + 100
+ypos := ypos - 3
+Gui, Add, Edit,  x%xpos% y%ypos% vfindfiltertxt w40, FFFF
+
+; Window transparency slider
+; yposslider := 190
+yposslider := 250
+xpos := 10
+ypos := yposslider
+swidth := 230
+Gui, Add, Text, x%xpos% y%ypos%, Window transparency:
+ypos := ypos + 18
+GUI, Add, Slider, x%xpos% y%ypos% Range100-255 w%swidth% gFind, 255
 
 ; Cluster Input, Paste, CrLf checkbox
+yposcluster := yposslider + 60
 xpos := 10
-ypos := 265
-Gui, Add, Text, x%xpos% vignore w100, cluster input:
-Gui, Add, Edit, x%xpos% w80 WantTab ReadOnly, 
+ypos := yposcluster
+Gui, Add, Text, x%xpos% y%ypos% vignore w100, cluster input:
+ypos := ypos + 20
+Gui, Add, Edit, x%xpos% y%ypos% w80 WantTab ReadOnly, 
 xpos := xpos + 83
 Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, paste clipboard
 xpos := xpos + 90
@@ -58,7 +79,7 @@ Gui, Add, Checkbox, x%xpos% y%ypos% vcrlfcheck Checked, +CrLf
 
 ; Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
-ypos := 295
+ypos := yposcluster + 45
 Gui, Add, button, x%xpos% y%ypos% gTile -default, Tile
 xpos := xpos + 30
 Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
@@ -67,9 +88,9 @@ Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
 xpos := xpos + 52
 Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
 
-; Radio buttons
+; Window size radio buttons
 xbase := 5
-ybase := 335
+ybase := yposcluster + 85
 
 xpos := xbase
 ypos1 := ybase + 5
@@ -87,6 +108,20 @@ Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck
 Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
 Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
 
+; Radio button text boxes
+xpos := xbase + 61
+Gui, Add, Text,  x%xpos% y%ypos1%, X
+Gui, Add, Text,  x%xpos% y%ypos2%, X
+Gui, Add, Text,  x%xpos% y%ypos3%, X
+xpos := xpos + 84
+Gui, Add, Text,  x%xpos% y%ypos1%, 1x1
+Gui, Add, Text,  x%xpos% y%ypos2%, 1x2
+Gui, Add, Text,  x%xpos% y%ypos3%, 1x3
+xpos := xpos + 60
+Gui, Add, Text,  x%xpos% y%ypos1%, 2x2
+Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
+Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
+
 ; Radio button edit boxes
 xpos := xbase + 30
 ypos1 := ybase
@@ -100,28 +135,13 @@ Gui, Add, Edit,  x%xpos% y%ypos1% vheight1 w30 Number, 500
 Gui, Add, Edit,  x%xpos% y%ypos2% vheight2 w30 Number, 600
 Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, 700
 
-; Radio button text boxes
-xpos := xbase + 61
-ypos1 := ybase + 2
-ypos2 := ybase + 29
-ypos3 := ybase + 56
-Gui, Add, Text,  x%xpos% y%ypos1%, X
-Gui, Add, Text,  x%xpos% y%ypos2%, X
-Gui, Add, Text,  x%xpos% y%ypos3%, X
-xpos := xpos + 84
-Gui, Add, Text,  x%xpos% y%ypos1%, 1x1
-Gui, Add, Text,  x%xpos% y%ypos2%, 1x2
-Gui, Add, Text,  x%xpos% y%ypos3%, 1x3
-xpos := xpos + 60
-Gui, Add, Text,  x%xpos% y%ypos1%, 2x2
-Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
-Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
-
 Gui, +AlwaysOnTop
-Gui, Show, h425 w250, Mingbo's cluster Putty
+fheight := yposcluster + 165
+Gui, Show, h%fheight% w250, Mingbo's cluster Putty
 
 global width := 400
 global heght := 800
+global windowfilter := -1
 
 onMessage(0x100,"key")  ; key down
 onMessage(0x101,"key")  ; key up
@@ -147,7 +167,7 @@ key(wParam, lParam,msg, hwnd)
 	return
 }
   GuiControlGet, currentInput, Focus  
-  if(currentInput="Edit6"){
+  if(currentInput="Edit7"){
 
 	  global id
 	  Loop, %id%
@@ -157,10 +177,33 @@ key(wParam, lParam,msg, hwnd)
 		  PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
 		}		
 	  } 
-	GuiControl,,Edit6, 
+	GuiControl,,Edit7, 
    }
 }
 return 
+
+; "Better way to convert Hex to Decimal (function)": https://autohotkey.com/boards/viewtopic.php?t=6434
+;HexToDec(hex)
+;{
+;    VarSetCapacity(dec, 66, 0)
+;    , val := DllCall("msvcrt.dll\_wcstoui64", "Str", hex, "UInt", 0, "UInt", 16, "CDECL Int64")
+;    , DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", dec, "UInt", 10, "CDECL")
+;    return dec
+;}
+
+FilterCheck:
+;gui, submit, nohide
+;if (FilterGroup = 1) {
+;	windowfilter := 0
+;}
+;else {
+;	;windowfilter = HexToDec(findfiltertxt)
+;	VarSetCapacity(dec, 66, 0)
+;    , val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+;    , DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", dec, "UInt", 10, "CDECL")
+;    windowfilter =  %dec%
+;}
+Return
 
 RadioCheck:
 wmargin := 1
@@ -231,11 +274,30 @@ ToFront:
 	Gosub, Find 
 	x:=0
 	y:=0
+	titlematchbit := 1
 	Loop, %id%
 	  {
 		this_id := id%A_Index%		
 		if( this_id > 0){
+			;bittest := titlematchbit & windowfilter
+			;if ( ( FilterGroup == 1 ) || ( bittest > 0 ) ){
+			;	WinActivate, ahk_id %this_id%,				
+			;}
+
+			if ( FilterGroup == 1 ){
 				WinActivate, ahk_id %this_id%,				
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					WinActivate, ahk_id %this_id%,				
+				}
+			}
+
+			titlematchbit := titlematchbit * 2
 		}
 	  }
 	return
@@ -244,12 +306,33 @@ ToBack:
 	Gosub, Find 
 	x:=0
 	y:=0
+	titlematchbit := 1
 	Loop, %id%
 	  {
 		this_id := id%A_Index%		
 		if( this_id > 0){
+			;bittest := titlematchbit & windowfilter
+			;if ( ( FilterGroup == 1 ) || ( bittest > 0 ) ){
+			;	;WinMinimize, ahk_id %this_id%,			
+			;	WinSet, Bottom,, ahk_id %this_id%,
+			;}
+
+			if ( FilterGroup == 1 ){
 				;WinMinimize, ahk_id %this_id%,			
 				WinSet, Bottom,, ahk_id %this_id%,
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					;WinMinimize, ahk_id %this_id%,			
+					WinSet, Bottom,, ahk_id %this_id%,
+				}
+			}
+
+			titlematchbit := titlematchbit * 2
 		}
 	  }
 	return
@@ -271,7 +354,7 @@ Cascade:
 	
 GoPaste:
     Gosub, Find 
-	ControlSetText, Edit6, no input while pasting....
+	ControlSetText, Edit7, no input while pasting....
 	paste=1
 	clipboard=%clipboard%
 	if ( crlfcheck == 1 ) {
@@ -286,7 +369,7 @@ GoPaste:
 		}
 	  }  
 	paste=0
-	ControlSetText, Edit6, 
+	ControlSetText, Edit7, 
 
 return
 
@@ -356,6 +439,34 @@ Find:
   }
   if( title != "")
   {
+	 WinGet, Window, List, %title%
+	Loop, %Window%
+    {  
+        aid := Window%A_Index%
+        WinGet, PID, PID, ahk_id %aid%
+        hProc := DllCall("OpenProcess", UInt, PROCESS_QUERY_INFORMATION := 0x400, UInt, 0, UInt, PID, Ptr)
+        DllCall("GetProcessTimes", Ptr, hProc, PtrP, CreationTime, PtrP, ExitTime, PtrP, KernelTime, PtrP, UserTime)
+        WinGet, PN, ProcessName, ahk_id %aid%
+        List .= CreationTime "`t" PN "`n" ; Create string list
+        DllCall("CloseHandle", Ptr, hProc)
+    }
+	Sort, List, U
+	List := Trim(List, " `t`n")
+	Windows := {}
+	Loop, Parse, List, `n 
+	{
+		StringSplit, Output, A_LoopField, `t
+		Windows.Insert({"Time" : Output1, "Name" : Output2})
+	}
+	idx := 1
+	for key, element in Windows ; Loop through array
+	{
+		;MsgBox % "Order`tTime`t`tName`n" key "`t" element.Time "`t" element.name
+		idB%idx% := element.name
+		idx := idx + 1
+	}
+		
+  
      WinGet,id, list, %title%
      notPutty := 0
      Loop, %id%
