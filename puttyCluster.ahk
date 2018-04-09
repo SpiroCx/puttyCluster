@@ -439,34 +439,6 @@ Find:
   }
   if( title != "")
   {
-	 WinGet, Window, List, %title%
-	Loop, %Window%
-    {  
-        aid := Window%A_Index%
-        WinGet, PID, PID, ahk_id %aid%
-        hProc := DllCall("OpenProcess", UInt, PROCESS_QUERY_INFORMATION := 0x400, UInt, 0, UInt, PID, Ptr)
-        DllCall("GetProcessTimes", Ptr, hProc, PtrP, CreationTime, PtrP, ExitTime, PtrP, KernelTime, PtrP, UserTime)
-        WinGet, PN, ProcessName, ahk_id %aid%
-        List .= CreationTime "`t" PN "`n" ; Create string list
-        DllCall("CloseHandle", Ptr, hProc)
-    }
-	Sort, List, U
-	List := Trim(List, " `t`n")
-	Windows := {}
-	Loop, Parse, List, `n 
-	{
-		StringSplit, Output, A_LoopField, `t
-		Windows.Insert({"Time" : Output1, "Name" : Output2})
-	}
-	idx := 1
-	for key, element in Windows ; Loop through array
-	{
-		;MsgBox % "Order`tTime`t`tName`n" key "`t" element.Time "`t" element.name
-		idB%idx% := element.name
-		idx := idx + 1
-	}
-		
-  
      WinGet,id, list, %title%
      notPutty := 0
      Loop, %id%
