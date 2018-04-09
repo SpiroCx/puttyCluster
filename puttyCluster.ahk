@@ -1,63 +1,121 @@
 #SingleInstance force
 #NoTrayIcon
 
+; Title Row
 Gui, Add, Text,, Windows Title Pattern (RegEx):
-Gui, Add, Edit,  vtitle1 w200, .*
-Gui, Add, Edit,  vtitle2 w200, 
-Gui, Add, Edit,  vtitle3 w200, 
-Gui, Add, Edit,  vtitle4 w200, 
-Gui, Add, Edit,  vtitle5 w200, 
-Gui, Add, Text, x10 y165, Found 0 window(s)
-Gui, Add, button, X130 y160 gLocate -default, locate window(s)
-Gui, Add, Text, x10, Window transparency:
-GUI, Add, Slider, x10 Range100-255 w200 gFind, 255
-Gui, Add, Text,x10 vignore w100, cluster input:
-Gui, Add, Edit,x10 w80 WantTab ReadOnly, 
-Gui, Add, button, X93 y265 gGoPaste -default, paste clipboard
-Gui, Add, Checkbox, x183 y272 vcrlfcheck Checked, +CrLf
-Gui, Add, button, X10 y295 gTile -default, Tile
-Gui, Add, button, X40 y295 gCascade -default, Cascade
-;Gui, Add, Edit, x100 y297 vwidth0 w30 Number, 800
-;Gui, Add, Text,x138 y299, X
-;Gui, Add, Edit, x150 y297 vheight0 w30 Number, 400
-;Gui, Add, Checkbox, x190 y300 vauto, auto
 
-Gui, Add, Checkbox, x220 y30 vcheck1 Checked
-Gui, Add, Checkbox, x220 y57 vcheck2
-Gui, Add, Checkbox, x220 y84 vcheck3
-Gui, Add, Checkbox, x220 y111 vcheck4
-Gui, Add, Checkbox, x220 y138 vcheck5
+; Title matching text boxes
+xpos := 10
+ypos := 25
+ewidth := 200
+Gui, Add, Edit, x%xpos% y%ypos% vtitle1 w%ewidth%, .*
+ypos := ypos + 27
+Gui, Add, Edit, x%xpos% y%ypos% vtitle2 w%ewidth%, 
+ypos := ypos + 27
+Gui, Add, Edit, x%xpos% y%ypos% vtitle3 w%ewidth%, 
+ypos := ypos + 27
+Gui, Add, Edit, x%xpos% y%ypos% vtitle4 w%ewidth%, 
+ypos := ypos + 27
+Gui, Add, Edit, x%xpos% y%ypos% vtitle5 w%ewidth%, 
 
-Gui, Add, Radio, x05 y340 gRadioCheck vRadioGroup
-Gui, Add, Radio, x05 y367 gRadioCheck
-Gui, Add, Radio, x05 y394 gRadioCheck
-Gui, Add, Radio, x120 y340 gRadioCheck
-Gui, Add, Radio, x120 y367 gRadioCheck
-Gui, Add, Radio, x120 y394 gRadioCheck
-Gui, Add, Radio, x180 y340 gRadioCheck
-Gui, Add, Radio, x180 y367 gRadioCheck
-Gui, Add, Radio, x180 y394 gRadioCheck
+; Enable checkboxes
+xpos := 220
+ypos := 30
+Gui, Add, Checkbox, x%xpos% y%ypos% vcheck1 Checked
+ypos := ypos + 27
+Gui, Add, Checkbox, x%xpos% y%ypos% vcheck2
+ypos := ypos + 27
+Gui, Add, Checkbox, x%xpos% y%ypos% vcheck3
+ypos := ypos + 27
+Gui, Add, Checkbox, x%xpos% y%ypos% vcheck4
+ypos := ypos + 27
+Gui, Add, Checkbox, x%xpos% y%ypos% vcheck5
 
-Gui, Add, Edit,  x35 y335 vwidth1 w30 Number, 400
-Gui, Add, Edit,  x35 y362 vwidth2 w30 Number, 400
-Gui, Add, Edit,  x35 y389 vwidth3 w30 Number, 400
-Gui, Add, Text,  x150 y337, 1x1
-Gui, Add, Text,  x150 y364, 1x2
-Gui, Add, Text,  x150 y391, 1x3
-Gui, Add, Text,  x210 y337, 2x2
-Gui, Add, Text,  x210 y364, 2x3
-Gui, Add, Text,  x210 y391, 3x3
+; Found n windows and Locate Windows button
+xpos := 10
+ypos := 165
+Gui, Add, Text, x%xpos% y%ypos%, Found 0 window(s)
+xpos := 130
+ypos := ypos - 5
+Gui, Add, button, x%xpos% y%ypos% gLocate -default, locate window(s)
 
-Gui, Add, Text,  x66 y337, X
-Gui, Add, Text,  x66 y364, X
-Gui, Add, Text,  x66 y391, X
+; Window transparency slider
+xpos := 10
+swidth := 200
+Gui, Add, Text, x%xpos%, Window transparency:
+GUI, Add, Slider, x%xpos% Range100-255 w%swidth% gFind, 255
 
-Gui, Add, Edit,  x75 y335 vheight1 w30 Number, 500
-Gui, Add, Edit,  x75 y362 vheight2 w30 Number, 600
-Gui, Add, Edit,  x75 y389 vheight3 w30 Number, 700
+; Cluster Input, Paste, CrLf checkbox
+xpos := 10
+ypos := 265
+Gui, Add, Text, x%xpos% vignore w100, cluster input:
+Gui, Add, Edit, x%xpos% w80 WantTab ReadOnly, 
+xpos := xpos + 83
+Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, paste clipboard
+xpos := xpos + 90
+ypos := ypos + 7
+Gui, Add, Checkbox, x%xpos% y%ypos% vcrlfcheck Checked, +CrLf
 
-Gui, Add, button, X95 y295 gToBack -default, ToBack
-Gui, Add, button, X147 y295 gToFront -default, ToFront
+; Window command buttons Tile, Cascade, ToFront etc
+xpos := 10
+ypos := 295
+Gui, Add, button, x%xpos% y%ypos% gTile -default, Tile
+xpos := xpos + 30
+Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
+xpos := xpos + 55
+Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
+xpos := xpos + 52
+Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
+
+; Radio buttons
+xbase := 5
+ybase := 335
+
+xpos := xbase
+ypos1 := ybase + 5
+ypos2 := ybase + 32
+ypos3 := ybase + 59
+Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck vRadioGroup
+Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
+xpos := xpos + 115
+Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
+xpos := xpos + 60
+Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
+
+; Radio button edit boxes
+xpos := xbase + 30
+ypos1 := ybase
+ypos2 := ybase + 27
+ypos3 := ybase + 54
+Gui, Add, Edit,  x%xpos% y%ypos1% vwidth1 w30 Number, 400
+Gui, Add, Edit,  x%xpos% y%ypos2% vwidth2 w30 Number, 400
+Gui, Add, Edit,  x%xpos% y%ypos3% vwidth3 w30 Number, 400
+xpos := xpos + 40
+Gui, Add, Edit,  x%xpos% y%ypos1% vheight1 w30 Number, 500
+Gui, Add, Edit,  x%xpos% y%ypos2% vheight2 w30 Number, 600
+Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, 700
+
+; Radio button text boxes
+xpos := xbase + 61
+ypos1 := ybase + 2
+ypos2 := ybase + 29
+ypos3 := ybase + 56
+Gui, Add, Text,  x%xpos% y%ypos1%, X
+Gui, Add, Text,  x%xpos% y%ypos2%, X
+Gui, Add, Text,  x%xpos% y%ypos3%, X
+xpos := xpos + 84
+Gui, Add, Text,  x%xpos% y%ypos1%, 1x1
+Gui, Add, Text,  x%xpos% y%ypos2%, 1x2
+Gui, Add, Text,  x%xpos% y%ypos3%, 1x3
+xpos := xpos + 60
+Gui, Add, Text,  x%xpos% y%ypos1%, 2x2
+Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
+Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
 
 Gui, +AlwaysOnTop
 Gui, Show, h425 w250, Mingbo's cluster Putty
