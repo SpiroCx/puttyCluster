@@ -35,6 +35,7 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Multiple regex's can be applied so windows can be kept in groups
 * Screen size for  Tile/Cascade can be quick switched with selector
 * Paste Clipboard adds cr(lf)
+* The Found Windows Filter lets you further filter windows based on their screen position.  This is useful if, say, you have putty windows arranged in groups per device (eg 3 on your Linux server, and 3 on your embedded device) and you temporarily only want one window from each of these groups to respond.  Lets say for example you switch from a command for all windows (ls, pwd, tail log.txt), to a command you only want to run once on each box (apt update, apt install).  That's when you use the Found Windows filter.  There are 3 options.  "All" just goes ahead and selects all windows as determined by the 5 title matching boxes, "1-8 on/off toggle" lets you pick up to the first 8 windows individually, and the text box (init value FFFF) lets you use a bitfield to specify the box positions.  Lets say you wanted boxes 2, 4, 7 and 8, the you put CA in this text box. 
 
    
 ### ToDo
