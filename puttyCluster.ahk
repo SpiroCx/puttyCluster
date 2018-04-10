@@ -139,9 +139,6 @@ Gui, +AlwaysOnTop
 fheight := yposcluster + 165
 Gui, Show, h%fheight% w250, Mingbo's cluster Putty
 
-global width := 400
-global heght := 800
-global windowfilter := -1
 
 onMessage(0x100,"key")  ; key down
 onMessage(0x101,"key")  ; key up
@@ -174,12 +171,28 @@ key(wParam, lParam,msg, hwnd)
   if(currentInput="Edit7"){
 
 	  global id
+	  global FilterGroup
+	  global findfiltertxt
+	  titlematchbit := 1
 	  Loop, %id%
 	  {
-		;this_id := id%A_Index%		
 		this_id := id_array[A_Index]
 		if(this_id >0){
-		  PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+		
+			if ( FilterGroup == 1 ){
+				PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+				}
+			}
+			titlematchbit := titlematchbit * 2
+			
 		}		
 	  } 
 	GuiControl,,Edit7, 
@@ -187,27 +200,7 @@ key(wParam, lParam,msg, hwnd)
 }
 return 
 
-; "Better way to convert Hex to Decimal (function)": https://autohotkey.com/boards/viewtopic.php?t=6434
-;HexToDec(hex)
-;{
-;    VarSetCapacity(dec, 66, 0)
-;    , val := DllCall("msvcrt.dll\_wcstoui64", "Str", hex, "UInt", 0, "UInt", 16, "CDECL Int64")
-;    , DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", dec, "UInt", 10, "CDECL")
-;    return dec
-;}
-
 FilterCheck:
-;gui, submit, nohide
-;if (FilterGroup = 1) {
-;	windowfilter := 0
-;}
-;else {
-;	;windowfilter = HexToDec(findfiltertxt)
-;	VarSetCapacity(dec, 66, 0)
-;    , val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-;    , DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", dec, "UInt", 10, "CDECL")
-;    windowfilter =  %dec%
-;}
 Return
 
 RadioCheck:
@@ -258,10 +251,13 @@ Tile:
 	Gosub, Find 
 	x:=0
 	y:=0
+	titlematchbit := 1
 	Loop, %id%
 	  {
 		this_id := id_array[A_Index]
 		if( this_id > 0){
+				
+			if ( FilterGroup == 1 ){
 				;WinActivate, ahk_id %this_id%,				
 				WinMove, ahk_id %this_id%,, x,y,width,height
 				x:=x+width
@@ -269,6 +265,24 @@ Tile:
 					x:=0
 					y:=y+height
 				}
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					;WinActivate, ahk_id %this_id%,				
+					WinMove, ahk_id %this_id%,, x,y,width,height
+					x:=x+width
+					if( (x+width) >= A_ScreenWidth){
+						x:=0
+						y:=y+height
+					}
+				}
+			}
+			titlematchbit := titlematchbit * 2
+				
 		}
 	  }
 	return
@@ -280,12 +294,8 @@ ToFront:
 	titlematchbit := 1
 	Loop, %id%
 	  {
-		this_id := id%A_Index%		
+		this_id := id_array[A_Index]
 		if( this_id > 0){
-			;bittest := titlematchbit & windowfilter
-			;if ( ( FilterGroup == 1 ) || ( bittest > 0 ) ){
-			;	WinActivate, ahk_id %this_id%,				
-			;}
 
 			if ( FilterGroup == 1 ){
 				WinActivate, ahk_id %this_id%,				
@@ -299,7 +309,6 @@ ToFront:
 					WinActivate, ahk_id %this_id%,				
 				}
 			}
-
 			titlematchbit := titlematchbit * 2
 		}
 	  }
@@ -312,13 +321,8 @@ ToBack:
 	titlematchbit := 1
 	Loop, %id%
 	  {
-		this_id := id%A_Index%		
+		this_id := id_array[A_Index]
 		if( this_id > 0){
-			;bittest := titlematchbit & windowfilter
-			;if ( ( FilterGroup == 1 ) || ( bittest > 0 ) ){
-			;	;WinMinimize, ahk_id %this_id%,			
-			;	WinSet, Bottom,, ahk_id %this_id%,
-			;}
 
 			if ( FilterGroup == 1 ){
 				;WinMinimize, ahk_id %this_id%,			
@@ -334,7 +338,6 @@ ToBack:
 					WinSet, Bottom,, ahk_id %this_id%,
 				}
 			}
-
 			titlematchbit := titlematchbit * 2
 		}
 	  }
@@ -344,13 +347,30 @@ Cascade:
 	Gosub, Find 
 	x:=0
 	y:=0
+	titlematchbit := 1
 	Loop, %id%
 	  {
 		this_id := id_array[A_Index]
 		if( this_id > 0){
+				
+			if ( FilterGroup == 1 ){
 				WinMove, ahk_id %this_id%,, x,y,width,height				
 				x:=x+xstep
 				y:=y+ystep
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					WinMove, ahk_id %this_id%,, x,y,width,height				
+					x:=x+xstep
+					y:=y+ystep
+				}
+			}
+			titlematchbit := titlematchbit * 2
+				
 		}
 	  }
 	return
@@ -363,13 +383,29 @@ GoPaste:
 	if ( crlfcheck == 1 ) {
 		clipboard=%clipboard%`r
 	}
+	titlematchbit := 1
 	Loop, %id%
 	  {
 		this_id := id_array[A_Index]
 		if( this_id >0 ){
-			WinActivate, ahk_id %this_id%			
-			SendRaw, %clipboard%		
-		}
+
+			if ( FilterGroup == 1 ){
+				WinActivate, ahk_id %this_id%			
+				SendRaw, %clipboard%		
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					WinActivate, ahk_id %this_id%			
+					SendRaw, %clipboard%		
+				}
+			}
+			titlematchbit := titlematchbit * 2
+
+			}
 	  }  
 	paste=0
 	ControlSetText, Edit7, 
@@ -381,11 +417,28 @@ Locate:
      Loop, %id%
      {
 	   this_id := id_array[A_Index]
+	   titlematchbit := 1
 	   if( this_id >0){
-		WinActivate, ahk_id %this_id%,
-		 ; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
- 		 ; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
-		}
+
+			if ( FilterGroup == 1 ){
+				WinActivate, ahk_id %this_id%,				
+			 ; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
+			 ; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
+			}
+			else {
+				VarSetCapacity(windowfilter, 66, 0)
+				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					WinActivate, ahk_id %this_id%,				
+				 ; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
+				 ; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
+				}
+			}
+			titlematchbit := titlematchbit * 2
+
+		 }
       }  
 return 
 
@@ -470,14 +523,29 @@ Find:
 
 Alpha:
   GuiControlGet, alpha, ,msctls_trackbar321
+  titlematchbit := 1
   Loop, %id%
   {
 	this_id := id_array[A_Index]
 	if(id%A_Index% >0){
-	  WinSet, Transparent, %alpha%, ahk_id %this_id%
-	}   
+
+		if ( FilterGroup == 1 ){
+			WinSet, Transparent, %alpha%, ahk_id %this_id%
+		}
+		else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+			bittest := titlematchbit & windowfilter
+			if ( bittest > 0 ) {
+				WinSet, Transparent, %alpha%, ahk_id %this_id%
+			}
+		}
+		titlematchbit := titlematchbit * 2
+
+	  }   
    }
- return
+return
 
 ; https://autohotkey.com/boards/viewtopic.php?t=12054
 InsertionSort(ar)
