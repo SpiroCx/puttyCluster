@@ -109,6 +109,8 @@ xpos := xpos + 55
 Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
 xpos := xpos + 52
 Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
+xpos := xpos + 52
+Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
 ; Window size radio buttons
 xbase := 5
@@ -468,7 +470,38 @@ ToBack:
 			titlematchbit := titlematchbit * 2
 		}
 	  }
-	return
+return
+	
+CloseWin:
+	Gosub, Find 
+	x:=0
+	y:=0
+	titlematchbit := 1
+	Loop, %id%
+	  {
+		this_id := id_array[A_Index]
+		if( this_id > 0){
+
+			if ( FilterGroup == 1 ){
+				WinClose, ahk_id %this_id%,
+			}
+			else {
+				if ( FilterGroup == 2 ) {
+					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+				} else {
+					VarSetCapacity(windowfilter, 66, 0)
+					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+				}
+				bittest := titlematchbit & windowfilter
+				if ( bittest > 0 ) {
+					WinClose, ahk_id %this_id%,
+				}
+			}
+			titlematchbit := titlematchbit * 2
+		}
+	  }
+return
 	
 Cascade:
 	Gosub, Find 
