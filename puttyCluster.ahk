@@ -105,7 +105,7 @@ Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
 Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
 xpos := xpos + 60
 Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck Checked
 Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
 
 ; Radio button text boxes
@@ -152,13 +152,17 @@ SetTimer, Find , 1000
 SetTitleMatchMode, RegEx 
 #WinActivateForce
 
-
+global id
 xstep := 50
 ystep := 40
 SysGet, VirtualScreenWidth, 78
 SysGet, VirtualScreenHeight, 79
 global ScreenWidth := VirtualScreenWidth / 2
 global ScreenHeight := VirtualScreenHeight - 40
+global id_array := Object()
+global wmargin := 1
+global width := ScreenWidth / 3 - wmargin
+global height := ScreenHeight / 2
 
 key(wParam, lParam,msg, hwnd)
 { 
@@ -172,7 +176,8 @@ key(wParam, lParam,msg, hwnd)
 	  global id
 	  Loop, %id%
 	  {
-		this_id := id%A_Index%		
+		;this_id := id%A_Index%		
+		this_id := id_array[A_Index]
 		if(this_id >0){
 		  PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
 		}		
@@ -206,8 +211,6 @@ FilterCheck:
 Return
 
 RadioCheck:
-wmargin := 1
-hmargin := 0
 gui, submit, nohide
 if (RadioGroup = 1) {
 	width := width1
@@ -235,15 +238,15 @@ else if (RadioGroup = 6) {
 }
 else if (RadioGroup = 7) {
 	width := ScreenWidth / 2 - wmargin
-	height := ScreenHeight / 2 - hmargin
+	height := ScreenHeight / 2
 }
 else if (RadioGroup = 8) {
 	width := ScreenWidth / 3 - wmargin
-	height := ScreenHeight / 2 - hmargin
+	height := ScreenHeight / 2
 }
 else if (RadioGroup = 9) {
 	width := ScreenWidth / 3 - wmargin
-	height := ScreenHeight / 3 - hmargin
+	height := ScreenHeight / 3
 }
 Return
 
@@ -257,7 +260,7 @@ Tile:
 	y:=0
 	Loop, %id%
 	  {
-		this_id := id%A_Index%		
+		this_id := id_array[A_Index]
 		if( this_id > 0){
 				;WinActivate, ahk_id %this_id%,				
 				WinMove, ahk_id %this_id%,, x,y,width,height
@@ -343,7 +346,7 @@ Cascade:
 	y:=0
 	Loop, %id%
 	  {
-		this_id := id%A_Index%		
+		this_id := id_array[A_Index]
 		if( this_id > 0){
 				WinMove, ahk_id %this_id%,, x,y,width,height				
 				x:=x+xstep
@@ -362,7 +365,7 @@ GoPaste:
 	}
 	Loop, %id%
 	  {
-		this_id := id%A_Index%		
+		this_id := id_array[A_Index]
 		if( this_id >0 ){
 			WinActivate, ahk_id %this_id%			
 			SendRaw, %clipboard%		
@@ -377,7 +380,7 @@ Locate:
      Gosub, Find 
      Loop, %id%
      {
-       this_id := id%A_Index%
+	   this_id := id_array[A_Index]
 	   if( this_id >0){
 		WinActivate, ahk_id %this_id%,
 		 ; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
@@ -439,23 +442,28 @@ Find:
   }
   if( title != "")
   {
+	 id_array_count := 0
      WinGet,id, list, %title%
      notPutty := 0
      Loop, %id%
      {
        this_id := id%A_Index%
 		WinGet, name, ProcessName, ahk_id %this_id%,
-		if(name != "putty.exe" && name != "kitty.exe"){
-		  notPutty++
-		  id%A_Index%=""
+		if(name == "putty.exe" || name == "kitty.exe"){
+			id_array_count := id_array_count + 1
+			id_array[id_array_count] := this_id
 		}
       }
-     found := id - notPutty
-     GuiControl, , Static2,  % "Found " found " window(s)"
+	 id := id_array_count
+	 if (id > 0) {
+		;Sort, id_array, N,
+		id_array := InsertionSort(id_array)
+	 }
+     GuiControl, , Static2,  % "Found " id " window(s)"
   }
   else
   {
-   id=""
+   id=0
    GuiControl, , Static2,   Found 0 window(s)
   }
 
@@ -464,9 +472,18 @@ Alpha:
   GuiControlGet, alpha, ,msctls_trackbar321
   Loop, %id%
   {
-    this_id := id%A_Index%	
+	this_id := id_array[A_Index]
 	if(id%A_Index% >0){
 	  WinSet, Transparent, %alpha%, ahk_id %this_id%
 	}   
    }
  return
+
+; https://autohotkey.com/boards/viewtopic.php?t=12054
+InsertionSort(ar)
+{
+   For i, v in ar
+      list .=  v . "`n"
+   Sort, list, N
+   Return StrSplit(RTrim(list, "`n"), "`n")
+}
