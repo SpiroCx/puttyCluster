@@ -45,10 +45,10 @@ ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos%, Found windows filter (bitfield HEX eg FFFF):
 xpos := xpos + 20
 ypos := ypos + 20
-Gui, Add, Radio, x%xpos% y%ypos% gFilterCheck vFilterGroup Checked
+Gui, Add, Radio, x%xpos% y%ypos% w23 gFilterCheck vFilterGroup Checked
 xpos := xpos + 100
-Gui, Add, Radio, x%xpos% y%ypos% gFilterCheck
-xpos := xpos - 70
+Gui, Add, Radio, x%xpos% y%ypos% w23 gFilterCheck
+xpos := xpos - 77
 Gui, Add, Text,  x%xpos% y%ypos%, All
 xpos := xpos + 100
 ypos := ypos - 3
@@ -96,20 +96,20 @@ xpos := xbase
 ypos1 := ybase + 5
 ypos2 := ybase + 32
 ypos3 := ybase + 59
-Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck vRadioGroup
-Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck vRadioGroup
+Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
 xpos := xpos + 115
-Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
 xpos := xpos + 60
-Gui, Add, Radio, x%xpos% y%ypos1% gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos2% gRadioCheck Checked
-Gui, Add, Radio, x%xpos% y%ypos3% gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
+Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
+Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
 
 ; Radio button text boxes
-xpos := xbase + 61
+xpos := xbase + 54
 Gui, Add, Text,  x%xpos% y%ypos1%, X
 Gui, Add, Text,  x%xpos% y%ypos2%, X
 Gui, Add, Text,  x%xpos% y%ypos3%, X
@@ -123,7 +123,7 @@ Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
 Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
 
 ; Radio button edit boxes
-xpos := xbase + 30
+xpos := xbase + 23
 ypos1 := ybase
 ypos2 := ybase + 27
 ypos3 := ybase + 54
