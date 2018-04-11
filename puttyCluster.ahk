@@ -161,7 +161,8 @@ Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, 700
 
 ;Gui, +AlwaysOnTop
 fheight := yposcluster + 165
-Gui, Show, h%fheight% w250, Mingbo's cluster Putty
+global windowname = "Mingbo's cluster Putty"
+Gui, Show, h%fheight% w250, %windowname%
 
 
 onMessage(0x100,"key")  ; key down
@@ -234,6 +235,7 @@ return
 
 bit1toggle:
   gui, Submit, nohide
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit1state == 0) {
 		GuiControl,, Button10, +
 		bit1state := 1
@@ -245,6 +247,7 @@ bit1toggle:
 Return
 
 bit2toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit2state == 0) {
 		GuiControl,, Button11, +
 		bit2state := 1
@@ -256,6 +259,7 @@ bit2toggle:
 Return
 
 bit3toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit3state == 0) {
 		GuiControl,, Button12, +
 		bit3state = 1
@@ -267,6 +271,7 @@ bit3toggle:
 Return
 
 bit4toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit4state == 0) {
 		GuiControl,, Button13, +
 		bit4state = 1
@@ -278,6 +283,7 @@ bit4toggle:
 Return
 
 bit5toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit5state == 0) {
 		GuiControl,, Button14, +
 		bit5state = 1
@@ -289,6 +295,7 @@ bit5toggle:
 Return
 
 bit6toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit6state == 0) {
 		GuiControl,, Button15, +
 		bit6state = 1
@@ -300,6 +307,7 @@ bit6toggle:
 Return
 
 bit7toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit7state == 0) {
 		GuiControl,, Button16, +
 		bit7state = 1
@@ -311,6 +319,7 @@ bit7toggle:
 Return
 
 bit8toggle:
+  ControlSend, Button8, {Space}, %windowname%
 	if (bit8state == 0) {
 		GuiControl,, Button17, +
 		bit8state = 1
@@ -719,6 +728,11 @@ InsertionSort(ar)
 ; Win+Alt+C
 #!c::
     ;Run "C:\Program Files\Google\Chrome\Application\chrome.exe" --app="https://mail.google.com/mail/"
+<<<<<<< HEAD
 	WinActivate, .*cluster Putty.*
 	ControlFocus, Edit7,  .*cluster Putty.*
+=======
+	WinActivate, %windowname%
+	ControlFocus, Edit7,  %windowname%
+>>>>>>> Disables AlwaysOnTop flag, but adds Win+ALt+C kb shortcut, with the Cluster Input box grabbing focus.  Auto selects bitfield checkbox when any of the bits are clicked
 Return
