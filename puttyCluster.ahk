@@ -86,11 +86,14 @@ Gui, Add, Text, x%xpos% y%ypos%, Window transparency:
 ypos := ypos + 18
 GUI, Add, Slider, x%xpos% y%ypos% Range100-255 w%swidth% gFind, 255
 
-; Cluster Input, Paste, CrLf checkbox
+; Cluster Input, Paste, CrLf checkbox, Always on top checkbox
 yposcluster := yposslider + 60
 xpos := 10
 ypos := yposcluster
 Gui, Add, Text, x%xpos% y%ypos% vignore w100, cluster input:
+xpos := xpos + 113
+Gui, Add, Checkbox, x%xpos% y%ypos% vOnTopVal gOnTopCheck, Always On Top
+xpos := xpos - 113
 ypos := ypos + 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 WantTab ReadOnly, 
 xpos := xpos + 83
@@ -244,6 +247,14 @@ key(wParam, lParam,msg, hwnd)
 }
 return 
 
+OnTopCheck:
+	if ( OnTopVal == 0) {
+		WinSet, AlwaysOnTop, on, %windowname%
+	} else {
+		WinSet, AlwaysOnTop, off, %windowname%
+	}
+Return
+
 bit1toggle:
   gui, Submit, nohide
   ControlSend, Button8, {Space}, %windowname%
@@ -340,12 +351,6 @@ bit8toggle:
 		bit8state = 0
 	}
 Return
-
-;FilterCheck:
-;Return
-;
-;findfilter:
-;Return
 
 RadioCheck:
 gui, submit, nohide
