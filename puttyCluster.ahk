@@ -728,11 +728,6 @@ InsertionSort(ar)
 ; Win+Alt+C
 #!c::
     ;Run "C:\Program Files\Google\Chrome\Application\chrome.exe" --app="https://mail.google.com/mail/"
-<<<<<<< HEAD
-	WinActivate, .*cluster Putty.*
-	ControlFocus, Edit7,  .*cluster Putty.*
-=======
 	WinActivate, %windowname%
 	ControlFocus, Edit7,  %windowname%
->>>>>>> Disables AlwaysOnTop flag, but adds Win+ALt+C kb shortcut, with the Cluster Input box grabbing focus.  Auto selects bitfield checkbox when any of the bits are clicked
 Return
