@@ -159,7 +159,7 @@ Gui, Add, Edit,  x%xpos% y%ypos1% vheight1 w30 Number, 500
 Gui, Add, Edit,  x%xpos% y%ypos2% vheight2 w30 Number, 600
 Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, 700
 
-Gui, +AlwaysOnTop
+;Gui, +AlwaysOnTop
 fheight := yposcluster + 165
 Gui, Show, h%fheight% w250, Mingbo's cluster Putty
 
@@ -715,3 +715,10 @@ InsertionSort(ar)
    Sort, list, N
    Return StrSplit(RTrim(list, "`n"), "`n")
 }
+
+; Win+Alt+C
+#!c::
+    ;Run "C:\Program Files\Google\Chrome\Application\chrome.exe" --app="https://mail.google.com/mail/"
+	WinActivate, .*cluster Putty.*
+	ControlFocus, Edit7,  .*cluster Putty.*
+Return
