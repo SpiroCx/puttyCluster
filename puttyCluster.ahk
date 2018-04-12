@@ -206,42 +206,45 @@ key(wParam, lParam,msg, hwnd)
   GuiControlGet, currentInput, Focus  
   if(currentInput="Edit7"){
 
-	  global id
-	  global FilterGroup
-	  global findfiltertxt
-	  global bit1state
-	  global bit2state
-	  global bit3state
-	  global bit4state
-	  global bit5state
-	  global bit6state
-	  global bit7state
-	  global bit8state
-	  titlematchbit := 1
-	  Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if(this_id >0){
-		
-			if ( FilterGroup == 1 ){
+	global id
+	global FilterGroup
+	global findfiltertxt
+	global bit1state
+	global bit2state
+	global bit3state
+	global bit4state
+	global bit5state
+	global bit6state
+	global bit7state
+	global bit8state
+
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
 			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
-				}
-			}
 			titlematchbit := titlematchbit * 2
-		}		
-	  } 
+		}
+	}
+
+
 	GuiControl,,Edit7, 
    }
 }
@@ -400,13 +403,33 @@ Tile:
 	Gosub, Find 
 	x:=0
 	y:=0
-	titlematchbit := 1
-	Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if( this_id > 0){
 				
-			if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			;WinActivate, ahk_id %this_id%,				
+			WinMove, ahk_id %this_id%,, x,y,width,height
+			x:=x+width
+			if( (x+width) >= A_ScreenWidth){
+				x:=0
+				y:=y+height
+			}
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				;WinActivate, ahk_id %this_id%,				
 				WinMove, ahk_id %this_id%,, x,y,width,height
 				x:=x+width
@@ -415,158 +438,152 @@ Tile:
 					y:=y+height
 				}
 			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					;WinActivate, ahk_id %this_id%,				
-					WinMove, ahk_id %this_id%,, x,y,width,height
-					x:=x+width
-					if( (x+width) >= A_ScreenWidth){
-						x:=0
-						y:=y+height
-					}
-				}
-			}
 			titlematchbit := titlematchbit * 2
 		}
-	  }
-	return
+	}
+
+return
 	
 ToFront:
 	Gosub, Find 
 	x:=0
 	y:=0
-	titlematchbit := 1
-	Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if( this_id > 0){
 
-			if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			WinActivate, ahk_id %this_id%,				
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				WinActivate, ahk_id %this_id%,				
-			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					WinActivate, ahk_id %this_id%,				
-				}
 			}
 			titlematchbit := titlematchbit * 2
 		}
-	  }
+	}
+
+
 	return
 	
 ToBack:
 	Gosub, Find 
 	x:=0
 	y:=0
-	titlematchbit := 1
-	Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if( this_id > 0){
 
-			if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			;WinMinimize, ahk_id %this_id%,			
+			WinSet, Bottom,, ahk_id %this_id%,
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				;WinMinimize, ahk_id %this_id%,			
 				WinSet, Bottom,, ahk_id %this_id%,
 			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					;WinMinimize, ahk_id %this_id%,			
-					WinSet, Bottom,, ahk_id %this_id%,
-				}
-			}
 			titlematchbit := titlematchbit * 2
 		}
-	  }
+	}
+
+
 return
 	
 CloseWin:
 	Gosub, Find 
 	x:=0
 	y:=0
-	titlematchbit := 1
-	Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if( this_id > 0){
 
-			if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			WinClose, ahk_id %this_id%,
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				WinClose, ahk_id %this_id%,
-			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					WinClose, ahk_id %this_id%,
-				}
 			}
 			titlematchbit := titlematchbit * 2
 		}
-	  }
+	}
+
+
 return
 	
 Cascade:
 	Gosub, Find 
 	x:=0
 	y:=0
-	titlematchbit := 1
-	Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if( this_id > 0){
-				
-			if ( FilterGroup == 1 ){
+
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			WinMove, ahk_id %this_id%,, x,y,width,height				
+			x:=x+xstep
+			y:=y+ystep
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				WinMove, ahk_id %this_id%,, x,y,width,height				
 				x:=x+xstep
 				y:=y+ystep
 			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					WinMove, ahk_id %this_id%,, x,y,width,height				
-					x:=x+xstep
-					y:=y+ystep
-				}
-			}
 			titlematchbit := titlematchbit * 2
 		}
-	  }
+	}
+
+
 	return
 	
 GoPaste:
@@ -577,33 +594,35 @@ GoPaste:
 	if ( crlfcheck == 1 ) {
 		clipboard=%clipboard%`r
 	}
-	titlematchbit := 1
-	Loop, %id%
-	  {
-		this_id := id_array[A_Index]
-		if( this_id >0 ){
 
-			if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			WinActivate, ahk_id %this_id%			
+			SendRaw, %clipboard%		
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				WinActivate, ahk_id %this_id%			
 				SendRaw, %clipboard%		
 			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					WinActivate, ahk_id %this_id%			
-					SendRaw, %clipboard%		
-				}
-			}
 			titlematchbit := titlematchbit * 2
 		}
-	  }  
+	}
+
 	paste=0
 	ControlSetText, Edit7, 
 
@@ -611,35 +630,38 @@ return
 
 Locate:  
      Gosub, Find 
-     Loop, %id%
-     {
-	   this_id := id_array[A_Index]
-	   titlematchbit := 1
-	   if( this_id >0){
 
-			if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
+			WinActivate, ahk_id %this_id%,				
+			; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
+			; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				WinActivate, ahk_id %this_id%,				
-			 ; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
-			 ; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
-			}
-			else {
-				if ( FilterGroup == 2 ) {
-					windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-				} else {
-					VarSetCapacity(windowfilter, 66, 0)
-					, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-					, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-				}
-				bittest := titlematchbit & windowfilter
-				if ( bittest > 0 ) {
-					WinActivate, ahk_id %this_id%,				
-				 ; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
-				 ; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
-				}
+				; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
+				; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
 			}
 			titlematchbit := titlematchbit * 2
-		 }
-      }  
+		}
+	}
+
+
 return 
 
 Find:
@@ -723,31 +745,34 @@ Find:
 
 Alpha:
   GuiControlGet, alpha, ,msctls_trackbar321
-  titlematchbit := 1
-  Loop, %id%
-  {
-	this_id := id_array[A_Index]
-	if(id%A_Index% >0){
 
-		if ( FilterGroup == 1 ){
+	if ( FilterGroup == 1 ){
+		Loop, %id%
+	    {
+			this_id := id_array[A_Index]
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
 		}
-		else {
-			if ( FilterGroup == 2 ) {
-				windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
-			} else {
-				VarSetCapacity(windowfilter, 66, 0)
-				, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
-				, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
-			}
-			bittest := titlematchbit & windowfilter
-			if ( bittest > 0 ) {
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		Loop, %id%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				this_id := id_array[A_Index]
 				WinSet, Transparent, %alpha%, ahk_id %this_id%
 			}
+			titlematchbit := titlematchbit * 2
 		}
-		titlematchbit := titlematchbit * 2
-	  }   
-   }
+	}
+
+
 return
 
 ; https://autohotkey.com/boards/viewtopic.php?t=12054
