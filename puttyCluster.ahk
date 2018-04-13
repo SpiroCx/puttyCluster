@@ -97,21 +97,21 @@ xpos := xpos - 113
 ypos := ypos + 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 WantTab ReadOnly, 
 xpos := xpos + 83
-Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, paste clipboard
+Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste &Clipboard
 xpos := xpos + 90
 ypos := ypos + 7
-Gui, Add, Checkbox, x%xpos% y%ypos% vcrlfcheck Checked, +CrLf
+Gui, Add, Checkbox, x%xpos% y%ypos% vcrlfcheck Checked, +Cr&Lf
 
 ; Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
 ypos := yposcluster + 45
-Gui, Add, button, x%xpos% y%ypos% gTile -default, Tile
+Gui, Add, button, x%xpos% y%ypos% gTile -default, &Tile
 xpos := xpos + 30
 Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
 xpos := xpos + 55
-Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
+Gui, Add, button, x%xpos% y%ypos% gToBack -default, To&Back
 xpos := xpos + 52
-Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
+Gui, Add, button, x%xpos% y%ypos% gToFront -default, To&Front
 xpos := xpos + 52
 Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
