@@ -43,30 +43,30 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
 This script regex searches all the text in the Putty window titles.  Adding more info to your Putty window title gives you more power for filtering the windows out.  There are some crazy complicated prompts out there eg https://www.askapache.com/linux/bash-power-prompt/.  This relatively modest prompt puts the hostname and current path into the Putty window title.  
 on the command line:
-'''
+```
 PS1="\[\e]0;\u@\h: \w\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
-'''
+```
 You can also add a custom tag in between the \w and \a which lets you put arbitrary text in the title.  This allows you to group Putty windows arbitrarily for the purposes of Cluster Putty.  On a session running a full bash, you can add a script to poke in a title tag like this:
 in .bashrc or .profile:
-'''
+```
 getputtytag(){
    echo $puttytag
 }
 PS1="\[\e]0;\u@\h: \w\$(getputtytag)\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
-'''
+```
 which allows you to set the Title tag with:
 on the command line:
-'''
+```
 export puttytag=[AAA]
-'''
+```
 Smaller embeded platforms tend use busybox instead of a full shell.  If you are working with busybox, the script won't work (at least it doesn't on any of mine) but you can include a tag in the title directly in the PS1 command:
 on the command line:
-'''
+```
 PS1="\[\e]0;\u@\h: \w[AAA]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
-'''
+```
 I am using this one at the moment which includes git info:
 in .bashrc or .profile:
-'''
+```
 getputtytag(){
    echo $puttytag
 }
@@ -74,7 +74,7 @@ parse_git_branch() {
      git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 PS1="\[\e]0;\u@\h: \w\$(getputtytag)\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]$(parse_git_branch)\[\e[36m\]$\[\e[m\] "
-'''
+```
   
 ### ToDo
 
