@@ -28,10 +28,10 @@ Gui, Add, Text,, Windows Title Pattern (RegEx):
 
 ; Title matching text boxes
 IniRead, edit1, puttyCluster.ini, TitleMatch, Title1, .*
-IniRead, edit2, puttyCluster.ini, TitleMatch, Title2
-IniRead, edit3, puttyCluster.ini, TitleMatch, Title3
-IniRead, edit4, puttyCluster.ini, TitleMatch, Title4
-IniRead, edit5, puttyCluster.ini, TitleMatch, Title5
+IniRead, edit2, puttyCluster.ini, TitleMatch, Title2, %A_Space%
+IniRead, edit3, puttyCluster.ini, TitleMatch, Title3, %A_Space%
+IniRead, edit4, puttyCluster.ini, TitleMatch, Title4, %A_Space%
+IniRead, edit5, puttyCluster.ini, TitleMatch, Title5, %A_Space%
 xpos := 10
 ypos := 25
 ewidth := 200
@@ -46,7 +46,7 @@ ypos := ypos + 27
 Gui, Add, Edit, x%xpos% y%ypos% vtitle5 w%ewidth%, %edit5%
 
 ; Enable checkboxes
-IniRead, enable1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 0
+IniRead, enable1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 1
 IniRead, enable2, puttyCluster.ini, TitleMatchEnabled, TitleMatch2, 0
 IniRead, enable3, puttyCluster.ini, TitleMatchEnabled, TitleMatch3, 0
 IniRead, enable4, puttyCluster.ini, TitleMatchEnabled, TitleMatch4, 0
