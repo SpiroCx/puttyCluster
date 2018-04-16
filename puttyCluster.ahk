@@ -1,5 +1,27 @@
 #SingleInstance force
 #NoTrayIcon
+SetWorkingDir %A_ScriptDir%
+
+global bit1state := 0
+global bit2state := 0
+global bit3state := 0
+global bit4state := 0
+global bit5state := 0
+global bit6state := 0
+global bit7state := 0
+global bit8state := 0
+global windowname = "Mingbo's cluster Putty"
+SysGet, ScreenWidth, 0
+SysGet, ScreenHeight, 1
+global ScreenWidth := ScreenWidth
+global ScreenHeight := ScreenHeight - 40
+global id
+xstep := 50
+ystep := 40
+global id_array := Object()
+global wmargin := 1
+global width
+global height
 
 ; Title Row
 Gui, Add, Text,, Windows Title Pattern (RegEx):
@@ -65,40 +87,83 @@ ypos := ypos - 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, locate window(s)
 
 ; Found filter radio buttons
+IniRead, matchbyte1type, puttyCluster.ini, MatchBits1, MatchByte1Type, 1
+IniRead, matchbyte1, puttyCluster.ini, MatchBits1, MatchByte1, FFFF
 xpos := 10
 ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos%, Found windows filter (bitfield HEX eg FFFF):
 xpos := xpos + 0
 ypos := ypos + 20
-Gui, Add, Radio, x%xpos% y%ypos% w23 vFilterGroup Checked
+if (matchbyte1type == 1)
+	Gui, Add, Radio, x%xpos% y%ypos% w23 vFilterGroup Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos% w23 vFilterGroup
 xpos := xpos + 50
-Gui, Add, Radio, x%xpos% y%ypos% w23
+if (matchbyte1type == 2)
+	Gui, Add, Radio, x%xpos% y%ypos% w23 Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos% w23
 xpos := xpos + 120
-Gui, Add, Radio, x%xpos% y%ypos% w23
+if (matchbyte1type == 3)
+	Gui, Add, Radio, x%xpos% y%ypos% w23 Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos% w23
 xpos := xpos - 147
 Gui, Add, Text,  x%xpos% y%ypos%, All
 xpos := xpos + 170
 ypos := ypos - 3
-Gui, Add, Edit,  x%xpos% y%ypos% vfindfiltertxt w33, FFFF
+Gui, Add, Edit,  x%xpos% y%ypos% vfindfiltertxt w33, %matchbyte1%
 
 ; Found filter bit selection buttons
+IniRead, bit1state, puttyCluster.ini, MatchBits1, MatchBit11, 0
+IniRead, bit2state, puttyCluster.ini, MatchBits1, MatchBit12, 0
+IniRead, bit3state, puttyCluster.ini, MatchBits1, MatchBit13, 0
+IniRead, bit4state, puttyCluster.ini, MatchBits1, MatchBit14, 0
+IniRead, bit5state, puttyCluster.ini, MatchBits1, MatchBit15, 0
+IniRead, bit6state, puttyCluster.ini, MatchBits1, MatchBit16, 0
+IniRead, bit7state, puttyCluster.ini, MatchBits1, MatchBit17, 0
+IniRead, bit8state, puttyCluster.ini, MatchBits1, MatchBit18, 0
 xpos := 82
 ypos := 217
-Gui, Add, button, x%xpos% y%ypos% w11 gbit1toggle -default,
+if (bit1state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit1toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit1toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit2toggle -default,
+if (bit2state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit2toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit2toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit3toggle -default, 
+if (bit3state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit3toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit3toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit4toggle -default, 
+if (bit4state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit4toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit4toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit5toggle -default, 
+if (bit5state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit5toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit5toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit6toggle -default, 
+if (bit6state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit6toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit6toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit7toggle -default, 
+if (bit7state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit7toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit7toggle -default,
 xpos := xpos + 12
-Gui, Add, button, x%xpos% y%ypos% w11 gbit8toggle -default, 
+if (bit8state == 1)
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit8toggle -default, +
+else
+	Gui, Add, button, x%xpos% y%ypos% w11 gbit8toggle -default,
 
 
 ; Window transparency slider
@@ -224,11 +289,6 @@ Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, %ysize3%
 ;Gui, +AlwaysOnTop
 fheight := yposcluster + 165
 fwidth := 250
-global windowname = "Mingbo's cluster Putty"
-SysGet, ScreenWidth, 0
-SysGet, ScreenHeight, 1
-global ScreenWidth := ScreenWidth
-global ScreenHeight := ScreenHeight - 40
 xpos_default := (ScreenWidth / 2) - (fwidth / 2)
 ypos_default := (ScreenHeight / 2) - (fheight / 2)
 Iniread, xpos, puttyCluster.ini, Autosave, xpos, %xpos_default%
@@ -245,29 +305,14 @@ SetTimer, Find , 1000
 SetTitleMatchMode, RegEx 
 #WinActivateForce
 
-global id
-xstep := 50
-ystep := 40
-global id_array := Object()
-global wmargin := 1
-global width
-global height
 GoSub, RadioCheck
-global bit1state := 0
-global bit2state := 0
-global bit3state := 0
-global bit4state := 0
-global bit5state := 0
-global bit6state := 0
-global bit7state := 0
-global bit8state := 0
 
 key(wParam, lParam,msg, hwnd)
 { 
   global paste
   if (paste ==1) {
 	return
-}
+  }
   GuiControlGet, currentInput, Focus  
   if(currentInput="Edit7"){
 
@@ -506,7 +551,16 @@ GuiClose:
 	ControlGetText, ysize1, Edit11
 	ControlGetText, ysize2, Edit12
 	ControlGetText, ysize3, Edit13
-	
+	ControlGetText, edit6, Edit6
+	ControlGet, bitfield1type1, Checked, , Button7
+	ControlGet, bitfield1type2, Checked, , Button8
+	ControlGet, bitfield1type3, Checked, , Button9
+	if (bitfield1type1 == 1)
+		bitfield1type := 1
+	else if (bitfield1type2 == 1)
+		bitfield1type := 2
+	else if (bitfield1type3 == 1)
+		bitfield1type := 3	
 	
 	IniWrite, %xpos%, puttyCluster.ini, Autosave, xpos
 	IniWrite, %ypos%, puttyCluster.ini, Autosave, ypos
@@ -527,6 +581,16 @@ GuiClose:
 	IniWrite, %ysize2%, puttyCluster.ini, XYSize, y2
 	IniWrite, %xsize3%, puttyCluster.ini, XYSize, x3
 	IniWrite, %ysize3%, puttyCluster.ini, XYSize, y3
+	IniWrite, %bit1state%, puttyCluster.ini, MatchBits1, MatchBit11
+	IniWrite, %bit2state%, puttyCluster.ini, MatchBits1, MatchBit12
+	IniWrite, %bit3state%, puttyCluster.ini, MatchBits1, MatchBit13
+	IniWrite, %bit4state%, puttyCluster.ini, MatchBits1, MatchBit14
+	IniWrite, %bit5state%, puttyCluster.ini, MatchBits1, MatchBit15
+	IniWrite, %bit6state%, puttyCluster.ini, MatchBits1, MatchBit16
+	IniWrite, %bit7state%, puttyCluster.ini, MatchBits1, MatchBit17
+	IniWrite, %bit8state%, puttyCluster.ini, MatchBits1, MatchBit18
+	IniWrite, %edit6%, puttyCluster.ini, MatchBits1, MatchByte1
+	IniWrite, %bitfield1type%, puttyCluster.ini, MatchBits1, MatchByte1Type
 ExitApp
 
 Tile:
