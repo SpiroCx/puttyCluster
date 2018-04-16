@@ -5,31 +5,56 @@
 Gui, Add, Text,, Windows Title Pattern (RegEx):
 
 ; Title matching text boxes
+IniRead, edit1, puttyCluster.ini, TitleMatch, Title1, .*
+IniRead, edit2, puttyCluster.ini, TitleMatch, Title2
+IniRead, edit3, puttyCluster.ini, TitleMatch, Title3
+IniRead, edit4, puttyCluster.ini, TitleMatch, Title4
+IniRead, edit5, puttyCluster.ini, TitleMatch, Title5
 xpos := 10
 ypos := 25
 ewidth := 200
-Gui, Add, Edit, x%xpos% y%ypos% vtitle1 w%ewidth%, .*
+Gui, Add, Edit, x%xpos% y%ypos% vtitle1 w%ewidth%, %edit1%
 ypos := ypos + 27
-Gui, Add, Edit, x%xpos% y%ypos% vtitle2 w%ewidth%, 
+Gui, Add, Edit, x%xpos% y%ypos% vtitle2 w%ewidth%, %edit2%
 ypos := ypos + 27
-Gui, Add, Edit, x%xpos% y%ypos% vtitle3 w%ewidth%, 
+Gui, Add, Edit, x%xpos% y%ypos% vtitle3 w%ewidth%, %edit3%
 ypos := ypos + 27
-Gui, Add, Edit, x%xpos% y%ypos% vtitle4 w%ewidth%, 
+Gui, Add, Edit, x%xpos% y%ypos% vtitle4 w%ewidth%, %edit4%
 ypos := ypos + 27
-Gui, Add, Edit, x%xpos% y%ypos% vtitle5 w%ewidth%, 
+Gui, Add, Edit, x%xpos% y%ypos% vtitle5 w%ewidth%, %edit5%
 
 ; Enable checkboxes
+IniRead, enable1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 0
+IniRead, enable2, puttyCluster.ini, TitleMatchEnabled, TitleMatch2, 0
+IniRead, enable3, puttyCluster.ini, TitleMatchEnabled, TitleMatch3, 0
+IniRead, enable4, puttyCluster.ini, TitleMatchEnabled, TitleMatch4, 0
+IniRead, enable5, puttyCluster.ini, TitleMatchEnabled, TitleMatch5, 0
 xpos := 220
 ypos := 30
-Gui, Add, Checkbox, x%xpos% y%ypos% vcheck1 Checked
-ypos := ypos + 27
-Gui, Add, Checkbox, x%xpos% y%ypos% vcheck2
-ypos := ypos + 27
-Gui, Add, Checkbox, x%xpos% y%ypos% vcheck3
-ypos := ypos + 27
-Gui, Add, Checkbox, x%xpos% y%ypos% vcheck4
-ypos := ypos + 27
-Gui, Add, Checkbox, x%xpos% y%ypos% vcheck5
+if (enable1 == 1) 
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck1 Checked
+else
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck1
+ypos := ypos + 27                               
+if (enable2 == 1) 
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck2 Checked
+else
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck2
+ypos := ypos + 27                               
+if (enable3 == 1) 
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck3 Checked
+else
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck3
+ypos := ypos + 27                               
+if (enable4 == 1) 
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck4 Checked
+else
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck4
+ypos := ypos + 27                               
+if (enable5 == 1) 
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck5 Checked
+else
+	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck5
 
 ; Found n windows and Locate Windows button
 xpos := 10
@@ -116,6 +141,7 @@ xpos := xpos + 52
 Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
 ; Window size radio buttons
+IniRead, winsize, puttyCluster.ini, WindowSize, Selected, 7
 xbase := 5
 ybase := yposcluster + 85
 
@@ -123,19 +149,52 @@ xpos := xbase
 ypos1 := ybase + 5
 ypos2 := ybase + 32
 ypos3 := ybase + 59
-Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck vRadioGroup
-Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
+if (winsize == 1)
+	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck vRadioGroup Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck vRadioGroup
+if (winsize == 2)
+	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
+if (winsize == 3)
+	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
 xpos := xpos + 115
-Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
+if (winsize == 4)
+	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
+if (winsize == 5)
+	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
+if (winsize == 6)
+	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
 xpos := xpos + 60
-Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
-Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
-Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
+if (winsize == 7)
+	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
+if (winsize == 8)
+	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
+else	
+	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
+if (winsize == 9)
+	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck Checked
+else
+	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
 
 ; Radio button text boxes
+IniRead, xsize1, puttyCluster.ini, XYSize, x1, 400
+IniRead, ysize1, puttyCluster.ini, XYSize, y1, 500
+IniRead, xsize2, puttyCluster.ini, XYSize, x2, 400
+IniRead, ysize2, puttyCluster.ini, XYSize, y2, 600
+IniRead, xsize3, puttyCluster.ini, XYSize, x3, 400
+IniRead, ysize3, puttyCluster.ini, XYSize, y3, 700
 xpos := xbase + 54
 Gui, Add, Text,  x%xpos% y%ypos1%, X
 Gui, Add, Text,  x%xpos% y%ypos2%, X
@@ -154,18 +213,27 @@ xpos := xbase + 23
 ypos1 := ybase
 ypos2 := ybase + 27
 ypos3 := ybase + 54
-Gui, Add, Edit,  x%xpos% y%ypos1% vwidth1 w30 Number, 400
-Gui, Add, Edit,  x%xpos% y%ypos2% vwidth2 w30 Number, 400
-Gui, Add, Edit,  x%xpos% y%ypos3% vwidth3 w30 Number, 400
+Gui, Add, Edit,  x%xpos% y%ypos1% vwidth1 w30 Number, %xsize1%
+Gui, Add, Edit,  x%xpos% y%ypos2% vwidth2 w30 Number, %xsize2%
+Gui, Add, Edit,  x%xpos% y%ypos3% vwidth3 w30 Number, %xsize3%
 xpos := xpos + 40
-Gui, Add, Edit,  x%xpos% y%ypos1% vheight1 w30 Number, 500
-Gui, Add, Edit,  x%xpos% y%ypos2% vheight2 w30 Number, 600
-Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, 700
+Gui, Add, Edit,  x%xpos% y%ypos1% vheight1 w30 Number, %ysize1%
+Gui, Add, Edit,  x%xpos% y%ypos2% vheight2 w30 Number, %ysize2%
+Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, %ysize3%
 
 ;Gui, +AlwaysOnTop
 fheight := yposcluster + 165
+fwidth := 250
 global windowname = "Mingbo's cluster Putty"
-Gui, Show, h%fheight% w250, %windowname%
+SysGet, ScreenWidth, 0
+SysGet, ScreenHeight, 1
+global ScreenWidth := ScreenWidth
+global ScreenHeight := ScreenHeight - 40
+xpos_default := (ScreenWidth / 2) - (fwidth / 2)
+ypos_default := (ScreenHeight / 2) - (fheight / 2)
+Iniread, xpos, puttyCluster.ini, Autosave, xpos, %xpos_default%
+Iniread, ypos, puttyCluster.ini, Autosave, ypos, %ypos_default%
+Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
 
 
 onMessage(0x100,"key")  ; key down
@@ -180,14 +248,11 @@ SetTitleMatchMode, RegEx
 global id
 xstep := 50
 ystep := 40
-SysGet, VirtualScreenWidth, 78
-SysGet, VirtualScreenHeight, 79
-global ScreenWidth := VirtualScreenWidth / 2
-global ScreenHeight := VirtualScreenHeight - 40
 global id_array := Object()
 global wmargin := 1
-global width := ScreenWidth / 3 - wmargin
-global height := ScreenHeight / 2
+global width
+global height
+GoSub, RadioCheck
 global bit1state := 0
 global bit2state := 0
 global bit3state := 0
@@ -397,6 +462,71 @@ Return
 
 
 GuiClose:
+	WinGetPos, xpos, ypos
+	ControlGetText, edit1, Edit1
+	ControlGetText, edit2, Edit2
+	ControlGetText, edit3, Edit3
+	ControlGetText, edit4, Edit4
+	ControlGetText, edit5, Edit5
+	ControlGet, enable1, Checked, , Button1
+	ControlGet, enable2, Checked, , Button2
+	ControlGet, enable3, Checked, , Button3
+	ControlGet, enable4, Checked, , Button4
+	ControlGet, enable5, Checked, , Button5
+	ControlGet, size1, Checked, , Button26
+	ControlGet, size2, Checked, , Button27
+	ControlGet, size3, Checked, , Button28
+	ControlGet, size4, Checked, , Button29
+	ControlGet, size5, Checked, , Button30
+	ControlGet, size6, Checked, , Button31
+	ControlGet, size7, Checked, , Button32
+	ControlGet, size8, Checked, , Button33
+	ControlGet, size9, Checked, , Button34
+	if (size1 == 1)
+		winsize := 1
+	else if (size2 == 1)
+		winsize := 2
+	else if (size3 == 1)
+		winsize := 3
+	else if (size4 == 1)
+		winsize := 4
+	else if (size5 == 1)
+		winsize := 5
+	else if (size6 == 1)
+		winsize := 6
+	else if (size7 == 1)
+		winsize := 7
+	else if (size8 == 1)
+		winsize := 8
+	else if (size9 == 1)
+		winsize := 9
+	ControlGetText, xsize1, Edit8
+	ControlGetText, xsize2, Edit9
+	ControlGetText, xsize3, Edit10
+	ControlGetText, ysize1, Edit11
+	ControlGetText, ysize2, Edit12
+	ControlGetText, ysize3, Edit13
+	
+	
+	IniWrite, %xpos%, puttyCluster.ini, Autosave, xpos
+	IniWrite, %ypos%, puttyCluster.ini, Autosave, ypos
+	IniWrite, %edit1%, puttyCluster.ini, TitleMatch, Title1
+	IniWrite, %edit2%, puttyCluster.ini, TitleMatch, Title2
+	IniWrite, %edit3%, puttyCluster.ini, TitleMatch, Title3
+	IniWrite, %edit4%, puttyCluster.ini, TitleMatch, Title4
+	IniWrite, %edit5%, puttyCluster.ini, TitleMatch, Title5
+	IniWrite, %enable1%, puttyCluster.ini, TitleMatchEnabled, TitleMatch1
+	IniWrite, %enable2%, puttyCluster.ini, TitleMatchEnabled, TitleMatch2
+	IniWrite, %enable3%, puttyCluster.ini, TitleMatchEnabled, TitleMatch3
+	IniWrite, %enable4%, puttyCluster.ini, TitleMatchEnabled, TitleMatch4
+	IniWrite, %enable5%, puttyCluster.ini, TitleMatchEnabled, TitleMatch5
+	IniWrite, %winsize%, puttyCluster.ini, WindowSize, Selected
+	IniWrite, %xsize1%, puttyCluster.ini, XYSize, x1
+	IniWrite, %ysize1%, puttyCluster.ini, XYSize, y1
+	IniWrite, %xsize2%, puttyCluster.ini, XYSize, x2
+	IniWrite, %ysize2%, puttyCluster.ini, XYSize, y2
+	IniWrite, %xsize3%, puttyCluster.ini, XYSize, x3
+	IniWrite, %ysize3%, puttyCluster.ini, XYSize, y3
 ExitApp
 
 Tile:
@@ -730,8 +860,7 @@ Find:
 		}
       }
 	 id := id_array_count
-	 if (id > 0) {
-		;Sort, id_array, N,
+	 if (id > 1) {
 		id_array := InsertionSort(id_array)
 	 }
      GuiControl, , Static2,  % "Found " id " window(s)"
@@ -786,7 +915,6 @@ InsertionSort(ar)
 
 ; Win+Alt+C
 #!c::
-    ;Run "C:\Program Files\Google\Chrome\Application\chrome.exe" --app="https://mail.google.com/mail/"
 	WinActivate, %windowname%
 	ControlFocus, Edit7,  %windowname%
 Return
