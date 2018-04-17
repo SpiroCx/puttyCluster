@@ -2,14 +2,22 @@
 #NoTrayIcon
 SetWorkingDir %A_ScriptDir%
 
-global bit1state := 0
-global bit2state := 0
-global bit3state := 0
-global bit4state := 0
-global bit5state := 0
-global bit6state := 0
-global bit7state := 0
-global bit8state := 0
+global bit11state := 0
+global bit12state := 0
+global bit13state := 0
+global bit14state := 0
+global bit15state := 0
+global bit16state := 0
+global bit17state := 0
+global bit18state := 0
+global bit21state := 0
+global bit22state := 0
+global bit23state := 0
+global bit24state := 0
+global bit25state := 0
+global bit26state := 0
+global bit27state := 0
+global bit28state := 0
 global windowname = "Mingbo's cluster Putty"
 SysGet, ScreenWidth, 0
 SysGet, ScreenHeight, 1
@@ -77,50 +85,83 @@ IniRead, matchbyte1, puttyCluster.ini, MatchBits1, MatchByte1, FFFF
 xpos := 10
 ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos%, Found windows filter (bitfield HEX eg FFFF):
-xpos := xpos + 0
+xpos := xpos + 20
 ypos := ypos + 20
 Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " vFilterGroup" .  ( matchbyte1type ? " Checked" : "" )
-xpos := xpos + 50
+xpos := xpos + 0
+ypos := ypos + 30
 Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 2) ? " Checked" : "" )
-xpos := xpos + 120
+xpos := xpos + 90
+ypos := ypos - 30
 Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 3) ? " Checked" : "" )
-xpos := xpos - 147
+xpos := xpos - 90
+ypos := ypos + 60
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 3) ? " Checked" : "" )
+xpos := xpos + 23
+ypos := ypos - 60
 Gui, Add, Text,  x%xpos% y%ypos%, All
-xpos := xpos + 170
+xpos := xpos + 90
 ypos := ypos - 3
-Gui, Add, Edit,  x%xpos% y%ypos% vfindfiltertxt w33, %matchbyte1%
+Gui, Add, Edit,  x%xpos% y%ypos% vFindFilterTxt gFindFilterClick w33, %matchbyte1%
 
-; Found filter bit selection buttons
-IniRead, bit1state, puttyCluster.ini, MatchBits1, MatchBit11, 0
-IniRead, bit2state, puttyCluster.ini, MatchBits1, MatchBit12, 0
-IniRead, bit3state, puttyCluster.ini, MatchBits1, MatchBit13, 0
-IniRead, bit4state, puttyCluster.ini, MatchBits1, MatchBit14, 0
-IniRead, bit5state, puttyCluster.ini, MatchBits1, MatchBit15, 0
-IniRead, bit6state, puttyCluster.ini, MatchBits1, MatchBit16, 0
-IniRead, bit7state, puttyCluster.ini, MatchBits1, MatchBit17, 0
-IniRead, bit8state, puttyCluster.ini, MatchBits1, MatchBit18, 0
-xpos := 82
-ypos := 217
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit1toggle -default, % ( bit1state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit2toggle -default, % ( bit2state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit3toggle -default, % ( bit3state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit4toggle -default, % ( bit4state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit5toggle -default, % ( bit5state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit6toggle -default, % ( bit6state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit7toggle -default, % ( bit7state ? "+" : "" )
-xpos := xpos + 12
-Gui, Add, Button, x%xpos% y%ypos% w11 gbit8toggle -default, % ( bit8state ? "+" : "" )
+; Found filter bit selection buttons 1
+IniRead, bit11state, puttyCluster.ini, MatchBits1, MatchBit11, 0
+IniRead, bit12state, puttyCluster.ini, MatchBits1, MatchBit12, 0
+IniRead, bit13state, puttyCluster.ini, MatchBits1, MatchBit13, 0
+IniRead, bit14state, puttyCluster.ini, MatchBits1, MatchBit14, 0
+IniRead, bit15state, puttyCluster.ini, MatchBits1, MatchBit15, 0
+IniRead, bit16state, puttyCluster.ini, MatchBits1, MatchBit16, 0
+IniRead, bit17state, puttyCluster.ini, MatchBits1, MatchBit17, 0
+IniRead, bit18state, puttyCluster.ini, MatchBits1, MatchBit18, 0
+xpos := 52
+ypos := 247
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit11toggle -default, % ( bit11state ? "1" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit12toggle -default, % ( bit12state ? "2" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit13toggle -default, % ( bit13state ? "3" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit14toggle -default, % ( bit14state ? "4" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit15toggle -default, % ( bit15state ? "5" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit16toggle -default, % ( bit16state ? "6" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit17toggle -default, % ( bit17state ? "7" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit18toggle -default, % ( bit18state ? "8" : "" )
+
+; Found filter bit selection buttons 2
+IniRead, bit21state, puttyCluster.ini, MatchBits2, MatchBit21, 0
+IniRead, bit22state, puttyCluster.ini, MatchBits2, MatchBit22, 0
+IniRead, bit23state, puttyCluster.ini, MatchBits2, MatchBit23, 0
+IniRead, bit24state, puttyCluster.ini, MatchBits2, MatchBit24, 0
+IniRead, bit25state, puttyCluster.ini, MatchBits2, MatchBit25, 0
+IniRead, bit26state, puttyCluster.ini, MatchBits2, MatchBit26, 0
+IniRead, bit27state, puttyCluster.ini, MatchBits2, MatchBit27, 0
+IniRead, bit28state, puttyCluster.ini, MatchBits2, MatchBit28, 0
+xpos := 52
+ypos := 277
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit21toggle -default, % ( bit21state ? "1" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit22toggle -default, % ( bit22state ? "2" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit23toggle -default, % ( bit23state ? "3" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit24toggle -default, % ( bit24state ? "4" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit25toggle -default, % ( bit25state ? "5" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit26toggle -default, % ( bit26state ? "6" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit27toggle -default, % ( bit27state ? "7" : "" )
+xpos := xpos + 16                   
+Gui, Add, Button, x%xpos% y%ypos% w14 gbit28toggle -default, % ( bit28state ? "8" : "" )
 
 
 ; Window transparency slider
 ; yposslider := 190
-yposslider := 250
+yposslider := 310
 xpos := 10
 ypos := yposslider
 swidth := 230
@@ -144,7 +185,7 @@ xpos := xpos + 83
 Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste &Clipboard
 xpos := xpos + 90
 ypos := ypos + 7
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcrlfcheck" .  ( AddCrLf ? " Checked" : "" ),  +Cr&Lf
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vCrLfVal gCrLfCheck" .  ( AddCrLf ? " Checked" : "" ),  +Cr&Lf
 
 ; Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
@@ -243,15 +284,23 @@ key(wParam, lParam,msg, hwnd)
 
 	global id
 	global FilterGroup
-	global findfiltertxt
-	global bit1state
-	global bit2state
-	global bit3state
-	global bit4state
-	global bit5state
-	global bit6state
-	global bit7state
-	global bit8state
+	global FindFilterTxt
+	global bit11state
+	global bit12state
+	global bit13state
+	global bit14state
+	global bit15state
+	global bit16state
+	global bit17state
+	global bit18state
+	global bit21state
+	global bit22state
+	global bit23state
+	global bit24state
+	global bit25state
+	global bit26state
+	global bit27state
+	global bit28state
 
 	if ( FilterGroup == 1 ){
 		Loop, %id%
@@ -262,10 +311,12 @@ key(wParam, lParam,msg, hwnd)
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -293,52 +344,108 @@ OnTopCheck:
 	}
 Return
 
-bit1toggle:
-	ControlSend, Button8, {Space}, %windowname%
-	bit1state := !bit1state
-	GuiControl,, Button10, % ( (bit1state) ? "+" : "" )
+CrLfCheck:
+	CrLfVal = !CrLfVal
 Return
 
-bit2toggle:
-	ControlSend, Button8, {Space}, %windowname%
-	bit2state := !bit2state
-	GuiControl,, Button11, % ( (bit2state) ? "+" : "" )
+FindFilterClick:
+	ControlSend, Button9, {Space}, %windowname%
 Return
 
-bit3toggle:
+bit11toggle:
 	ControlSend, Button8, {Space}, %windowname%
-	bit3state := !bit3state
-	GuiControl,, Button12, % ( (bit3state) ? "+" : "" )
+	bit11state := !bit11state
+	GuiControl,, Button11, % ( (bit11state) ? "1" : "" )
 Return
 
-bit4toggle:
+bit12toggle:
 	ControlSend, Button8, {Space}, %windowname%
-	bit4state := !bit4state
-	GuiControl,, Button13, % ( (bit4state) ? "+" : "" )
+	bit12state := !bit12state
+	GuiControl,, Button12, % ( (bit12state) ? "2" : "" )
 Return
 
-bit5toggle:
+bit13toggle:
 	ControlSend, Button8, {Space}, %windowname%
-	bit5state := !bit5state
-	GuiControl,, Button14, % ( (bit5state) ? "+" : "" )
+	bit13state := !bit13state
+	GuiControl,, Button13, % ( (bit13state) ? "3" : "" )
 Return
 
-bit6toggle:
+bit14toggle:
 	ControlSend, Button8, {Space}, %windowname%
-	bit6state := !bit6state
-	GuiControl,, Button15, % ( (bit6state) ? "+" : "" )
+	bit14state := !bit14state
+	GuiControl,, Button14, % ( (bit14state) ? "4" : "" )
 Return
 
-bit7toggle:
+bit15toggle:
 	ControlSend, Button8, {Space}, %windowname%
-	bit7state := !bit7state
-	GuiControl,, Button16, % ( (bit7state) ? "+" : "" )
+	bit15state := !bit15state
+	GuiControl,, Button15, % ( (bit15state) ? "5" : "" )
 Return
 
-bit8toggle:
+bit16toggle:
 	ControlSend, Button8, {Space}, %windowname%
-	bit8state := !bit8state
-	GuiControl,, Button17, % ( (bit8state) ? "+" : "" )
+	bit16state := !bit16state
+	GuiControl,, Button16, % ( (bit16state) ? "6" : "" )
+Return
+
+bit17toggle:
+	ControlSend, Button8, {Space}, %windowname%
+	bit17state := !bit17state
+	GuiControl,, Button17, % ( (bit17state) ? "7" : "" )
+Return
+
+bit18toggle:
+	ControlSend, Button8, {Space}, %windowname%
+	bit18state := !bit18state
+	GuiControl,, Button18, % ( (bit18state) ? "8" : "" )
+Return
+
+bit21toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit21state := !bit21state
+	GuiControl,, Button19, % ( (bit21state) ? "1" : "" )
+Return
+
+bit22toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit22state := !bit22state
+	GuiControl,, Button20, % ( (bit22state) ? "2" : "" )
+Return
+
+bit23toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit23state := !bit23state
+	GuiControl,, Button21, % ( (bit23state) ? "3" : "" )
+Return
+
+bit24toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit24state := !bit24state
+	GuiControl,, Button22, % ( (bit24state) ? "4" : "" )
+Return
+
+bit25toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit25state := !bit25state
+	GuiControl,, Button23, % ( (bit25state) ? "5" : "" )
+Return
+
+bit26toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit26state := !bit26state
+	GuiControl,, Button24, % ( (bit26state) ? "6" : "" )
+Return
+
+bit27toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit27state := !bit27state
+	GuiControl,, Button25, % ( (bit27state) ? "7" : "" )
+Return
+
+bit28toggle:
+	ControlSend, Button10, {Space}, %windowname%
+	bit28state := !bit28state
+	GuiControl,, Button26, % ( (bit28state) ? "8" : "" )
 Return
 
 RadioCheck:
@@ -394,15 +501,15 @@ GuiClose:
 	ControlGet, enable3, Checked, , Button3
 	ControlGet, enable4, Checked, , Button4
 	ControlGet, enable5, Checked, , Button5
-	ControlGet, size1, Checked, , Button26
-	ControlGet, size2, Checked, , Button27
-	ControlGet, size3, Checked, , Button28
-	ControlGet, size4, Checked, , Button29
-	ControlGet, size5, Checked, , Button30
-	ControlGet, size6, Checked, , Button31
-	ControlGet, size7, Checked, , Button32
-	ControlGet, size8, Checked, , Button33
-	ControlGet, size9, Checked, , Button34
+	ControlGet, size1, Checked, , Button35
+	ControlGet, size2, Checked, , Button36
+	ControlGet, size3, Checked, , Button37
+	ControlGet, size4, Checked, , Button38
+	ControlGet, size5, Checked, , Button39
+	ControlGet, size6, Checked, , Button40
+	ControlGet, size7, Checked, , Button41
+	ControlGet, size8, Checked, , Button42
+	ControlGet, size9, Checked, , Button43
 	winsize := size1 + size2 * 2 + size3 * 3 + size4 * 4 + size5 * 5 + size6 * 6 + size7 * 7 + size8 * 8
 	ControlGetText, xsize1, Edit8
 	ControlGetText, xsize2, Edit9
@@ -415,8 +522,8 @@ GuiClose:
 	ControlGet, bitfield1type2, Checked, , Button8
 	ControlGet, bitfield1type3, Checked, , Button9
 	bitfield1type := bitfield1type1 + bitfield1type2 * 2 + bitfield1type3 * 3
-	ControlGet, AlwaysOnTop, Checked, , Button18
-	ControlGet, AddCrLf, Checked, , Button20
+	ControlGet, AlwaysOnTop, Checked, , Button27
+	ControlGet, AddCrLf, Checked, , Button29
 	
 	IniWrite, %xpos%, puttyCluster.ini, Autosave, xpos
 	IniWrite, %ypos%, puttyCluster.ini, Autosave, ypos
@@ -437,14 +544,22 @@ GuiClose:
 	IniWrite, %ysize2%, puttyCluster.ini, XYSize, y2
 	IniWrite, %xsize3%, puttyCluster.ini, XYSize, x3
 	IniWrite, %ysize3%, puttyCluster.ini, XYSize, y3
-	IniWrite, %bit1state%, puttyCluster.ini, MatchBits1, MatchBit11
-	IniWrite, %bit2state%, puttyCluster.ini, MatchBits1, MatchBit12
-	IniWrite, %bit3state%, puttyCluster.ini, MatchBits1, MatchBit13
-	IniWrite, %bit4state%, puttyCluster.ini, MatchBits1, MatchBit14
-	IniWrite, %bit5state%, puttyCluster.ini, MatchBits1, MatchBit15
-	IniWrite, %bit6state%, puttyCluster.ini, MatchBits1, MatchBit16
-	IniWrite, %bit7state%, puttyCluster.ini, MatchBits1, MatchBit17
-	IniWrite, %bit8state%, puttyCluster.ini, MatchBits1, MatchBit18
+	IniWrite, %bit11state%, puttyCluster.ini, MatchBits1, MatchBit11
+	IniWrite, %bit12state%, puttyCluster.ini, MatchBits1, MatchBit12
+	IniWrite, %bit13state%, puttyCluster.ini, MatchBits1, MatchBit13
+	IniWrite, %bit14state%, puttyCluster.ini, MatchBits1, MatchBit14
+	IniWrite, %bit15state%, puttyCluster.ini, MatchBits1, MatchBit15
+	IniWrite, %bit16state%, puttyCluster.ini, MatchBits1, MatchBit16
+	IniWrite, %bit17state%, puttyCluster.ini, MatchBits1, MatchBit17
+	IniWrite, %bit18state%, puttyCluster.ini, MatchBits1, MatchBit18
+	IniWrite, %bit21state%, puttyCluster.ini, MatchBits2, MatchBit21
+	IniWrite, %bit22state%, puttyCluster.ini, MatchBits2, MatchBit22
+	IniWrite, %bit23state%, puttyCluster.ini, MatchBits2, MatchBit23
+	IniWrite, %bit24state%, puttyCluster.ini, MatchBits2, MatchBit24
+	IniWrite, %bit25state%, puttyCluster.ini, MatchBits2, MatchBit25
+	IniWrite, %bit26state%, puttyCluster.ini, MatchBits2, MatchBit26
+	IniWrite, %bit27state%, puttyCluster.ini, MatchBits2, MatchBit27
+	IniWrite, %bit28state%, puttyCluster.ini, MatchBits2, MatchBit28
 	IniWrite, %edit6%, puttyCluster.ini, MatchBits1, MatchByte1
 	IniWrite, %bitfield1type%, puttyCluster.ini, MatchBits1, MatchByte1Type
 	IniWrite, %AlwaysOnTop%, puttyCluster.ini, Options, AlwaysOnTop
@@ -472,10 +587,12 @@ Tile:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -511,10 +628,12 @@ ToFront:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -546,10 +665,12 @@ ToBack:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -581,10 +702,12 @@ CloseWin:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -617,10 +740,12 @@ Cascade:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -643,9 +768,9 @@ GoPaste:
     Gosub, Find 
 	ControlSetText, Edit7, no input while pasting....
 	paste=1
-	clipboard=%clipboard%
-	if (crlfcheck) {
-		clipboard=%clipboard%`r
+	clipboardcopy=%clipboard%
+	if (CrLfVal) {
+		clipboardcopy=%clipboard%`r
 	}
 
 	if ( FilterGroup == 1 ){
@@ -653,15 +778,17 @@ GoPaste:
 	    {
 			this_id := id_array[A_Index]
 			WinActivate, ahk_id %this_id%			
-			SendRaw, %clipboard%		
+			SendRaw, %clipboardcopy%		
 		}
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -670,7 +797,7 @@ GoPaste:
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
 				WinActivate, ahk_id %this_id%			
-				SendRaw, %clipboard%		
+				SendRaw, %clipboardcopy%		
 			}
 			titlematchbit := titlematchbit * 2
 		}
@@ -695,10 +822,12 @@ Locate:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
@@ -820,10 +949,12 @@ Alpha:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit1state + bit2state * 2 + bit3state * 4 + bit4state * 8 + bit5state * 16 + bit6state * 32 + bit7state * 64 + bit8state * 128
+			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
-			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", findfiltertxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
 			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
 		}
 		titlematchbit := 1
