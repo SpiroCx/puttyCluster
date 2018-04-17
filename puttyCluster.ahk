@@ -87,7 +87,7 @@ ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos%, Found windows filter (bitfield HEX eg FFFF):
 xpos := xpos + 20
 ypos := ypos + 20
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " vFilterGroup" .  ( matchbyte1type ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " vFilterGroup" .  ( (matchbyte1type == 1) ? " Checked" : "" )
 xpos := xpos + 0
 ypos := ypos + 30
 Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 2) ? " Checked" : "" )
@@ -96,7 +96,7 @@ ypos := ypos - 30
 Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 3) ? " Checked" : "" )
 xpos := xpos - 90
 ypos := ypos + 60
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 3) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 4) ? " Checked" : "" )
 xpos := xpos + 23
 ypos := ypos - 60
 Gui, Add, Text,  x%xpos% y%ypos%, All
@@ -350,6 +350,7 @@ Return
 
 FindFilterClick:
 	ControlSend, Button9, {Space}, %windowname%
+	ControlFocus, Edit6,  %windowname%
 Return
 
 bit11toggle:
@@ -521,7 +522,8 @@ GuiClose:
 	ControlGet, bitfield1type1, Checked, , Button7
 	ControlGet, bitfield1type2, Checked, , Button8
 	ControlGet, bitfield1type3, Checked, , Button9
-	bitfield1type := bitfield1type1 + bitfield1type2 * 2 + bitfield1type3 * 3
+	ControlGet, bitfield1type4, Checked, , Button10
+	bitfield1type := bitfield1type1 + bitfield1type2 * 2 + bitfield1type3 * 3 + bitfield1type4 * 4
 	ControlGet, AlwaysOnTop, Checked, , Button27
 	ControlGet, AddCrLf, Checked, , Button29
 	
