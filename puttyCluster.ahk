@@ -912,21 +912,67 @@ Find:
   if( title != "")
   {
 	 id_array_count := 0
-     WinGet,id, list, %title%
-     notPutty := 0
-     Loop, %id%
-     {
-       this_id := id%A_Index%
-		WinGet, name, ProcessName, ahk_id %this_id%,
-		if(name == "putty.exe" || name == "kitty.exe"){
+	 
+	WinGet, puttyids, list, ahk_exe putty.exe
+	Loop, %puttyids%
+	{
+		this_id := puttyids%A_Index%
+		WinGetTitle, thistitle, ahk_id  %this_id%
+		if (RegExMatch(thistitle, title) > 0) {
 			id_array_count := id_array_count + 1
 			id_array[id_array_count] := this_id
 		}
-      }
-	 id := id_array_count
+	}
+	WinGet, kittyids, list, ahk_exe kitty.exe
+	Loop, %kittyids%
+	{
+		this_id := kittyids%A_Index%
+		WinGetTitle, thistitle, ahk_id  %this_id%
+		if (RegExMatch(thistitle, title) > 0) {
+			id_array_count := id_array_count + 1
+			id_array[id_array_count] := this_id
+		}
+	}
+	WinGet, superputtyids, list, ahk_exe SuperPutty.exe
+	Loop, %superputtyids%
+	{
+		this_id := superputtyids%A_Index%
+		WinGet, superputtycontrols, ControlList, ahk_id %this_id%
+		Loop, Parse, superputtycontrols, `n
+		{
+			if ( RegExMatch(A_LoopField, "PuTTY\d+") > 0) {
+			ControlGet, ControlID, Hwnd,, %A_LoopField%, ahk_id %this_id%
+				WinGetTitle, thistitle, ahk_id  %ControlID%
+				if (RegExMatch(thistitle, title) > 0) {
+					id_array_count := id_array_count + 1
+					id_array[id_array_count] := ControlID
+				}
+			}
+		}
+	}
+	WinGet, xshellids, list, ahk_exe Xshell.exe
+	Loop, %xshellids%
+	{
+		this_id := xshellids%A_Index%
+		WinGet, xshellcontrols, ControlList, ahk_id %this_id%
+		Loop, Parse, xshellcontrols, `n
+		{
+			if ( RegExMatch(A_LoopField, "AfxFrameOrView\d+") > 0) {
+			ControlGet, ControlID, Hwnd,, %A_LoopField%, ahk_id %this_id%
+				WinGetTitle, thistitle, ahk_id  %ControlID%
+				if (RegExMatch(thistitle, title) > 0) {
+					id_array_count := id_array_count + 1
+					id_array[id_array_count] := ControlID
+				}
+			}
+		}
+	}
+
+	id := id_array_count
 	 if (id > 1) {
 		id_array := InsertionSort(id_array)
-	 }
+	 }	
+	
      GuiControl, , Static2,  % "Found " id " window(s)"
   }
   else
