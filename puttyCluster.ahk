@@ -46,37 +46,22 @@ ypos := ypos + 27
 Gui, Add, Edit, x%xpos% y%ypos% vtitle5 w%ewidth%, %edit5%
 
 ; Enable checkboxes
-IniRead, enable1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 1
-IniRead, enable2, puttyCluster.ini, TitleMatchEnabled, TitleMatch2, 0
-IniRead, enable3, puttyCluster.ini, TitleMatchEnabled, TitleMatch3, 0
-IniRead, enable4, puttyCluster.ini, TitleMatchEnabled, TitleMatch4, 0
-IniRead, enable5, puttyCluster.ini, TitleMatchEnabled, TitleMatch5, 0
+IniRead, check1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 1
+IniRead, check2, puttyCluster.ini, TitleMatchEnabled, TitleMatch2, 0
+IniRead, check3, puttyCluster.ini, TitleMatchEnabled, TitleMatch3, 0
+IniRead, check4, puttyCluster.ini, TitleMatchEnabled, TitleMatch4, 0
+IniRead, check5, puttyCluster.ini, TitleMatchEnabled, TitleMatch5, 0
 xpos := 220
 ypos := 30
-if (enable1 == 1) 
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck1 Checked
-else
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck1
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcheck1" .  ( check1 ? " Checked" : "" )
 ypos := ypos + 27                               
-if (enable2 == 1) 
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck2 Checked
-else
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck2
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcheck2" .  ( check2 ? " Checked" : "" )
 ypos := ypos + 27                               
-if (enable3 == 1) 
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck3 Checked
-else
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck3
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcheck3" .  ( check3 ? " Checked" : "" )
 ypos := ypos + 27                               
-if (enable4 == 1) 
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck4 Checked
-else
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck4
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcheck4" .  ( check4 ? " Checked" : "" )
 ypos := ypos + 27                               
-if (enable5 == 1) 
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck5 Checked
-else
-	Gui, Add, Checkbox, x%xpos% y%ypos% vcheck5
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcheck5" .  ( check5 ? " Checked" : "" )
 
 ; Found n windows and Locate Windows button
 xpos := 10
@@ -94,20 +79,11 @@ ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos%, Found windows filter (bitfield HEX eg FFFF):
 xpos := xpos + 0
 ypos := ypos + 20
-if (matchbyte1type == 1)
-	Gui, Add, Radio, x%xpos% y%ypos% w23 vFilterGroup Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos% w23 vFilterGroup
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " vFilterGroup" .  ( matchbyte1type ? " Checked" : "" )
 xpos := xpos + 50
-if (matchbyte1type == 2)
-	Gui, Add, Radio, x%xpos% y%ypos% w23 Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos% w23
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 2) ? " Checked" : "" )
 xpos := xpos + 120
-if (matchbyte1type == 3)
-	Gui, Add, Radio, x%xpos% y%ypos% w23 Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos% w23
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" .  ( (matchbyte1type == 3) ? " Checked" : "" )
 xpos := xpos - 147
 Gui, Add, Text,  x%xpos% y%ypos%, All
 xpos := xpos + 170
@@ -125,45 +101,21 @@ IniRead, bit7state, puttyCluster.ini, MatchBits1, MatchBit17, 0
 IniRead, bit8state, puttyCluster.ini, MatchBits1, MatchBit18, 0
 xpos := 82
 ypos := 217
-if (bit1state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit1toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit1toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit1toggle -default, % ( bit1state ? "+" : "" )
 xpos := xpos + 12
-if (bit2state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit2toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit2toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit2toggle -default, % ( bit2state ? "+" : "" )
 xpos := xpos + 12
-if (bit3state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit3toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit3toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit3toggle -default, % ( bit3state ? "+" : "" )
 xpos := xpos + 12
-if (bit4state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit4toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit4toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit4toggle -default, % ( bit4state ? "+" : "" )
 xpos := xpos + 12
-if (bit5state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit5toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit5toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit5toggle -default, % ( bit5state ? "+" : "" )
 xpos := xpos + 12
-if (bit6state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit6toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit6toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit6toggle -default, % ( bit6state ? "+" : "" )
 xpos := xpos + 12
-if (bit7state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit7toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit7toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit7toggle -default, % ( bit7state ? "+" : "" )
 xpos := xpos + 12
-if (bit8state == 1)
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit8toggle -default, +
-else
-	Gui, Add, button, x%xpos% y%ypos% w11 gbit8toggle -default,
+Gui, Add, Button, x%xpos% y%ypos% w11 gbit8toggle -default, % ( bit8state ? "+" : "" )
 
 
 ; Window transparency slider
@@ -177,12 +129,14 @@ ypos := ypos + 18
 GUI, Add, Slider, x%xpos% y%ypos% Range100-255 w%swidth% gFind, 255
 
 ; Cluster Input, Paste, CrLf checkbox, Always on top checkbox
+IniRead, AlwaysOnTop, puttyCluster.ini, Options, AlwaysOnTop, 0
+IniRead, AddCrLf, puttyCluster.ini, Options, AddCrLf, 0
 yposcluster := yposslider + 60
 xpos := 10
 ypos := yposcluster
 Gui, Add, Text, x%xpos% y%ypos% vignore w100, cluster input:
 xpos := xpos + 113
-Gui, Add, Checkbox, x%xpos% y%ypos% vOnTopVal gOnTopCheck, Always On Top
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vOnTopVal gOnTopCheck" .  ( AlwaysOnTop ? " Checked" : "" ), Always On Top
 xpos := xpos - 113
 ypos := ypos + 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 WantTab ReadOnly, 
@@ -190,7 +144,7 @@ xpos := xpos + 83
 Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste &Clipboard
 xpos := xpos + 90
 ypos := ypos + 7
-Gui, Add, Checkbox, x%xpos% y%ypos% vcrlfcheck Checked, +Cr&Lf
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " vcrlfcheck" .  ( AddCrLf ? " Checked" : "" ),  +Cr&Lf
 
 ; Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
@@ -214,44 +168,17 @@ xpos := xbase
 ypos1 := ybase + 5
 ypos2 := ybase + 32
 ypos3 := ybase + 59
-if (winsize == 1)
-	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck vRadioGroup Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck vRadioGroup
-if (winsize == 2)
-	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
-if (winsize == 3)
-	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
+Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " gRadioCheck" . " vRadioGroup" .  ( (winsize == 1) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " gRadioCheck" .  ( (winsize == 2) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gRadioCheck" .  ( (winsize == 3) ? " Checked" : "" )
 xpos := xpos + 115
-if (winsize == 4)
-	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
-if (winsize == 5)
-	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
-if (winsize == 6)
-	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
+Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " gRadioCheck" .  ( (winsize == 4) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " gRadioCheck" .  ( (winsize == 5) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gRadioCheck" .  ( (winsize == 6) ? " Checked" : "" )
 xpos := xpos + 60
-if (winsize == 7)
-	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos1% w23 gRadioCheck
-if (winsize == 8)
-	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck Checked
-else	
-	Gui, Add, Radio, x%xpos% y%ypos2% w23 gRadioCheck
-if (winsize == 9)
-	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck Checked
-else
-	Gui, Add, Radio, x%xpos% y%ypos3% w23 gRadioCheck
+Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " gRadioCheck" .  ( (winsize == 7) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " gRadioCheck" .  ( (winsize == 8) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gRadioCheck" .  ( (winsize == 9) ? " Checked" : "" )
 
 ; Radio button text boxes
 IniRead, xsize1, puttyCluster.ini, XYSize, x1, 400
@@ -286,7 +213,6 @@ Gui, Add, Edit,  x%xpos% y%ypos1% vheight1 w30 Number, %ysize1%
 Gui, Add, Edit,  x%xpos% y%ypos2% vheight2 w30 Number, %ysize2%
 Gui, Add, Edit,  x%xpos% y%ypos3% vheight3 w30 Number, %ysize3%
 
-;Gui, +AlwaysOnTop
 fheight := yposcluster + 165
 fwidth := 250
 xpos_default := (ScreenWidth / 2) - (fwidth / 2)
@@ -294,7 +220,6 @@ ypos_default := (ScreenHeight / 2) - (fheight / 2)
 Iniread, xpos, puttyCluster.ini, Autosave, xpos, %xpos_default%
 Iniread, ypos, puttyCluster.ini, Autosave, ypos, %ypos_default%
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
-
 
 onMessage(0x100,"key")  ; key down
 onMessage(0x101,"key")  ; key up
@@ -369,100 +294,51 @@ OnTopCheck:
 Return
 
 bit1toggle:
-  gui, Submit, nohide
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit1state == 0) {
-		GuiControl,, Button10, +
-		bit1state := 1
-	}
-	else {
-		GuiControl,, Button10, 
-		bit1state := 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit1state := !bit1state
+	GuiControl,, Button10, % ( (bit1state) ? "+" : "" )
 Return
 
 bit2toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit2state == 0) {
-		GuiControl,, Button11, +
-		bit2state := 1
-	}
-	else {
-		GuiControl,, Button11,
-		bit2state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit2state := !bit2state
+	GuiControl,, Button11, % ( (bit2state) ? "+" : "" )
 Return
 
 bit3toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit3state == 0) {
-		GuiControl,, Button12, +
-		bit3state = 1
-	}
-	else {
-		GuiControl,, Button12,
-		bit3state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit3state := !bit3state
+	GuiControl,, Button12, % ( (bit3state) ? "+" : "" )
 Return
 
 bit4toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit4state == 0) {
-		GuiControl,, Button13, +
-		bit4state = 1
-	}
-	else {
-		GuiControl,, Button13,
-		bit4state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit4state := !bit4state
+	GuiControl,, Button13, % ( (bit4state) ? "+" : "" )
 Return
 
 bit5toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit5state == 0) {
-		GuiControl,, Button14, +
-		bit5state = 1
-	}
-	else {
-		GuiControl,, Button14,
-		bit5state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit5state := !bit5state
+	GuiControl,, Button14, % ( (bit5state) ? "+" : "" )
 Return
 
 bit6toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit6state == 0) {
-		GuiControl,, Button15, +
-		bit6state = 1
-	}
-	else {
-		GuiControl,, Button15,
-		bit6state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit6state := !bit6state
+	GuiControl,, Button15, % ( (bit6state) ? "+" : "" )
 Return
 
 bit7toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit7state == 0) {
-		GuiControl,, Button16, +
-		bit7state = 1
-	}
-	else {
-		GuiControl,, Button16,
-		bit7state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit7state := !bit7state
+	GuiControl,, Button16, % ( (bit7state) ? "+" : "" )
 Return
 
 bit8toggle:
-  ControlSend, Button8, {Space}, %windowname%
-	if (bit8state == 0) {
-		GuiControl,, Button17, +
-		bit8state = 1
-	}
-	else {
-		GuiControl,, Button17,
-		bit8state = 0
-	}
+	ControlSend, Button8, {Space}, %windowname%
+	bit8state := !bit8state
+	GuiControl,, Button17, % ( (bit8state) ? "+" : "" )
 Return
 
 RadioCheck:
@@ -527,24 +403,7 @@ GuiClose:
 	ControlGet, size7, Checked, , Button32
 	ControlGet, size8, Checked, , Button33
 	ControlGet, size9, Checked, , Button34
-	if (size1 == 1)
-		winsize := 1
-	else if (size2 == 1)
-		winsize := 2
-	else if (size3 == 1)
-		winsize := 3
-	else if (size4 == 1)
-		winsize := 4
-	else if (size5 == 1)
-		winsize := 5
-	else if (size6 == 1)
-		winsize := 6
-	else if (size7 == 1)
-		winsize := 7
-	else if (size8 == 1)
-		winsize := 8
-	else if (size9 == 1)
-		winsize := 9
+	winsize := size1 + size2 * 2 + size3 * 3 + size4 * 4 + size5 * 5 + size6 * 6 + size7 * 7 + size8 * 8
 	ControlGetText, xsize1, Edit8
 	ControlGetText, xsize2, Edit9
 	ControlGetText, xsize3, Edit10
@@ -555,12 +414,9 @@ GuiClose:
 	ControlGet, bitfield1type1, Checked, , Button7
 	ControlGet, bitfield1type2, Checked, , Button8
 	ControlGet, bitfield1type3, Checked, , Button9
-	if (bitfield1type1 == 1)
-		bitfield1type := 1
-	else if (bitfield1type2 == 1)
-		bitfield1type := 2
-	else if (bitfield1type3 == 1)
-		bitfield1type := 3	
+	bitfield1type := bitfield1type1 + bitfield1type2 * 2 + bitfield1type3 * 3
+	ControlGet, AlwaysOnTop, Checked, , Button18
+	ControlGet, AddCrLf, Checked, , Button20
 	
 	IniWrite, %xpos%, puttyCluster.ini, Autosave, xpos
 	IniWrite, %ypos%, puttyCluster.ini, Autosave, ypos
@@ -591,6 +447,9 @@ GuiClose:
 	IniWrite, %bit8state%, puttyCluster.ini, MatchBits1, MatchBit18
 	IniWrite, %edit6%, puttyCluster.ini, MatchBits1, MatchByte1
 	IniWrite, %bitfield1type%, puttyCluster.ini, MatchBits1, MatchByte1Type
+	IniWrite, %AlwaysOnTop%, puttyCluster.ini, Options, AlwaysOnTop
+	IniWrite, %AddCrLf%, puttyCluster.ini, Options, AddCrLf
+	
 ExitApp
 
 Tile:
@@ -785,7 +644,7 @@ GoPaste:
 	ControlSetText, Edit7, no input while pasting....
 	paste=1
 	clipboard=%clipboard%
-	if ( crlfcheck == 1 ) {
+	if (crlfcheck) {
 		clipboard=%clipboard%`r
 	}
 
@@ -860,55 +719,22 @@ return
 
 Find:
   gui, Submit, nohide
-  title := ""
-  if( check1 == 1 && title1 != "" )
-  {
-	title = (%title1%)
+  titletmp := ""
+  if( check1 && title1 != "" )
+	titletmp = (%title1%)
+  if( check2 && title2 != "" ) {
+	titletmp = %titletmp%|(%title2%)
   }
-  if( check2 == 1 && title2 != "" )
-  {
-	if( title == "")
-	{
-		title =  (%title2%)
-	}
-	else
-	{
-		title = %title%|(%title2%)
-	}
+  if( check3 && title3 != "" ) {
+	titletmp = %titletmp%|(%title3%)
   }
-  if( check3 == 1 && title3 != "" )
-  {
-	if( title == "")
-	{
-		title =  (%title3%)
-	}
-	else
-	{
-		title = %title%|(%title3%)
-	}
+  if( check4 && title4 != "" ) {
+	titletmp = %titletmp%|(%title4%)
   }
-  if( check4 == 1 && title4 != "" )
-  {
-	if( title == "")
-	{
-		title =  (%title4%)
-	}
-	else
-	{
-		title = %title%|(%title4%)
-	}
+  if( check5 && title5 != "" ) {
+	titletmp = %titletmp%|(%title5%)
   }
-  if( check5 == 1 && title5 != "" )
-  {
-	if( title == "")
-	{
-		title =  (%title5%)
-	}
-	else
-	{
-		title = %title%|(%title5%)
-	}
-  }
+  title := LTrim(titletmp, "|")
   if( title != "")
   {
 	 id_array_count := 0
