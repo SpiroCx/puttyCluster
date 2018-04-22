@@ -252,6 +252,7 @@ ypos += 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 vInputBox HwndInputBoxID WantTab ReadOnly, 
 xpos += 83
 Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste &Clipboard
+Paste_Clipboard_TT := "_clipboard_"
 xpos += 90
 ypos += 7
 Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfCheck" .  ( CrLfVal ? " Checked" : "" ),  +Cr&Lf
@@ -625,7 +626,9 @@ IniRead, cmdlbl18, puttyCluster.ini, PuttyCommands, Command18label, %command18%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, %cmdlbl18%
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
-
+ControlFocus, , ahk_id %InputBoxID%
+WinActivate, %windowname%
+	
 onMessage(0x100,"key")  ; key down
 onMessage(0x101,"key")  ; key up
 onMessage(0x104,"key")  ; alt key down
@@ -647,34 +650,44 @@ WM_HELP()
 
 WM_MOUSEMOVE()
 {
-    static CurrControl, PrevControl, _TT  ; _TT is kept blank for use by the ToolTip command below.
-    CurrControl := A_GuiControl
-    If (CurrControl <> PrevControl)
-    {
-        ToolTip  ; Turn off any previous tooltip.
-        SetTimer, DisplayToolTip, 1000
-        PrevControl := CurrControl
-    }
-    return
+	static CurrControl, PrevControl, _TT  ; _TT is kept blank for use by the ToolTip command below.
+	CurrControl := A_GuiControl
+	If (CurrControl <> PrevControl)
+	{
+		ToolTip  ; Turn off any previous tooltip.
+		SetTimer, DisplayToolTip, 1000
+		PrevControl := CurrControl
+	}
+	return
 
-    DisplayToolTip:
-    SetTimer, DisplayToolTip, Off
-	CurrControlTT := CurrControl . "_TT"
-	StringReplace, CurrControlTT, CurrControlTT, <<, LTLT
-	StringReplace, CurrControlTT, CurrControlTT, >>, GTGT
-	StringReplace, CurrControlTT, CurrControlTT, &,
-	StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _
-	ToolTip % %CurrControlTT%  ; The leading percent sign tell it to use an expression.
-	SetTimer, RemoveToolTip, 3000
-    return
+	DisplayToolTip:
+		SetTimer, DisplayToolTip, Off
+		CurrControlTT := CurrControl . "_TT"
+		StringReplace, CurrControlTT, CurrControlTT, <<, LTLT
+		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT
+		StringReplace, CurrControlTT, CurrControlTT, &,
+		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _
+		If (CurrControlTT == "Paste_Clipboard_TT") {
+			currentclip=%clipboard%
+			StringLen, currlen, currentclip
+			if (currlen > 25) {
+				currentclip := Substr(currentclip, 1, 25)
+				currentclip = % currentclip . "..."
+			}
+			ToolTip % " [" . currentclip . "]"
+		} else {
+			ToolTip % %CurrControlTT%
+		}
+		SetTimer, RemoveToolTip, 3000
+	return
 
-    RemoveToolTip:
-    SetTimer, RemoveToolTip, Off
-    ToolTip
-    return
+	RemoveToolTip:
+		SetTimer, RemoveToolTip, Off
+		ToolTip
+	return
 }
 
-key(wParam, lParam,msg, hwnd)
+key(wParam, lParam, msg, hwnd)
 { 
   global paste
   if (paste ==1) {
@@ -708,6 +721,7 @@ key(wParam, lParam,msg, hwnd)
 	    {
 			this_id := id_array[A_Index]
 			PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+;			PostMessage, %msg%,%wParam%, , ,ahk_id %this_id%,
 		}
 	}
 	else {
@@ -726,6 +740,7 @@ key(wParam, lParam,msg, hwnd)
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
 				PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+;				PostMessage, %msg%,%wParam%, , ,ahk_id %this_id%,
 			}
 			titlematchbit *= 2
 		}
@@ -735,6 +750,15 @@ key(wParam, lParam,msg, hwnd)
    }
 }
 return 
+
+EnableTimers:
+	OnMessage(0x200, "WM_MOUSEMOVE")
+	SetTimer, Find , %TimerPeriod%
+Return
+DisableTimers:
+	OnMessage(0x200, "")
+	SetTimer, Find , Off
+Return
 
 ; https://autohotkey.com/board/topic/39686-how-to-set-multiline-text-to-a-variable/
 ; https://autohotkey.com/board/topic/62812-url-link-in-msgbox/
@@ -1437,7 +1461,7 @@ Return
 
 Tile:
 	Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 	x:=0
 	y:=0
 
@@ -1480,13 +1504,14 @@ Tile:
 			titlematchbit *= 2
 		}
 	}
-	SetTimer, Find , %TimerPeriod%
+	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
 return
 	
 ToFront:
 	Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 	x:=0
 	y:=0
 
@@ -1543,13 +1568,14 @@ ToFront:
 			titlematchbit *= 2
 		}
 	}
-	SetTimer, Find , %TimerPeriod%
+	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
 return
 	
 ToBack:
 	Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 	x:=0
 	y:=0
 
@@ -1582,13 +1608,14 @@ ToBack:
 			titlematchbit *= 2
 		}
 	}
-	SetTimer, Find , %TimerPeriod%
+	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
 return
 	
 CloseWin:
 	Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 	x:=0
 	y:=0
 
@@ -1619,13 +1646,14 @@ CloseWin:
 			titlematchbit *= 2
 		}
 	}
-	SetTimer, Find , %TimerPeriod%
+	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
 return
 	
 Cascade:
 	Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 	x:=0
 	y:=0
 
@@ -1660,41 +1688,51 @@ Cascade:
 			titlematchbit *= 2
 		}
 	}
-	SetTimer, Find , %TimerPeriod%
+	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
 return
 	
 GoPaste:
-	sendstrdata=%clipboard%
-	if (CrLfVal) {
-		sendstrdata=%clipboard%`r
-	}
-
-SendString:
-    Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 	ControlSetText, , no input while pasting...., ahk_id %InputBoxID%
 	paste=1
+	currentclip=%clipboard%
+	if (CrLfVal) {
+		currentclip=%clipboard%`r
+	}
+	Loop, Parse, currentclip
+	{
+		sendstrdata := A_Loopfield
+		GoSub, SendString_LeaveTimers
+	}
+	paste=0
+	ControlSetText, , , ahk_id %InputBoxID% 
+	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
+	GoSub, EnableTimers
+Return
 
+SendString:
+    ;Gosub, Find 
+	GoSub, DisableTimers
+	ControlSetText, , no input while pasting...., ahk_id %InputBoxID%
+	paste=1
+	GoSub, SendString_LeaveTimers
+	paste=0
+	ControlSetText, , , ahk_id %InputBoxID% 
+	ControlFocus, , ahk_id %InputBoxID%
+	WinActivate, %windowname%
+	GoSub, EnableTimers
+Return
+
+SendString_LeaveTimers:
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
-			WinActivate, ahk_id %this_id%		
-			WinWaitActive, ahk_id %this_id%, , 0		
-			if (ErrorLevel) {
-				WinActivate, ahk_id %this_id%		
-				WinWaitActive, ahk_id %this_id%, , 0		
-				if (ErrorLevel) {
-					WinActivate, ahk_id %this_id%		
-					WinWaitActive, ahk_id %this_id%, , 0		
-					if (ErrorLevel) {
-						WinActivate, ahk_id %this_id%		
-						WinWaitActive, ahk_id %this_id%, , 0		
-					}
-				}
-			}
-			SendRaw, %sendstrdata%		
+			sendstraddr := &sendstrdata
+			PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
 		}
 	}
 	else {
@@ -1712,36 +1750,16 @@ SendString:
 		{
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
-				WinActivate, ahk_id %this_id%			
-				WinWaitActive, ahk_id %this_id%, , 0		
-				if (ErrorLevel) {
-					WinActivate, ahk_id %this_id%		
-					WinWaitActive, ahk_id %this_id%, , 0		
-					if (ErrorLevel) {
-						WinActivate, ahk_id %this_id%		
-						WinWaitActive, ahk_id %this_id%, , 0		
-						if (ErrorLevel) {
-							WinActivate, ahk_id %this_id%		
-							WinWaitActive, ahk_id %this_id%, , 0		
-						}
-					}
-				}
-				SendRaw, %sendstrdata%		
+				PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
 			}
 			titlematchbit *= 2
 		}
 	}
-
-	paste=0
-	SetTimer, Find , %TimerPeriod%
-	ControlSetText, , , ahk_id %InputBoxID% 
-	ControlFocus, , ahk_id %InputBoxID%
-	WinActivate, %windowname%
 return
 
 Locate:  
     Gosub, Find 
-	SetTimer, Find , Off
+	GoSub, DisableTimers
 
 	GuiControlGet, alpha, ,msctls_trackbar321
 	if ( FilterGroup == 1 ){
@@ -1807,7 +1825,7 @@ Locate:
 			titlematchbit *= 2
 		}
 	}
-	SetTimer, Find , %TimerPeriod%
+	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
 return 
 
