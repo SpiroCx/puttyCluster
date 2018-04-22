@@ -1731,7 +1731,6 @@ SendString_LeaveTimers:
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
-			sendstraddr := &sendstrdata
 			PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
 		}
 	}
@@ -1761,25 +1760,10 @@ Locate:
     Gosub, Find 
 	GoSub, DisableTimers
 
-	GuiControlGet, alpha, ,msctls_trackbar321
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
-			WinActivate, ahk_id %this_id%,	
-			WinWaitActive, ahk_id %this_id%, , 0		
-			if (ErrorLevel) {
-				WinActivate, ahk_id %this_id%		
-				WinWaitActive, ahk_id %this_id%, , 0		
-				if (ErrorLevel) {
-					WinActivate, ahk_id %this_id%		
-					WinWaitActive, ahk_id %this_id%, , 0		
-					if (ErrorLevel) {
-						WinActivate, ahk_id %this_id%		
-						WinWaitActive, ahk_id %this_id%, , 0		
-					}
-				}
-			}
 			WinSet, Transparent, 30, ahk_id %this_id%
 			Sleep, 200
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
@@ -1802,20 +1786,6 @@ Locate:
 		{
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
-				WinActivate, ahk_id %this_id%,				
-				WinWaitActive, ahk_id %this_id%, , 0		
-				if (ErrorLevel) {
-					WinActivate, ahk_id %this_id%		
-					WinWaitActive, ahk_id %this_id%, , 0		
-					if (ErrorLevel) {
-						WinActivate, ahk_id %this_id%		
-						WinWaitActive, ahk_id %this_id%, , 0		
-						if (ErrorLevel) {
-							WinActivate, ahk_id %this_id%		
-							WinWaitActive, ahk_id %this_id%, , 0		
-						}
-					}
-				}
 				WinSet, Transparent, 30, ahk_id %this_id%
 				Sleep, 200
 				WinSet, Transparent, %alpha%, ahk_id %this_id%
@@ -1825,6 +1795,7 @@ Locate:
 			titlematchbit *= 2
 		}
 	}
+
 	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
 return 
