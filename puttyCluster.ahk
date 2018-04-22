@@ -279,29 +279,25 @@ xpos := xbase
 ypos1 := ybase + 5
 ypos2 := ybase + 32
 ypos3 := ybase + 59
-Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " gRadioCheck" . " vRadioGroup" .  ( (winsize == 1) ? " Checked" : "" )
-Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " gRadioCheck" . ( (winsize == 2) ? " Checked" : "" )
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gRadioCheck" . ( (winsize == 3) ? " Checked" : "" )
-xpos += 115
-Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " gRadioCheck" . ( (winsize == 4) ? " Checked" : "" )
-Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " gRadioCheck" . ( (winsize == 5) ? " Checked" : "" )
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gRadioCheck" . ( (winsize == 6) ? " Checked" : "" )
-xpos += 60
-Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " gRadioCheck" . ( (winsize == 7) ? " Checked" : "" )
-Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " gRadioCheck" . ( (winsize == 8) ? " Checked" : "" )
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gRadioCheck" . ( (winsize == 9) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " HwndRadioCheck1  gRadioCheck" . " vRadioGroup" .  ( (winsize == 1) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " HwndRadioCheck2  gRadioCheck" . ( (winsize == 2) ? " Checked" : "" )
+xpos += 115                                                
+Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " HwndRadioCheck3  gRadioCheck" . ( (winsize == 3) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " HwndRadioCheck4  gRadioCheck" . ( (winsize == 4) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndRadioCheck5  gRadioCheck" . ( (winsize == 5) ? " Checked" : "" )
+xpos += 60                                                 
+Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " HwndRadioCheck6  gRadioCheck" . ( (winsize == 6) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " HwndRadioCheck7  gRadioCheck" . ( (winsize == 7) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndRadioCheck8  gRadioCheck" . ( (winsize == 8) ? " Checked" : "" )
 
 ; ***** Radio button text boxes
 IniRead, xsize1, puttyCluster.ini, XYSize, x1, 400
 IniRead, ysize1, puttyCluster.ini, XYSize, y1, 500
 IniRead, xsize2, puttyCluster.ini, XYSize, x2, 400
 IniRead, ysize2, puttyCluster.ini, XYSize, y2, 600
-IniRead, xsize3, puttyCluster.ini, XYSize, x3, 400
-IniRead, ysize3, puttyCluster.ini, XYSize, y3, 700
 xpos := xbase + 54
 Gui, Add, Text,  x%xpos% y%ypos1%, X
 Gui, Add, Text,  x%xpos% y%ypos2%, X
-Gui, Add, Text,  x%xpos% y%ypos3%, X
 xpos += 84
 Gui, Add, Text,  x%xpos% y%ypos1%, 1x1
 Gui, Add, Text,  x%xpos% y%ypos2%, 1x2
@@ -312,17 +308,33 @@ Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
 Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
 
 ; ***** Radio button edit boxes
-xpos := xbase + 23
+xpos1 := xbase + 23
+xpos2 := xbase + 63
 ypos1 := ybase
 ypos2 := ybase + 27
 ypos3 := ybase + 54
-Gui, Add, Edit,  x%xpos% y%ypos1% Hwndwidth1ID vwidth1 w30 Number, %xsize1%
-Gui, Add, Edit,  x%xpos% y%ypos2% Hwndwidth2ID vwidth2 w30 Number, %xsize2%
-Gui, Add, Edit,  x%xpos% y%ypos3% Hwndwidth3ID vwidth3 w30 Number, %xsize3%
-xpos += 40
-Gui, Add, Edit,  x%xpos% y%ypos1% Hwndheight1ID vheight1 w30 Number, %ysize1%
-Gui, Add, Edit,  x%xpos% y%ypos2% Hwndheight2ID vheight2 w30 Number, %ysize2%
-Gui, Add, Edit,  x%xpos% y%ypos3% Hwndheight3ID vheight3 w30 Number, %ysize3%
+Gui, Add, Edit,  x%xpos1% y%ypos1% gwidthClick1 Hwndwidth1ID vwidth1 w30 Number, %xsize1%
+Gui, Add, Edit,  x%xpos2% y%ypos1% gheightClick1 Hwndheight1ID vheight1 w30 Number, %ysize1%
+Gui, Add, Edit,  x%xpos1% y%ypos2% gwidthClick2 Hwndwidth2ID vwidth2 w30 Number, %xsize2%
+Gui, Add, Edit,  x%xpos2% y%ypos2% gHeightClick2 Hwndheight2ID vheight2 w30 Number, %ysize2%
+
+; ***** Monitor selector
+IniRead, monitorsel, puttyCluster.ini, Options, MonitorSelect, 1
+IniRead, edtMonitor3, puttyCluster.ini, Options, Monitor3, 3
+xpos := xbase
+ypos3 += 5
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
+MonitorGroup_TT := "Use monitor 1"
+xpos += 30
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor2" . ( (monitorsel == 2) ? " Checked" : "" ), 2
+xpos += 30
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor3" . ( (monitorsel == 3) ? " Checked" : "" )
+xpos += 23
+;ypos3 -= 3
+;Gui, Add, Edit,  x%xpos% y%ypos3% gedtMonitorClick3 HwndedtMonitor3ID vedtMonitor3 w20 h20 Number, %edtMonitor3%
+Gui, Add, Text,  x%xpos% y%ypos3% w24 h16, %edtMonitor3%
+Gui, Add, UpDown, gedtMonitorClick3 vedtMonitor3 HwndedtMonitor3ID Range1-8, %edtMonitor3%
+edtMonitor3_TT := "Enter a monitor number here.  Default 3"
 
 fheight := yposcluster + 165
 fwidth := 250
@@ -625,6 +637,8 @@ IniRead, btnCommand18_TT, puttyCluster.ini, PuttyCommands, Command18Tooltip, %co
 IniRead, cmdlbl18, puttyCluster.ini, PuttyCommands, Command18label, %command18%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, %cmdlbl18%
 
+;GoSub, MonitorTest
+
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
 ControlFocus, , ahk_id %InputBoxID%
 WinActivate, %windowname%
@@ -636,12 +650,12 @@ onMessage(0x105,"key")  ; alt key down
 OnMessage(0x200, "WM_MOUSEMOVE")
 OnMessage(0x53, "WM_HELP")
 
+GoSub, RadioCheck
+GoSub, OnTopCheck
+
 SetTimer, Find , %TimerPeriod%
 SetTitleMatchMode, RegEx 
 #WinActivateForce
-
-GoSub, RadioCheck
-GoSub, OnTopCheck
 
 WM_HELP()
 {
@@ -721,7 +735,6 @@ key(wParam, lParam, msg, hwnd)
 	    {
 			this_id := id_array[A_Index]
 			PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
-;			PostMessage, %msg%,%wParam%, , ,ahk_id %this_id%,
 		}
 	}
 	else {
@@ -740,7 +753,6 @@ key(wParam, lParam, msg, hwnd)
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
 				PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
-;				PostMessage, %msg%,%wParam%, , ,ahk_id %this_id%,
 			}
 			titlematchbit *= 2
 		}
@@ -750,6 +762,17 @@ key(wParam, lParam, msg, hwnd)
    }
 }
 return 
+
+; ******************************************************************************************
+
+;MonitorTest:
+;	SysGet, Mon1, Monitor, 1
+;	MsgBox, Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.
+;	SysGet, Mon2, Monitor, 2
+;	MsgBox, Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.
+;	SysGet, Mon3, Monitor, 3
+;	MsgBox, Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
+;Return
 
 EnableTimers:
 	OnMessage(0x200, "WM_MOUSEMOVE")
@@ -804,6 +827,27 @@ btnOk:
 Return
 GotoSite:
 	Run, %homepage%
+Return
+
+edtMonitorClick3:
+	ControlSend, , {Space}, ahk_id %Monitor3%
+Return
+
+widthClick1:
+	ControlSend, , {Space}, ahk_id %RadioCheck1%
+	ControlFocus, , ahk_id %width1ID%
+Return
+heightClick1:
+	ControlSend, , {Space}, ahk_id %RadioCheck1%
+	ControlFocus, , ahk_id %height1ID%
+Return
+widthClick2:
+	ControlSend, , {Space}, ahk_id %RadioCheck2%
+	ControlFocus, , ahk_id %width2ID%
+Return
+heightClick2:
+	ControlSend, , {Space}, ahk_id %RadioCheck2%
+	ControlFocus, , ahk_id %height2ID%
 Return
 
 check1:
@@ -1272,7 +1316,23 @@ bit28toggle:
 	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
+SetScreenWidthHeight:
+	if (MonitorGroup == 1) {
+		monitorSelected := 1
+	} else if (MonitorGroup == 2) {
+		monitorSelected := 2
+	} else {
+		monitorSelected := % edtMonitor3
+	}
+	SysGet, Mon, Monitor, %monitorSelected%
+	if (MonLeft == "")
+		SysGet, Mon, Monitor, 1
+	ScreenWidth := MonRight - MonLeft
+	ScrenHeight := MonBottom - MonTop
+Return
+
 RadioCheck:
+GoSub, SetScreenWidthHeight
 gui, submit, nohide
 if (RadioGroup = 1) {
 	width := width1
@@ -1283,30 +1343,26 @@ else if (RadioGroup = 2) {
 	height := height2
 }
 else if (RadioGroup = 3) {
-	width := width3
-	height := height3
-}
-else if (RadioGroup = 4) {
 	width := ScreenWidth
 	height := ScreenHeight
 }
-else if (RadioGroup = 5) {
+else if (RadioGroup = 4) {
 	width := ScreenWidth / 2 - wmargin
+	height := ScreenHeight
+}
+else if (RadioGroup = 5) {
+	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight
 }
 else if (RadioGroup = 6) {
-	width := ScreenWidth / 3 - wmargin
-	height := ScreenHeight
-}
-else if (RadioGroup = 7) {
 	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight / 2
 }
-else if (RadioGroup = 8) {
+else if (RadioGroup = 7) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 2
 }
-else if (RadioGroup = 9) {
+else if (RadioGroup = 8) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 3
 }
@@ -1333,11 +1389,9 @@ GuiClose:
 	ControlGet, enableinv4, Checked, , , ahk_id %checkinv4ID%
 	ControlGet, enableinv5, Checked, , , ahk_id %checkinv5ID%
 	ControlGetText, xsize1, , ahk_id %width1ID%
-	ControlGetText, xsize2, , ahk_id %width2ID%
-	ControlGetText, xsize3, , ahk_id %width3ID%
 	ControlGetText, ysize1, , ahk_id %height1ID%
+	ControlGetText, xsize2, , ahk_id %width2ID%
 	ControlGetText, ysize2, , ahk_id %height2ID%
-	ControlGetText, ysize3, , ahk_id %height3ID%
 	ControlGetText, edit6, , ahk_id %FindFilterID%
 	ControlGet, AlwaysOnTop, Checked, , , ahk_id %OnTopID%
 	ControlGet, AddCrLf, Checked, , , ahk_id %CrLfID%
@@ -1383,8 +1437,6 @@ GuiClose:
 	IniWrite, %ysize1%, puttyCluster.ini, XYSize, y1
 	IniWrite, %xsize2%, puttyCluster.ini, XYSize, x2
 	IniWrite, %ysize2%, puttyCluster.ini, XYSize, y2
-	IniWrite, %xsize3%, puttyCluster.ini, XYSize, x3
-	IniWrite, %ysize3%, puttyCluster.ini, XYSize, y3
 	IniWrite, %bit11state%, puttyCluster.ini, MatchBits1, MatchBit11
 	IniWrite, %bit12state%, puttyCluster.ini, MatchBits1, MatchBit12
 	IniWrite, %bit13state%, puttyCluster.ini, MatchBits1, MatchBit13
@@ -1405,6 +1457,8 @@ GuiClose:
 	IniWrite, %FilterGroup%, puttyCluster.ini, MatchBits1, MatchByte1Type
 	IniWrite, %AlwaysOnTop%, puttyCluster.ini, Options, AlwaysOnTop
 	IniWrite, %AddCrLf%, puttyCluster.ini, Options, AddCrLf
+	IniWrite, %MonitorGroup%, puttyCluster.ini, Options, MonitorSelect
+	IniWrite, %edtMonitor3%, puttyCluster.ini, Options, Monitor3
 	IniWrite, %SingleMatch%, puttyCluster.ini, Options, SingleMatch
 	IniWrite, %edtPutty11%, puttyCluster.ini, PuttySession1, Putty11Count
 	IniWrite, %edtPutty12%, puttyCluster.ini, PuttySession1, Putty12Count
@@ -1472,10 +1526,12 @@ UpdateFoundWindowsFilteredGui:
 Return
 
 Tile:
+	SetWinDelay, -1
 	Gosub, Find 
 	GoSub, DisableTimers
-	x:=0
-	y:=0
+	GoSub, RadioCheck
+	x := MonLeft
+	y := MonTop
 
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
@@ -1484,8 +1540,8 @@ Tile:
 			;WinActivate, ahk_id %this_id_tile%,				
 			WinMove, ahk_id %this_id%,, x,y,width,height
 			x:=x+width
-			if( (x+width) >= A_ScreenWidth){
-				x:=0
+			if( (x+width) >= MonRight){
+				x:=MonLeft
 				y:=y+height
 			}
 		}
@@ -1508,8 +1564,8 @@ Tile:
 				;WinActivate, ahk_id %this_id_tile%,				
 				WinMove, ahk_id %this_id%,, x,y,width,height
 				x:=x+width
-				if( (x+width) >= A_ScreenWidth){
-					x:=0
+				if( (x+width) >= MonRight){
+					x:=MonLeft
 					y:=y+height
 				}
 			}
@@ -1638,10 +1694,12 @@ CloseWin:
 return
 	
 Cascade:
+	SetWinDelay, -1
 	Gosub, Find 
 	GoSub, DisableTimers
-	x:=0
-	y:=0
+	GoSub, RadioCheck
+	x := MonLeft
+	y := MonTop
 
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%

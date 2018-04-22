@@ -4,7 +4,7 @@ Fork of https://github.com/mingbowan/puttyCluster which is described there as:
 * puttyCluster putty cluster / multi-session / multi-window input
 * Simple AutoHotkey script to enable sending input to multiple putty window simultaneously.
 
-For me personally this makes the script even more useful with a few simple extensions. It was already great.
+For me personally this makes the script even more useful with a few simple extensions. It was already good.
 
 ### Features
 
@@ -13,6 +13,10 @@ For me personally this makes the script even more useful with a few simple exten
 * Multiple preset screen sizes with a selector for quick switching between them for when you have few windows/lots of windows
 * Add CrLf to "paste clipboard" so you can keep one liners in a text file for example
 * ToBack and To Front buttons to quickly bring the matched windows to the front on the Desktop
+* Laucher side panel for apps, Putty sessions and Putty commands.  
+* INI file for configuration if you want to compile to exe
+* Global shortcuts to bring to top and toggle side panel.  There is also a StayOnTop flag if you prefer
+* Mulitple monitor supprt for Tile/Cascade functions
 
 ### install
 
@@ -99,10 +103,8 @@ puttyprompt=[A]; puttytitle=[A][$(getip120)]
 
 ### ToDo
 
-* Add version number and display in title or add About Box
 * Add Mimimise To Tray once the hotkeys are working
-* Remove the bottom of the 3 window size boxes and replace with a Monitor Selector so the Tile/Cascade functions place on the nomitated monitor instead of just the prime diplay.
-* Add a Not (!) flag to the title match and bitfield search specifiers
+* Add configurable hotkeys to INI file
 
 ### license
 * free as in free beer and free as in free speech
