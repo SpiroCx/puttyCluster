@@ -764,6 +764,13 @@ Return
 ; https://autohotkey.com/board/topic/62812-url-link-in-msgbox/
 ; https://autohotkey.com/board/topic/58797-solved-gui-confusion-multiple-gui-problems/
 AboutBox:
+	Gui, 2:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 2:+AlwaysOnTop
+		Gui, 2:-AlwaysOnTop
+		Return
+	}
 	homepage = https://github.com/SpiroCx/puttyCluster
 	MajorVersion = 1.0
 	AboutMessage1 = % "Version: " . MajorVersion
@@ -786,9 +793,14 @@ AboutBox:
 	xposabout := ScreenWidth / 2 - 120
 	yposabout := ScreenHeight / 2 - 70
 	Gui, 2:Show, x%xposabout% y%yposabout% h140 w280, About
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 2:+AlwaysOnTop
+	Gui, 2:-AlwaysOnTop
 Return
 btnOk:
+2GuiClose:
 	Gui, 2:Destroy
+	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
 GotoSite:
 	Run, %homepage%
