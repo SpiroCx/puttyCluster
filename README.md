@@ -28,9 +28,9 @@ cd puttyCluster\
 
 ### Usage
 
-![Usage1](https://raw.github.com/SpiroCx/puttyCluster/sidepanel/screenshot.PNG)
-![Usage2](https://raw.github.com/SpiroCx/puttyCluster/sidepanel/screenshot2.png)
-![Usage2](https://raw.github.com/SpiroCx/puttyCluster/sidepanel/screenshot4.png)
+![Usage1](https://raw.github.com/SpiroCx/puttyCluster/master/screenshot.PNG)
+![Usage2](https://raw.github.com/SpiroCx/puttyCluster/master/screenshot2.png)
+![Usage2](https://raw.github.com/SpiroCx/puttyCluster/master/screenshot4.png)
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
@@ -92,7 +92,7 @@ Note in the above example the 120 and 235 are specific to my lan segments.  I ca
 ```
 puttyprompt=[A]; puttytitle=[A][$(getip120)]
 ```
-![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/sidepanel/screenshot3.png)
+![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/master/screenshot3.png)
   
 ### Known issues
 * The inverted regex is based on this expression: ^((?!MATCH).)*$ where MATCH is regex edit box term.  Using multiple enabled regex searches with negatives results in this sort of expression (^((?!MATCH1).)*$)|(^((?!MATCH2).)*$), the results of which get confusing.  I usually use it the invert to tag a group of putty windows (puttyprompt=[A]; puttytitle=[A][$(getip120)]), then open a new set of putty windows, turn on the invert operator for a single search on "[A]", then tag the second set of windows (puttyprompt=[B]; puttytitle=[B][$(getip120)])
