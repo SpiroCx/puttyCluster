@@ -24,11 +24,7 @@ First checkout the repository, then checkout this branch.  This example uses ssh
 ```
 git clone git://github.com/SpiroCx/puttyCluster.git
 cd puttyCluster\
-git branch -a
-git checkout -b scMods origin/scMods
-git branch -vv
 ```
-The last command just confirms that it worked.
 
 ### Usage
 
