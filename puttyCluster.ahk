@@ -1512,27 +1512,13 @@ return
 ToFront:
 	Gosub, Find 
 	GoSub, DisableTimers
-	x:=0
-	y:=0
 
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
-			WinActivate, ahk_id %this_id%,			
-			WinWaitActive, ahk_id %this_id%, , 0	
-			if (ErrorLevel) {
-				WinActivate, ahk_id %this_id%		
-				WinWaitActive, ahk_id %this_id%, , 0		
-				if (ErrorLevel) {
-					WinActivate, ahk_id %this_id%		
-					WinWaitActive, ahk_id %this_id%, , 0		
-					if (ErrorLevel) {
-						WinActivate, ahk_id %this_id%		
-						WinWaitActive, ahk_id %this_id%, , 0		
-					}
-				}
-			}
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 		}
 	}
 	else {
@@ -1550,24 +1536,13 @@ ToFront:
 		{
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
-				WinActivate, ahk_id %this_id%,	
-				WinWaitActive, ahk_id %this_id%, , 0		
-				if (ErrorLevel) {
-					WinActivate, ahk_id %this_id%		
-					WinWaitActive, ahk_id %this_id%, , 0		
-					if (ErrorLevel) {
-						WinActivate, ahk_id %this_id%		
-						WinWaitActive, ahk_id %this_id%, , 0		
-						if (ErrorLevel) {
-							WinActivate, ahk_id %this_id%		
-							WinWaitActive, ahk_id %this_id%, , 0		
-						}
-					}
-				}
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			}
 			titlematchbit *= 2
 		}
 	}
+
 	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
 	WinActivate, %windowname%
@@ -1576,8 +1551,6 @@ return
 ToBack:
 	Gosub, Find 
 	GoSub, DisableTimers
-	x:=0
-	y:=0
 
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
@@ -1608,6 +1581,7 @@ ToBack:
 			titlematchbit *= 2
 		}
 	}
+	
 	GoSub, EnableTimers
 	ControlFocus, , ahk_id %InputBoxID%
 	WinActivate, %windowname%
