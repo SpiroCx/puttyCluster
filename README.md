@@ -8,7 +8,7 @@ For me personally this makes the script even more useful with a few simple exten
 
 ### Features
 
-* Multiple title match windows with enable checkboxes so you can have sets of putty sessions open.  These can be OR'd
+* Multiple title match windows with enable checkboxes so you can have sets of putty sessions open.  These can be OR'd and inverted
 * Preset seach pattern in the first title match checkbox to "all putty windows"
 * Multiple preset screen sizes with a selector for quick switching between them for when you have few windows/lots of windows
 * Add CrLf to "paste clipboard" so you can keep one liners in a text file for example
@@ -20,7 +20,6 @@ For me personally this makes the script even more useful with a few simple exten
 
 ### install
 
-First checkout the repository, then checkout this branch.  This example uses ssh to clone.  I notice that if you checkout using https, the commands are different.  This works but you have to sort out your ssh keys first (generate them locally and then add them to GitHUB).  Note that the master branch is current unmodified from the upstream repo.
 ```
 git clone git://github.com/SpiroCx/puttyCluster.git
 cd puttyCluster\
@@ -63,12 +62,12 @@ on the command line:
 ```
 export puttytag=[AAA]
 ```
-Smaller embeded platforms tend use busybox instead of a full shell.  If you are working with busybox, the script won't work (at least it doesn't on any of mine) but you can include a tag in the title directly in the PS1 command:
+Smaller embeded platforms tend use busybox instead of a full shell.  If you are working with busybox, the getputtytag() script won't work (at least it doesn't on any of mine) but you can include a tag in the title directly in the PS1 command:
 on the command line:
 ```
 PS1="\[\e]0;\u@\h: \w[AAA]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
 ```
-I am using this one at the moment which includes git info, an ip address in the title, and a tag in the prompt to remind myself which puttyCluster group the putty session is part of:
+I am using this one at the moment which includes git info, an ip address in the title, and an additional tag in the prompt to remind myself which puttyCluster group the putty session is part of:
 in .bashrc or .profile:
 ```
 getip120(){
@@ -88,14 +87,32 @@ parse_git_branch() {
 }
 PS1="\[\e]0;\u@\h: \w\$(getputtytitle)\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[36m\]\w\[\e[31m\]$(parse_git_branch)\[\e[36m\]\$(getputtyprompt)$\[\e[m\] "
 ```
-Note in the above example the 120 and 235 are specific to my lan segments.  I can then set putty terminal with:
+(Note in the above example the 120 and 235 are specific to my lan segments of interest).  I can then set putty terminal with:
 ```
 puttyprompt=[A]; puttytitle=[A][$(getip120)]
 ```
 ![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/master/screenshot3.png)
   
 ### Known issues
-* The inverted regex is based on this expression: ^((?!MATCH).)*$ where MATCH is regex edit box term.  Using multiple enabled regex searches with negatives results in this sort of expression (^((?!MATCH1).)*$)|(^((?!MATCH2).)*$), the results of which get confusing.  I usually use it the invert to tag a group of putty windows (puttyprompt=[A]; puttytitle=[A][$(getip120)]), then open a new set of putty windows, turn on the invert operator for a single search on "[A]", then tag the second set of windows (puttyprompt=[B]; puttytitle=[B][$(getip120)])
+* Most of the script is useless if you don't run it as Administrator.  At least ToBack and ToFront don't get access to the windows without it.
+* I have used "SetWinDelay, -1" to make Tile/Cascade fast (which they are).  The AHK help file says not to do this though as the PostMessages may fail under heavy CPU load.  If there are any suspicions in regards to this, these lines should be switched to "SetWinDelay, 0" at least (if not "SetWinDelay, 10")
+*  There is only very partial (and experimental) support for SuperPutty and Xshell Beta 6.  In both cases, pretty much only the multi typing works and only the bitfield window selection filters work.  No title matching, locate, ToFront, ToBack.  In addition to this, for Superputty, only the visible tabs respond.  This Superputty limitation is a bit of a show stopper.  The Xshell support is kind of useable but not a lot better than Xshells own multi window input capabilities.
+* The inverted regex's are based on this expression: 
+```
+^((?!MATCH).)*$ 
+```
+where MATCH is regex edit box term.  Using multiple enabled regex searches with inversion results in this sort of internally used expression:
+```
+^((?!MATCH1).)*$)|(^((?!MATCH2).)*$)
+```
+These results can get confusing.  I usually use the invert operator on a single title match this way.  First tag a group of putty windows:
+```
+(puttyprompt=[A]; puttytitle=[A][$(getip120)])
+```
+then open a new set of putty windows, turn on the invert operator on the first tag eg "[A]" to isolate the new set of windows, then tag the second set of windows
+```
+(puttyprompt=[B]; puttytitle=[B][$(getip120)])
+```
 
 ### ToDo
 
