@@ -1762,7 +1762,12 @@ SendString:
 	GoSub, DisableTimers
 	ControlSetText, , no input while pasting...., ahk_id %InputBoxID%
 	paste=1
-	GoSub, SendString_LeaveTimers
+	fullstring := sendstrdata
+	Loop, Parse, fullstring
+	{
+		sendstrdata := A_Loopfield
+		GoSub, SendString_LeaveTimers
+	}
 	paste=0
 	ControlSetText, , , ahk_id %InputBoxID% 
 	ControlFocus, , ahk_id %InputBoxID%
