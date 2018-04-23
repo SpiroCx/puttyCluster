@@ -17,6 +17,9 @@ Menu, Tray, Icon, puttyCluster.ico
 ;The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the Software or the use or other dealings in the Software.
 ;
 
+inifilename = puttyCluster.ini
+if (%0% > 0)
+	inifilename = %1%
 
 global bit11state := 0
 global bit12state := 0
@@ -62,11 +65,11 @@ Gui, Add, Text,, Window Title RegEx:                       En     Inv
 ;Gui, Add, Text, x250 y5, Enable
 
 ; ***** Title matching text boxes
-IniRead, edit1, puttyCluster.ini, TitleMatch, Title1, .*
-IniRead, edit2, puttyCluster.ini, TitleMatch, Title2, %A_Space%
-IniRead, edit3, puttyCluster.ini, TitleMatch, Title3, %A_Space%
-IniRead, edit4, puttyCluster.ini, TitleMatch, Title4, %A_Space%
-IniRead, edit5, puttyCluster.ini, TitleMatch, Title5, %A_Space%
+IniRead, edit1, %inifilename%, TitleMatch, Title1, .*
+IniRead, edit2, %inifilename%, TitleMatch, Title2, %A_Space%
+IniRead, edit3, %inifilename%, TitleMatch, Title3, %A_Space%
+IniRead, edit4, %inifilename%, TitleMatch, Title4, %A_Space%
+IniRead, edit5, %inifilename%, TitleMatch, Title5, %A_Space%
 xpos := 10
 ypos := 25
 ewidth := 160
@@ -81,12 +84,12 @@ ypos += 27
 Gui, Add, Edit, x%xpos% y%ypos% Hwndedit5ID vtitle5 w%ewidth%, %edit5%
 
 ; ***** Enable checkboxes
-IniRead, check1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 1
-IniRead, check2, puttyCluster.ini, TitleMatchEnabled, TitleMatch2, 0
-IniRead, check3, puttyCluster.ini, TitleMatchEnabled, TitleMatch3, 0
-IniRead, check4, puttyCluster.ini, TitleMatchEnabled, TitleMatch4, 0
-IniRead, check5, puttyCluster.ini, TitleMatchEnabled, TitleMatch5, 0
-IniRead, SingleMatch, puttyCluster.ini, Options, SingleMatch, 0
+IniRead, check1, %inifilename%, TitleMatchEnabled, TitleMatch1, 1
+IniRead, check2, %inifilename%, TitleMatchEnabled, TitleMatch2, 0
+IniRead, check3, %inifilename%, TitleMatchEnabled, TitleMatch3, 0
+IniRead, check4, %inifilename%, TitleMatchEnabled, TitleMatch4, 0
+IniRead, check5, %inifilename%, TitleMatchEnabled, TitleMatch5, 0
+IniRead, SingleMatch, %inifilename%, Options, SingleMatch, 0
 xpos := 180
 ypos := 30
 Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck1ID gcheck1 vcheck1" . ( check1 ? " Checked" : "" )
@@ -105,11 +108,11 @@ Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck5ID gcheck5 vcheck5"
 check5_TT := "Enable title match regex 5"
 
 ; ***** Invert checkboxes
-IniRead, checkinv1, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv1, 0
-IniRead, checkinv2, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv2, 0
-IniRead, checkinv3, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv3, 0
-IniRead, checkinv4, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv4, 0
-IniRead, checkinv5, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv5, 0
+IniRead, checkinv1, %inifilename%, TitleMatchEnabled, TitleMatchInv1, 0
+IniRead, checkinv2, %inifilename%, TitleMatchEnabled, TitleMatchInv2, 0
+IniRead, checkinv3, %inifilename%, TitleMatchEnabled, TitleMatchInv3, 0
+IniRead, checkinv4, %inifilename%, TitleMatchEnabled, TitleMatchInv4, 0
+IniRead, checkinv5, %inifilename%, TitleMatchEnabled, TitleMatchInv5, 0
 xpos += 30
 ypos := 30
 Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv1ID gcheckinv1 vcheckinv1" . ( checkinv1 ? " Checked" : "" )
@@ -140,8 +143,8 @@ Gui, Add, button, x%xpos% y%ypos% gLocate -default, Locate
 
 
 ; ***** Found filter radio buttons
-IniRead, matchbyte1type, puttyCluster.ini, MatchBits1, MatchByte1Type, 1
-IniRead, matchbyte1, puttyCluster.ini, MatchBits1, MatchByte1, FFFF
+IniRead, matchbyte1type, %inifilename%, MatchBits1, MatchByte1Type, 1
+IniRead, matchbyte1, %inifilename%, MatchBits1, MatchByte1, FFFF
 xpos := 10
 ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Found windows filter (bitfield HEX eg FFFF):
@@ -169,14 +172,14 @@ ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup3InfoID vFilterGroup3InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 1
-IniRead, bit11state, puttyCluster.ini, MatchBits1, MatchBit11, 0
-IniRead, bit12state, puttyCluster.ini, MatchBits1, MatchBit12, 0
-IniRead, bit13state, puttyCluster.ini, MatchBits1, MatchBit13, 0
-IniRead, bit14state, puttyCluster.ini, MatchBits1, MatchBit14, 0
-IniRead, bit15state, puttyCluster.ini, MatchBits1, MatchBit15, 0
-IniRead, bit16state, puttyCluster.ini, MatchBits1, MatchBit16, 0
-IniRead, bit17state, puttyCluster.ini, MatchBits1, MatchBit17, 0
-IniRead, bit18state, puttyCluster.ini, MatchBits1, MatchBit18, 0
+IniRead, bit11state, %inifilename%, MatchBits1, MatchBit11, 0
+IniRead, bit12state, %inifilename%, MatchBits1, MatchBit12, 0
+IniRead, bit13state, %inifilename%, MatchBits1, MatchBit13, 0
+IniRead, bit14state, %inifilename%, MatchBits1, MatchBit14, 0
+IniRead, bit15state, %inifilename%, MatchBits1, MatchBit15, 0
+IniRead, bit16state, %inifilename%, MatchBits1, MatchBit16, 0
+IniRead, bit17state, %inifilename%, MatchBits1, MatchBit17, 0
+IniRead, bit18state, %inifilename%, MatchBits1, MatchBit18, 0
 xpos := 52
 ypos := 247
 Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit11ID gbit11toggle -default, % ( bit11state ? "1" : "" )
@@ -199,14 +202,14 @@ ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup2InfoID vFilterGroup2InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 2
-IniRead, bit21state, puttyCluster.ini, MatchBits2, MatchBit21, 0
-IniRead, bit22state, puttyCluster.ini, MatchBits2, MatchBit22, 0
-IniRead, bit23state, puttyCluster.ini, MatchBits2, MatchBit23, 0
-IniRead, bit24state, puttyCluster.ini, MatchBits2, MatchBit24, 0
-IniRead, bit25state, puttyCluster.ini, MatchBits2, MatchBit25, 0
-IniRead, bit26state, puttyCluster.ini, MatchBits2, MatchBit26, 0
-IniRead, bit27state, puttyCluster.ini, MatchBits2, MatchBit27, 0
-IniRead, bit28state, puttyCluster.ini, MatchBits2, MatchBit28, 0
+IniRead, bit21state, %inifilename%, MatchBits2, MatchBit21, 0
+IniRead, bit22state, %inifilename%, MatchBits2, MatchBit22, 0
+IniRead, bit23state, %inifilename%, MatchBits2, MatchBit23, 0
+IniRead, bit24state, %inifilename%, MatchBits2, MatchBit24, 0
+IniRead, bit25state, %inifilename%, MatchBits2, MatchBit25, 0
+IniRead, bit26state, %inifilename%, MatchBits2, MatchBit26, 0
+IniRead, bit27state, %inifilename%, MatchBits2, MatchBit27, 0
+IniRead, bit28state, %inifilename%, MatchBits2, MatchBit28, 0
 xpos := 52
 ypos := 277
 Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit21ID gbit21toggle -default, % ( bit21state ? "1" : "" )
@@ -239,8 +242,8 @@ ypos += 18
 GUI, Add, Slider, x%xpos% y%ypos% Range100-255 w%swidth% gFind, 255
 
 ; ***** Cluster Input, Paste, CrLf checkbox, Always on top checkbox
-IniRead, OnTopVal, puttyCluster.ini, Options, AlwaysOnTop, 0
-IniRead, CrLfVal, puttyCluster.ini, Options, AddCrLf, 0
+IniRead, OnTopVal, %inifilename%, Options, AlwaysOnTop, 0
+IniRead, CrLfVal, %inifilename%, Options, AddCrLf, 0
 yposcluster := yposslider + 60
 xpos := 10
 ypos := yposcluster
@@ -271,7 +274,7 @@ xpos += 52
 Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
 ; ***** Window size radio buttons
-IniRead, winsize, puttyCluster.ini, WindowSize, Selected, 7
+IniRead, winsize, %inifilename%, WindowSize, Selected, 7
 xbase := 5
 ybase := yposcluster + 85
 
@@ -291,10 +294,10 @@ Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " HwndRadioCheck7  gRadi
 Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndRadioCheck8  gRadioCheck" . ( (winsize == 8) ? " Checked" : "" )
 
 ; ***** Radio button text boxes
-IniRead, xsize1, puttyCluster.ini, XYSize, x1, 400
-IniRead, ysize1, puttyCluster.ini, XYSize, y1, 500
-IniRead, xsize2, puttyCluster.ini, XYSize, x2, 400
-IniRead, ysize2, puttyCluster.ini, XYSize, y2, 600
+IniRead, xsize1, %inifilename%, XYSize, x1, 400
+IniRead, ysize1, %inifilename%, XYSize, y1, 500
+IniRead, xsize2, %inifilename%, XYSize, x2, 400
+IniRead, ysize2, %inifilename%, XYSize, y2, 600
 xpos := xbase + 54
 Gui, Add, Text,  x%xpos% y%ypos1%, X
 Gui, Add, Text,  x%xpos% y%ypos2%, X
@@ -319,8 +322,8 @@ Gui, Add, Edit,  x%xpos1% y%ypos2% gwidthClick2 Hwndwidth2ID vwidth2 w30 Number,
 Gui, Add, Edit,  x%xpos2% y%ypos2% gHeightClick2 Hwndheight2ID vheight2 w30 Number, %ysize2%
 
 ; ***** Monitor selector
-IniRead, monitorsel, puttyCluster.ini, Options, MonitorSelect, 1
-IniRead, edtMonitor3, puttyCluster.ini, Options, Monitor3, 3
+IniRead, monitorsel, %inifilename%, Options, MonitorSelect, 1
+IniRead, edtMonitor3, %inifilename%, Options, Monitor3, 3
 xpos := xbase
 ypos3 += 5
 Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
@@ -340,8 +343,8 @@ fheight := yposcluster + 165
 fwidth := 250
 xpos_default := (ScreenWidth / 2) - (fwidth / 2)
 ypos_default := (ScreenHeight / 2) - (fheight / 2)
-Iniread, xpos, puttyCluster.ini, Autosave, xpos, %xpos_default%
-Iniread, ypos, puttyCluster.ini, Autosave, ypos, %ypos_default%
+Iniread, xpos, %inifilename%, Autosave, xpos, %xpos_default%
+Iniread, ypos, %inifilename%, Autosave, ypos, %ypos_default%
 
 ; ***** Sidepanel toggle button
 xsidepanelbutton := fwidth - 20
@@ -361,46 +364,46 @@ ysidepanel := 20
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
 ysidepanel += 20
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher1 gbtnLauncher1 HwndbtnLauncher1ID -default, Launcher1
-IniRead, Launcher1label, puttyCluster.ini, Launcher1, Label, NoINI
-IniRead, btnLauncher1_TT, puttyCluster.ini, Launcher1, Tooltip,Configure launcher by editing puttyCluster.ini file
-IniRead, launcher1command, puttyCluster.ini, Launcher1, Command, notepad.exe
-IniRead, launcher1dir, puttyCluster.ini, Launcher1, Dir, C:\
+IniRead, Launcher1label, %inifilename%, Launcher1, Label, NoINI
+IniRead, btnLauncher1_TT, %inifilename%, Launcher1, Tooltip,Configure launcher by editing %inifilename% file
+IniRead, launcher1command, %inifilename%, Launcher1, Command, notepad.exe
+IniRead, launcher1dir, %inifilename%, Launcher1, Dir, C:\
 ControlSetText, , %Launcher1label%, ahk_id %btnLauncher1ID%
 xsidepanel += 65
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher2 gbtnLauncher2 HwndbtnLauncher2ID -default, Launcher2
-IniRead, Launcher2label, puttyCluster.ini, Launcher2, Label, NoINI
-IniRead, btnLauncher2_TT, puttyCluster.ini, Launcher2, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher2command, puttyCluster.ini, Launcher2, Command, notepad.exe
-IniRead, Launcher2dir, puttyCluster.ini, Launcher2, Dir, C:\
+IniRead, Launcher2label, %inifilename%, Launcher2, Label, NoINI
+IniRead, btnLauncher2_TT, %inifilename%, Launcher2, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, Launcher2command, %inifilename%, Launcher2, Command, notepad.exe
+IniRead, Launcher2dir, %inifilename%, Launcher2, Dir, C:\
 ControlSetText, , %Launcher2label%, ahk_id %btnLauncher2ID%
 xsidepanel += 65
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher3 gbtnLauncher3 HwndbtnLauncher3ID -default, Launcher3
-IniRead, Launcher3label, puttyCluster.ini, Launcher3, Label, NoINI
-IniRead, btnLauncher3_TT, puttyCluster.ini, Launcher3, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher3command, puttyCluster.ini, Launcher3, Command, notepad.exe
-IniRead, Launcher3dir, puttyCluster.ini, Launcher3, Dir, C:\
+IniRead, Launcher3label, %inifilename%, Launcher3, Label, NoINI
+IniRead, btnLauncher3_TT, %inifilename%, Launcher3, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, Launcher3command, %inifilename%, Launcher3, Command, notepad.exe
+IniRead, Launcher3dir, %inifilename%, Launcher3, Dir, C:\
 ControlSetText, , %Launcher3label%, ahk_id %btnLauncher3ID%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher4 gbtnLauncher4 HwndbtnLauncher4ID -default, Launcher4
-IniRead, Launcher4label, puttyCluster.ini, Launcher4, Label, NoINI
-IniRead, btnLauncher4_TT, puttyCluster.ini, Launcher4, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher4command, puttyCluster.ini, Launcher4, Command, notepad.exe
-IniRead, Launcher4dir, puttyCluster.ini, Launcher4, Dir, C:\
+IniRead, Launcher4label, %inifilename%, Launcher4, Label, NoINI
+IniRead, btnLauncher4_TT, %inifilename%, Launcher4, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, Launcher4command, %inifilename%, Launcher4, Command, notepad.exe
+IniRead, Launcher4dir, %inifilename%, Launcher4, Dir, C:\
 ControlSetText, , %Launcher4label%, ahk_id %btnLauncher4ID%
 xsidepanel += 65
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher5 gbtnLauncher5 HwndbtnLauncher5ID -default, Launcher5
-IniRead, Launcher5label, puttyCluster.ini, Launcher5, Label, NoINI
-IniRead, btnLauncher5_TT, puttyCluster.ini, Launcher5, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher5command, puttyCluster.ini, Launcher5, Command, notepad.exe
-IniRead, Launcher5dir, puttyCluster.ini, Launcher5, Dir, C:\
+IniRead, Launcher5label, %inifilename%, Launcher5, Label, NoINI
+IniRead, btnLauncher5_TT, %inifilename%, Launcher5, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, Launcher5command, %inifilename%, Launcher5, Command, notepad.exe
+IniRead, Launcher5dir, %inifilename%, Launcher5, Dir, C:\
 ControlSetText, , %Launcher5label%, ahk_id %btnLauncher5ID%
 xsidepanel += 65
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher6 gbtnLauncher6 HwndbtnLauncher6ID -default, Launcher6
-IniRead, Launcher6label, puttyCluster.ini, Launcher6, Label, NoINI
-IniRead, btnLauncher6_TT, puttyCluster.ini, Launcher6, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher6command, puttyCluster.ini, Launcher6, Command, notepad.exe
-IniRead, Launcher6dir, puttyCluster.ini, Launcher6, Dir, C:\
+IniRead, Launcher6label, %inifilename%, Launcher6, Label, NoINI
+IniRead, btnLauncher6_TT, %inifilename%, Launcher6, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, Launcher6command, %inifilename%, Launcher6, Command, notepad.exe
+IniRead, Launcher6dir, %inifilename%, Launcher6, Dir, C:\
 ControlSetText, , %Launcher6label%, ahk_id %btnLauncher6ID%
 
 ; ***** Sidepanel putty session launchers
@@ -409,121 +412,121 @@ ysidepanel += 40
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty session launchers:
 ysidepanel += 20
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty1 gbtnPutty1 HwndbtnPutty1ID -default, Putty1
-IniRead, btnputty1label, puttyCluster.ini, PuttySession1, Label, NoINI
-IniRead, btnPutty1_TT, puttyCluster.ini, PuttySession1, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty1command, puttyCluster.ini, PuttySession1, Command, ubuntu-r210-8_av
-IniRead, btnputty1dir, puttyCluster.ini, PuttySession1, Dir, C:\
+IniRead, btnputty1label, %inifilename%, PuttySession1, Label, NoINI
+IniRead, btnPutty1_TT, %inifilename%, PuttySession1, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, btnputty1command, %inifilename%, PuttySession1, Command, ubuntu-r210-8_av
+IniRead, btnputty1dir, %inifilename%, PuttySession1, Dir, C:\
 ControlSetText, , %btnputty1label%, ahk_id %btnPutty1ID%
 xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession1, Putty11Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession1, Putty11Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty11 HwndedtPutty11ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty11UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession1, Putty12Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession1, Putty12Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty12 HwndedtPutty12ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty12UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession1, Putty13Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession1, Putty13Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty13 HwndedtPutty13ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty13UpDown Range0-10, %edtPutty%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty2 gbtnPutty2 HwndbtnPutty2ID -default, Putty2
-IniRead, btnputty2label, puttyCluster.ini, PuttySession2, Label, NoINI
-IniRead, btnPutty2_TT, puttyCluster.ini, PuttySession2, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty2command, puttyCluster.ini, PuttySession2, Command, ubuntu-r210-8_av
-IniRead, btnputty2dir, puttyCluster.ini, PuttySession2, Dir, C:\
+IniRead, btnputty2label, %inifilename%, PuttySession2, Label, NoINI
+IniRead, btnPutty2_TT, %inifilename%, PuttySession2, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, btnputty2command, %inifilename%, PuttySession2, Command, ubuntu-r210-8_av
+IniRead, btnputty2dir, %inifilename%, PuttySession2, Dir, C:\
 ControlSetText, , %btnputty2label%, ahk_id %btnPutty2ID%
 xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession2, Putty21Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession2, Putty21Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty21 HwndedtPutty21ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty21UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession2, Putty22Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession2, Putty22Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty22 HwndedtPutty22ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty22UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession2, Putty23Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession2, Putty23Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty23 HwndedtPutty23ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty23UpDown Range0-10, %edtPutty%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty3 gbtnPutty3 HwndbtnPutty3ID -default, Putty3
-IniRead, btnputty3label, puttyCluster.ini, PuttySession3, Label, NoINI
-IniRead, btnPutty3_TT, puttyCluster.ini, PuttySession3, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty3command, puttyCluster.ini, PuttySession3, Command, ubuntu-r210-8_av
-IniRead, btnputty3dir, puttyCluster.ini, PuttySession3, Dir, C:\
+IniRead, btnputty3label, %inifilename%, PuttySession3, Label, NoINI
+IniRead, btnPutty3_TT, %inifilename%, PuttySession3, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, btnputty3command, %inifilename%, PuttySession3, Command, ubuntu-r210-8_av
+IniRead, btnputty3dir, %inifilename%, PuttySession3, Dir, C:\
 ControlSetText, , %btnputty3label%, ahk_id %btnPutty3ID%
 xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession3, Putty31Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession3, Putty31Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty31 HwndedtPutty31ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty31UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession3, Putty32Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession3, Putty32Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty32 HwndedtPutty32ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty32UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession3, Putty33Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession3, Putty33Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty33 HwndedtPutty33ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty33UpDown Range0-10, %edtPutty%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty4 gbtnPutty4 HwndbtnPutty4ID -default, Putty4
-IniRead, btnputty4label, puttyCluster.ini, PuttySession4, Label, NoINI
-IniRead, btnPutty4_TT, puttyCluster.ini, PuttySession4, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty4command, puttyCluster.ini, PuttySession4, Command, ubuntu-r210-8_av
-IniRead, btnputty4dir, puttyCluster.ini, PuttySession4, Dir, C:\
+IniRead, btnputty4label, %inifilename%, PuttySession4, Label, NoINI
+IniRead, btnPutty4_TT, %inifilename%, PuttySession4, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, btnputty4command, %inifilename%, PuttySession4, Command, ubuntu-r210-8_av
+IniRead, btnputty4dir, %inifilename%, PuttySession4, Dir, C:\
 ControlSetText, , %btnputty4label%, ahk_id %btnPutty4ID%
 xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession4, Putty41Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession4, Putty41Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty41 HwndedtPutty41ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty41UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession4, Putty42Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession4, Putty42Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty42 HwndedtPutty42ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty42UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession4, Putty43Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession4, Putty43Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty43 HwndedtPutty43ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty43UpDown Range0-10, %edtPutty%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty5 gbtnPutty5 HwndbtnPutty5ID -default, Putty5
-IniRead, btnputty5label, puttyCluster.ini, PuttySession5, Label, NoINI
-IniRead, btnPutty5_TT, puttyCluster.ini, PuttySession5, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty5command, puttyCluster.ini, PuttySession5, Command, ubuntu-r210-8_av
-IniRead, btnputty5dir, puttyCluster.ini, PuttySession5, Dir, C:\
+IniRead, btnputty5label, %inifilename%, PuttySession5, Label, NoINI
+IniRead, btnPutty5_TT, %inifilename%, PuttySession5, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, btnputty5command, %inifilename%, PuttySession5, Command, ubuntu-r210-8_av
+IniRead, btnputty5dir, %inifilename%, PuttySession5, Dir, C:\
 ControlSetText, , %btnputty5label%, ahk_id %btnPutty5ID%
 xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession5, Putty51Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession5, Putty51Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty51 HwndedtPutty51ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty51UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession5, Putty52Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession5, Putty52Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty52 HwndedtPutty52ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty52UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession5, Putty53Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession5, Putty53Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty53 HwndedtPutty53ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty53UpDown Range0-10, %edtPutty%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty6 gbtnPutty6 HwndbtnPutty6ID -default, Putty6
-IniRead, btnputty6label, puttyCluster.ini, PuttySession6, Label, NoINI
-IniRead, btnPutty6_TT, puttyCluster.ini, PuttySession6, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty6command, puttyCluster.ini, PuttySession6, Command, ubuntu-r210-8_av
-IniRead, btnputty6dir, puttyCluster.ini, PuttySession6, Dir, C:\
+IniRead, btnputty6label, %inifilename%, PuttySession6, Label, NoINI
+IniRead, btnPutty6_TT, %inifilename%, PuttySession6, Tooltip, Configure launcher by editing %inifilename% file
+IniRead, btnputty6command, %inifilename%, PuttySession6, Command, ubuntu-r210-8_av
+IniRead, btnputty6dir, %inifilename%, PuttySession6, Dir, C:\
 ControlSetText, , %btnputty6label%, ahk_id %btnPutty6ID%
 xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession6, Putty61Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession6, Putty61Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty61 HwndedtPutty61ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty61UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession6, Putty62Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession6, Putty62Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty62 HwndedtPutty62ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty62UpDown Range0-10, %edtPutty%
 xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession6, Putty63Count, 0
+IniRead, edtPutty, %inifilename%, PuttySession6, Putty63Count, 0
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty63 HwndedtPutty63ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty63UpDown Range0-10, %edtPutty%
 xsidepanel := xsidepanelbutton + 97
@@ -542,99 +545,99 @@ xsidepanel := xsidepanelbutton + 30
 ysidepanel += 40
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty commands:
 ysidepanel += 25
-IniRead, command01, puttyCluster.ini, PuttyCommands, Command01, Cmd1
-IniRead, btnCommand1_TT, puttyCluster.ini, PuttyCommands, Command01Tooltip, %command01%
-IniRead, cmdlbl01, puttyCluster.ini, PuttyCommands, Command01label, %command01%
+IniRead, command01, %inifilename%, PuttyCommands, Command01, Cmd1
+IniRead, btnCommand1_TT, %inifilename%, PuttyCommands, Command01Tooltip, %command01%
+IniRead, cmdlbl01, %inifilename%, PuttyCommands, Command01label, %command01%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand1 gbtnCommand1 HwndbtnCommand1ID -default, %cmdlbl01%
 xsidepanel += 65
-IniRead, command02, puttyCluster.ini, PuttyCommands, Command02, Cmd2
-IniRead, btnCommand2_TT, puttyCluster.ini, PuttyCommands, Command02Tooltip, %command02%
-IniRead, cmdlbl02, puttyCluster.ini, PuttyCommands, Command02label, %command02%
+IniRead, command02, %inifilename%, PuttyCommands, Command02, Cmd2
+IniRead, btnCommand2_TT, %inifilename%, PuttyCommands, Command02Tooltip, %command02%
+IniRead, cmdlbl02, %inifilename%, PuttyCommands, Command02label, %command02%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand2 gbtnCommand2 HwndbtnCommand2ID -default, %cmdlbl02%
 xsidepanel += 65
-IniRead, command03, puttyCluster.ini, PuttyCommands, Command03, Cmd3
-IniRead, btnCommand3_TT, puttyCluster.ini, PuttyCommands, Command03Tooltip, %command03%
-IniRead, cmdlbl03, puttyCluster.ini, PuttyCommands, Command03label, %command03%
+IniRead, command03, %inifilename%, PuttyCommands, Command03, Cmd3
+IniRead, btnCommand3_TT, %inifilename%, PuttyCommands, Command03Tooltip, %command03%
+IniRead, cmdlbl03, %inifilename%, PuttyCommands, Command03label, %command03%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand3 gbtnCommand3 HwndbtnCommand3ID -default, %cmdlbl03%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-IniRead, command04, puttyCluster.ini, PuttyCommands, Command04, Cmd4
-IniRead, btnCommand4_TT, puttyCluster.ini, PuttyCommands, Command04Tooltip, %command04%
-IniRead, cmdlbl04, puttyCluster.ini, PuttyCommands, Command04label, %command04%
+IniRead, command04, %inifilename%, PuttyCommands, Command04, Cmd4
+IniRead, btnCommand4_TT, %inifilename%, PuttyCommands, Command04Tooltip, %command04%
+IniRead, cmdlbl04, %inifilename%, PuttyCommands, Command04label, %command04%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand4 gbtnCommand4 HwndbtnCommand4ID -default, %cmdlbl04%
 xsidepanel += 65
-IniRead, command05, puttyCluster.ini, PuttyCommands, Command05, Cmd5
-IniRead, btnCommand5_TT, puttyCluster.ini, PuttyCommands, Command05Tooltip, %command05%
-IniRead, cmdlbl05, puttyCluster.ini, PuttyCommands, Command05label, %command05%
+IniRead, command05, %inifilename%, PuttyCommands, Command05, Cmd5
+IniRead, btnCommand5_TT, %inifilename%, PuttyCommands, Command05Tooltip, %command05%
+IniRead, cmdlbl05, %inifilename%, PuttyCommands, Command05label, %command05%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand5 gbtnCommand5 HwndbtnCommand5ID -default, %cmdlbl05%
 xsidepanel += 65
-IniRead, command06, puttyCluster.ini, PuttyCommands, Command06, Cmd6
-IniRead, btnCommand6_TT, puttyCluster.ini, PuttyCommands, Command06Tooltip, %command06%
-IniRead, cmdlbl06, puttyCluster.ini, PuttyCommands, Command06label, %command06%
+IniRead, command06, %inifilename%, PuttyCommands, Command06, Cmd6
+IniRead, btnCommand6_TT, %inifilename%, PuttyCommands, Command06Tooltip, %command06%
+IniRead, cmdlbl06, %inifilename%, PuttyCommands, Command06label, %command06%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand6 gbtnCommand6 HwndbtnCommand6ID -default, %cmdlbl06%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-IniRead, command07, puttyCluster.ini, PuttyCommands, Command07, Cmd7
-IniRead, btnCommand7_TT, puttyCluster.ini, PuttyCommands, Command07Tooltip, %command07%
-IniRead, cmdlbl07, puttyCluster.ini, PuttyCommands, Command07label, %command07%
+IniRead, command07, %inifilename%, PuttyCommands, Command07, Cmd7
+IniRead, btnCommand7_TT, %inifilename%, PuttyCommands, Command07Tooltip, %command07%
+IniRead, cmdlbl07, %inifilename%, PuttyCommands, Command07label, %command07%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand7 gbtnCommand7 HwndbtnCommand7ID -default, %cmdlbl07%
 xsidepanel += 65
-IniRead, command08, puttyCluster.ini, PuttyCommands, Command08, Cmd8
-IniRead, btnCommand8_TT, puttyCluster.ini, PuttyCommands, Command08Tooltip, %command08%
-IniRead, cmdlbl08, puttyCluster.ini, PuttyCommands, Command08label, %command08%
+IniRead, command08, %inifilename%, PuttyCommands, Command08, Cmd8
+IniRead, btnCommand8_TT, %inifilename%, PuttyCommands, Command08Tooltip, %command08%
+IniRead, cmdlbl08, %inifilename%, PuttyCommands, Command08label, %command08%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand8 gbtnCommand8 HwndbtnCommand8ID -default, %cmdlbl08%
 xsidepanel += 65
-IniRead, command09, puttyCluster.ini, PuttyCommands, Command09, Cmd9
-IniRead, btnCommand9_TT, puttyCluster.ini, PuttyCommands, Command09Tooltip, %command09%
-IniRead, cmdlbl09, puttyCluster.ini, PuttyCommands, Command09label, %command09%
+IniRead, command09, %inifilename%, PuttyCommands, Command09, Cmd9
+IniRead, btnCommand9_TT, %inifilename%, PuttyCommands, Command09Tooltip, %command09%
+IniRead, cmdlbl09, %inifilename%, PuttyCommands, Command09label, %command09%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand9 gbtnCommand9 HwndbtnCommand9ID -default, %cmdlbl09%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-IniRead, command10, puttyCluster.ini, PuttyCommands, Command10, Cmd10
-IniRead, btnCommand10_TT, puttyCluster.ini, PuttyCommands, Command10Tooltip, %command10%
-IniRead, cmdlbl10, puttyCluster.ini, PuttyCommands, Command10label, %command10%
+IniRead, command10, %inifilename%, PuttyCommands, Command10, Cmd10
+IniRead, btnCommand10_TT, %inifilename%, PuttyCommands, Command10Tooltip, %command10%
+IniRead, cmdlbl10, %inifilename%, PuttyCommands, Command10label, %command10%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand10 gbtnCommand10 HwndbtnCommand10ID -default, %cmdlbl10%
 xsidepanel += 65
-IniRead, command11, puttyCluster.ini, PuttyCommands, Command11, Cmd11
-IniRead, btnCommand11_TT, puttyCluster.ini, PuttyCommands, Command11Tooltip, %command11%
-IniRead, cmdlbl11, puttyCluster.ini, PuttyCommands, Command11label, %command11%
+IniRead, command11, %inifilename%, PuttyCommands, Command11, Cmd11
+IniRead, btnCommand11_TT, %inifilename%, PuttyCommands, Command11Tooltip, %command11%
+IniRead, cmdlbl11, %inifilename%, PuttyCommands, Command11label, %command11%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand11 gbtnCommand11 HwndbtnCommand11ID -default, %cmdlbl11%
 xsidepanel += 65
-IniRead, command12, puttyCluster.ini, PuttyCommands, Command12, Cmd12
-IniRead, btnCommand12_TT, puttyCluster.ini, PuttyCommands, Command12Tooltip, %command12%
-IniRead, cmdlbl12, puttyCluster.ini, PuttyCommands, Command12label, %command12%
+IniRead, command12, %inifilename%, PuttyCommands, Command12, Cmd12
+IniRead, btnCommand12_TT, %inifilename%, PuttyCommands, Command12Tooltip, %command12%
+IniRead, cmdlbl12, %inifilename%, PuttyCommands, Command12label, %command12%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand12 gbtnCommand12 HwndbtnCommand12ID -default, %cmdlbl12%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-IniRead, command13, puttyCluster.ini, PuttyCommands, Command13, Cmd13
-IniRead, btnCommand13_TT, puttyCluster.ini, PuttyCommands, Command13Tooltip, %command13%
-IniRead, cmdlbl13, puttyCluster.ini, PuttyCommands, Command13label, %command13%
+IniRead, command13, %inifilename%, PuttyCommands, Command13, Cmd13
+IniRead, btnCommand13_TT, %inifilename%, PuttyCommands, Command13Tooltip, %command13%
+IniRead, cmdlbl13, %inifilename%, PuttyCommands, Command13label, %command13%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand13 gbtnCommand13 HwndbtnCommand13ID -default, %cmdlbl13%
 xsidepanel += 65
-IniRead, command14, puttyCluster.ini, PuttyCommands, Command14, Cmd14
-IniRead, btnCommand14_TT, puttyCluster.ini, PuttyCommands, Command14Tooltip, %command14%
-IniRead, cmdlbl14, puttyCluster.ini, PuttyCommands, Command14label, %command14%
+IniRead, command14, %inifilename%, PuttyCommands, Command14, Cmd14
+IniRead, btnCommand14_TT, %inifilename%, PuttyCommands, Command14Tooltip, %command14%
+IniRead, cmdlbl14, %inifilename%, PuttyCommands, Command14label, %command14%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand14 gbtnCommand14 HwndbtnCommand14ID -default, %cmdlbl14%
 xsidepanel += 65
-IniRead, command15, puttyCluster.ini, PuttyCommands, Command15, Cmd15
-IniRead, btnCommand15_TT, puttyCluster.ini, PuttyCommands, Command15Tooltip, %command15%
-IniRead, cmdlbl15, puttyCluster.ini, PuttyCommands, Command15label, %command15%
+IniRead, command15, %inifilename%, PuttyCommands, Command15, Cmd15
+IniRead, btnCommand15_TT, %inifilename%, PuttyCommands, Command15Tooltip, %command15%
+IniRead, cmdlbl15, %inifilename%, PuttyCommands, Command15label, %command15%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand15 gbtnCommand15 HwndbtnCommand15ID -default, %cmdlbl15%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-IniRead, command16, puttyCluster.ini, PuttyCommands, Command16, Cmd16
-IniRead, btnCommand16_TT, puttyCluster.ini, PuttyCommands, Command16Tooltip, %command16%
-IniRead, cmdlbl16, puttyCluster.ini, PuttyCommands, Command16label, %command16%
+IniRead, command16, %inifilename%, PuttyCommands, Command16, Cmd16
+IniRead, btnCommand16_TT, %inifilename%, PuttyCommands, Command16Tooltip, %command16%
+IniRead, cmdlbl16, %inifilename%, PuttyCommands, Command16label, %command16%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand16 gbtnCommand16 HwndbtnCommand16ID -default, %cmdlbl16%
 xsidepanel += 65
-IniRead, command17, puttyCluster.ini, PuttyCommands, Command17, Cmd17
-IniRead, btnCommand17_TT, puttyCluster.ini, PuttyCommands, Command17Tooltip, %command17%
-IniRead, cmdlbl17, puttyCluster.ini, PuttyCommands, Command17label, %command17%
+IniRead, command17, %inifilename%, PuttyCommands, Command17, Cmd17
+IniRead, btnCommand17_TT, %inifilename%, PuttyCommands, Command17Tooltip, %command17%
+IniRead, cmdlbl17, %inifilename%, PuttyCommands, Command17label, %command17%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand17 gbtnCommand17 HwndbtnCommand17ID -default, %cmdlbl17%
 xsidepanel += 65
-IniRead, command18, puttyCluster.ini, PuttyCommands, Command18, Cmd18
-IniRead, btnCommand18_TT, puttyCluster.ini, PuttyCommands, Command18Tooltip, %command18%
-IniRead, cmdlbl18, puttyCluster.ini, PuttyCommands, Command18label, %command18%
+IniRead, command18, %inifilename%, PuttyCommands, Command18, Cmd18
+IniRead, btnCommand18_TT, %inifilename%, PuttyCommands, Command18Tooltip, %command18%
+IniRead, cmdlbl18, %inifilename%, PuttyCommands, Command18label, %command18%
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, %cmdlbl18%
 
 ;GoSub, MonitorTest
@@ -1415,69 +1418,69 @@ GuiClose:
 	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
 	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
 	
-	IniWrite, %xpos%, puttyCluster.ini, Autosave, xpos
-	IniWrite, %ypos%, puttyCluster.ini, Autosave, ypos
-	IniWrite, %edit1%, puttyCluster.ini, TitleMatch, Title1
-	IniWrite, %edit2%, puttyCluster.ini, TitleMatch, Title2
-	IniWrite, %edit3%, puttyCluster.ini, TitleMatch, Title3
-	IniWrite, %edit4%, puttyCluster.ini, TitleMatch, Title4
-	IniWrite, %edit5%, puttyCluster.ini, TitleMatch, Title5
-	IniWrite, %enable1%, puttyCluster.ini, TitleMatchEnabled, TitleMatch1
-	IniWrite, %enable2%, puttyCluster.ini, TitleMatchEnabled, TitleMatch2
-	IniWrite, %enable3%, puttyCluster.ini, TitleMatchEnabled, TitleMatch3
-	IniWrite, %enable4%, puttyCluster.ini, TitleMatchEnabled, TitleMatch4
-	IniWrite, %enable5%, puttyCluster.ini, TitleMatchEnabled, TitleMatch5
-	IniWrite, %enableinv1%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv1
-	IniWrite, %enableinv2%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv2
-	IniWrite, %enableinv3%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv3
-	IniWrite, %enableinv4%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv4
-	IniWrite, %enableinv5%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv5
-	IniWrite, %RadioGroup%, puttyCluster.ini, WindowSize, Selected
-	IniWrite, %xsize1%, puttyCluster.ini, XYSize, x1
-	IniWrite, %ysize1%, puttyCluster.ini, XYSize, y1
-	IniWrite, %xsize2%, puttyCluster.ini, XYSize, x2
-	IniWrite, %ysize2%, puttyCluster.ini, XYSize, y2
-	IniWrite, %bit11state%, puttyCluster.ini, MatchBits1, MatchBit11
-	IniWrite, %bit12state%, puttyCluster.ini, MatchBits1, MatchBit12
-	IniWrite, %bit13state%, puttyCluster.ini, MatchBits1, MatchBit13
-	IniWrite, %bit14state%, puttyCluster.ini, MatchBits1, MatchBit14
-	IniWrite, %bit15state%, puttyCluster.ini, MatchBits1, MatchBit15
-	IniWrite, %bit16state%, puttyCluster.ini, MatchBits1, MatchBit16
-	IniWrite, %bit17state%, puttyCluster.ini, MatchBits1, MatchBit17
-	IniWrite, %bit18state%, puttyCluster.ini, MatchBits1, MatchBit18
-	IniWrite, %bit21state%, puttyCluster.ini, MatchBits2, MatchBit21
-	IniWrite, %bit22state%, puttyCluster.ini, MatchBits2, MatchBit22
-	IniWrite, %bit23state%, puttyCluster.ini, MatchBits2, MatchBit23
-	IniWrite, %bit24state%, puttyCluster.ini, MatchBits2, MatchBit24
-	IniWrite, %bit25state%, puttyCluster.ini, MatchBits2, MatchBit25
-	IniWrite, %bit26state%, puttyCluster.ini, MatchBits2, MatchBit26
-	IniWrite, %bit27state%, puttyCluster.ini, MatchBits2, MatchBit27
-	IniWrite, %bit28state%, puttyCluster.ini, MatchBits2, MatchBit28
-	IniWrite, %edit6%, puttyCluster.ini, MatchBits1, MatchByte1
-	IniWrite, %FilterGroup%, puttyCluster.ini, MatchBits1, MatchByte1Type
-	IniWrite, %AlwaysOnTop%, puttyCluster.ini, Options, AlwaysOnTop
-	IniWrite, %AddCrLf%, puttyCluster.ini, Options, AddCrLf
-	IniWrite, %MonitorGroup%, puttyCluster.ini, Options, MonitorSelect
-	IniWrite, %edtMonitor3%, puttyCluster.ini, Options, Monitor3
-	IniWrite, %SingleMatch%, puttyCluster.ini, Options, SingleMatch
-	IniWrite, %edtPutty11%, puttyCluster.ini, PuttySession1, Putty11Count
-	IniWrite, %edtPutty12%, puttyCluster.ini, PuttySession1, Putty12Count
-	IniWrite, %edtPutty13%, puttyCluster.ini, PuttySession1, Putty13Count
-	IniWrite, %edtPutty21%, puttyCluster.ini, PuttySession2, Putty21Count
-	IniWrite, %edtPutty22%, puttyCluster.ini, PuttySession2, Putty22Count
-	IniWrite, %edtPutty23%, puttyCluster.ini, PuttySession2, Putty23Count
-	IniWrite, %edtPutty31%, puttyCluster.ini, PuttySession3, Putty31Count
-	IniWrite, %edtPutty32%, puttyCluster.ini, PuttySession3, Putty32Count
-	IniWrite, %edtPutty33%, puttyCluster.ini, PuttySession3, Putty33Count
-	IniWrite, %edtPutty41%, puttyCluster.ini, PuttySession4, Putty41Count
-	IniWrite, %edtPutty42%, puttyCluster.ini, PuttySession4, Putty42Count
-	IniWrite, %edtPutty43%, puttyCluster.ini, PuttySession4, Putty43Count
-	IniWrite, %edtPutty51%, puttyCluster.ini, PuttySession5, Putty51Count
-	IniWrite, %edtPutty52%, puttyCluster.ini, PuttySession5, Putty52Count
-	IniWrite, %edtPutty53%, puttyCluster.ini, PuttySession5, Putty53Count
-	IniWrite, %edtPutty61%, puttyCluster.ini, PuttySession6, Putty61Count
-	IniWrite, %edtPutty62%, puttyCluster.ini, PuttySession6, Putty62Count
-	IniWrite, %edtPutty63%, puttyCluster.ini, PuttySession6, Putty63Count
+	IniWrite, %xpos%, %inifilename%, Autosave, xpos
+	IniWrite, %ypos%, %inifilename%, Autosave, ypos
+	IniWrite, %edit1%, %inifilename%, TitleMatch, Title1
+	IniWrite, %edit2%, %inifilename%, TitleMatch, Title2
+	IniWrite, %edit3%, %inifilename%, TitleMatch, Title3
+	IniWrite, %edit4%, %inifilename%, TitleMatch, Title4
+	IniWrite, %edit5%, %inifilename%, TitleMatch, Title5
+	IniWrite, %enable1%, %inifilename%, TitleMatchEnabled, TitleMatch1
+	IniWrite, %enable2%, %inifilename%, TitleMatchEnabled, TitleMatch2
+	IniWrite, %enable3%, %inifilename%, TitleMatchEnabled, TitleMatch3
+	IniWrite, %enable4%, %inifilename%, TitleMatchEnabled, TitleMatch4
+	IniWrite, %enable5%, %inifilename%, TitleMatchEnabled, TitleMatch5
+	IniWrite, %enableinv1%, %inifilename%, TitleMatchEnabled, TitleMatchInv1
+	IniWrite, %enableinv2%, %inifilename%, TitleMatchEnabled, TitleMatchInv2
+	IniWrite, %enableinv3%, %inifilename%, TitleMatchEnabled, TitleMatchInv3
+	IniWrite, %enableinv4%, %inifilename%, TitleMatchEnabled, TitleMatchInv4
+	IniWrite, %enableinv5%, %inifilename%, TitleMatchEnabled, TitleMatchInv5
+	IniWrite, %RadioGroup%, %inifilename%, WindowSize, Selected
+	IniWrite, %xsize1%, %inifilename%, XYSize, x1
+	IniWrite, %ysize1%, %inifilename%, XYSize, y1
+	IniWrite, %xsize2%, %inifilename%, XYSize, x2
+	IniWrite, %ysize2%, %inifilename%, XYSize, y2
+	IniWrite, %bit11state%, %inifilename%, MatchBits1, MatchBit11
+	IniWrite, %bit12state%, %inifilename%, MatchBits1, MatchBit12
+	IniWrite, %bit13state%, %inifilename%, MatchBits1, MatchBit13
+	IniWrite, %bit14state%, %inifilename%, MatchBits1, MatchBit14
+	IniWrite, %bit15state%, %inifilename%, MatchBits1, MatchBit15
+	IniWrite, %bit16state%, %inifilename%, MatchBits1, MatchBit16
+	IniWrite, %bit17state%, %inifilename%, MatchBits1, MatchBit17
+	IniWrite, %bit18state%, %inifilename%, MatchBits1, MatchBit18
+	IniWrite, %bit21state%, %inifilename%, MatchBits2, MatchBit21
+	IniWrite, %bit22state%, %inifilename%, MatchBits2, MatchBit22
+	IniWrite, %bit23state%, %inifilename%, MatchBits2, MatchBit23
+	IniWrite, %bit24state%, %inifilename%, MatchBits2, MatchBit24
+	IniWrite, %bit25state%, %inifilename%, MatchBits2, MatchBit25
+	IniWrite, %bit26state%, %inifilename%, MatchBits2, MatchBit26
+	IniWrite, %bit27state%, %inifilename%, MatchBits2, MatchBit27
+	IniWrite, %bit28state%, %inifilename%, MatchBits2, MatchBit28
+	IniWrite, %edit6%, %inifilename%, MatchBits1, MatchByte1
+	IniWrite, %FilterGroup%, %inifilename%, MatchBits1, MatchByte1Type
+	IniWrite, %AlwaysOnTop%, %inifilename%, Options, AlwaysOnTop
+	IniWrite, %AddCrLf%, %inifilename%, Options, AddCrLf
+	IniWrite, %MonitorGroup%, %inifilename%, Options, MonitorSelect
+	IniWrite, %edtMonitor3%, %inifilename%, Options, Monitor3
+	IniWrite, %SingleMatch%, %inifilename%, Options, SingleMatch
+	IniWrite, %edtPutty11%, %inifilename%, PuttySession1, Putty11Count
+	IniWrite, %edtPutty12%, %inifilename%, PuttySession1, Putty12Count
+	IniWrite, %edtPutty13%, %inifilename%, PuttySession1, Putty13Count
+	IniWrite, %edtPutty21%, %inifilename%, PuttySession2, Putty21Count
+	IniWrite, %edtPutty22%, %inifilename%, PuttySession2, Putty22Count
+	IniWrite, %edtPutty23%, %inifilename%, PuttySession2, Putty23Count
+	IniWrite, %edtPutty31%, %inifilename%, PuttySession3, Putty31Count
+	IniWrite, %edtPutty32%, %inifilename%, PuttySession3, Putty32Count
+	IniWrite, %edtPutty33%, %inifilename%, PuttySession3, Putty33Count
+	IniWrite, %edtPutty41%, %inifilename%, PuttySession4, Putty41Count
+	IniWrite, %edtPutty42%, %inifilename%, PuttySession4, Putty42Count
+	IniWrite, %edtPutty43%, %inifilename%, PuttySession4, Putty43Count
+	IniWrite, %edtPutty51%, %inifilename%, PuttySession5, Putty51Count
+	IniWrite, %edtPutty52%, %inifilename%, PuttySession5, Putty52Count
+	IniWrite, %edtPutty53%, %inifilename%, PuttySession5, Putty53Count
+	IniWrite, %edtPutty61%, %inifilename%, PuttySession6, Putty61Count
+	IniWrite, %edtPutty62%, %inifilename%, PuttySession6, Putty62Count
+	IniWrite, %edtPutty63%, %inifilename%, PuttySession6, Putty63Count
 	
 ExitApp
 
