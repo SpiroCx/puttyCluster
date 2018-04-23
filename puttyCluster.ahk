@@ -251,22 +251,22 @@ xpos -= 113
 ypos += 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 vInputBox HwndInputBoxID WantTab ReadOnly, 
 xpos += 83
-Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste &Clipboard
+Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste Clipboard
 Paste_Clipboard_TT := "_clipboard_"
 xpos += 90
 ypos += 7
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfCheck" .  ( CrLfVal ? " Checked" : "" ),  +Cr&Lf
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfCheck" .  ( CrLfVal ? " Checked" : "" ),  +CrLf
 
 ; ***** Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
 ypos := yposcluster + 45
-Gui, Add, button, x%xpos% y%ypos% gTile -default, &Tile
+Gui, Add, button, x%xpos% y%ypos% gTile -default, Tile
 xpos += 30
 Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
 xpos += 55
-Gui, Add, button, x%xpos% y%ypos% gToBack -default, To&Back
+Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
 xpos += 52
-Gui, Add, button, x%xpos% y%ypos% gToFront -default, To&Front
+Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
 xpos += 52
 Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
@@ -1762,7 +1762,12 @@ SendString:
 	GoSub, DisableTimers
 	ControlSetText, , no input while pasting...., ahk_id %InputBoxID%
 	paste=1
-	GoSub, SendString_LeaveTimers
+	fullstring := sendstrdata
+	Loop, Parse, fullstring
+	{
+		sendstrdata := A_Loopfield
+		GoSub, SendString_LeaveTimers
+	}
 	paste=0
 	ControlSetText, , , ahk_id %InputBoxID% 
 	ControlFocus, , ahk_id %InputBoxID%
@@ -1999,6 +2004,26 @@ Return
 #!d::
 	WinActivate, %windowname%
 	GoSub, SidePanelToggle
+Return
+
+; Win+Alt+T
+#!t::
+	GoSub, Tile
+Return
+
+; Win+Alt+F
+#!f::
+	GoSub, ToFront
+Return
+
+; Win+Alt+B
+#!b::
+	GoSub, ToBack
+Return
+
+; Win+Alt+V
+#!v::
+	GoSub, GoPaste
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4
