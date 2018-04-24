@@ -402,7 +402,7 @@ xsidepanel += 40
 Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty12 HwndedtPutty12ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty12UpDown Range0-10, 0
 xsidepanel += 40
-IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession1, Putty13Count, 0
+Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty13 HwndedtPutty13ID w37
 Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty13UpDown Range0-10, 0
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
