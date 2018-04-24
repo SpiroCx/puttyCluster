@@ -539,6 +539,7 @@ onMessage(0x104,"key")  ; alt key down
 onMessage(0x105,"key")  ; alt key down
 OnMessage(0x200, "WM_MOUSEMOVE")
 OnMessage(0x53, "WM_HELP")
+OnMessage(0x204, "WM_RBUTTONDOWN")
 
 GoSub, RadioCheck
 GoSub, OnTopCheck
@@ -546,6 +547,14 @@ GoSub, OnTopCheck
 SetTimer, Find , %TimerPeriod%
 SetTitleMatchMode, RegEx 
 #WinActivateForce
+
+WM_RBUTTONDOWN()
+{
+	MouseGetPos,,,,ControlHwnd,2
+	if (%ControlHwnd% == ahk_id %btnLauncher1ID%) {
+		MsgBox,Right button clicked!
+	}
+}
 
 WM_HELP()
 {
