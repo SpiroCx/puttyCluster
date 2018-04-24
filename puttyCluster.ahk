@@ -354,20 +354,30 @@ GTGT_TT := "Show launcher sidedar"
 LTLT_TT := "Hide launcher sidedar"
 
 ; ***** Sidepanel about button
-xsidepanel := xsidepanelbutton + 172
+xsidepanel := xsidepanelbutton + 175
 ysidepanel := 6
 Gui, Add, text, x%xsidepanel% y%ysidepanel% gAboutBox, About
 
 ; ***** Sidepanel application launchers
 Iniread, currentAppLauncher, %inifilename%, ApplicationLaunchers, CurrentLauncher, 1
+nextLauncher := currentApplauncher
+nextini := % "Ini" . nextLauncher
+while (nextini != 0) {
+	maxAppLauncher := nextLauncher
+	nextLauncher := nextLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, nextini, %inifilename%, ApplicationLaunchers, %nextini%, 0
+}
 InitIni := % "Ini" . currentAppLauncher
 Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, %InitIni%, AppLaunchers1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel := 20
+Gui, Add, button, x%xsidepanel% y%ysidepanel% gAppLaunchersClick HwndbtnAppLaunchersID w28 -default, % currentAppLauncher . "/" . maxAppLauncher
+xsidepanel := xsidepanel + 30
+ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
-xbtnLauncher := xsidepanel + 110
-ybtnLauncher := ysidepanel - 5
-Gui, Add, button, x%xbtnLauncher% y%ybtnLauncher% gAppLaunchersClick HwndbtnAppLaunchersID -default, %currentAppLauncher%
+;
+xsidepanel := xsidepanelbutton + 30
 ysidepanel += 20
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher1 gbtnLauncher1 HwndbtnLauncher1ID -default, Launcher1
 xsidepanel += 65
@@ -385,14 +395,24 @@ GoSub, LoadLaunchers
 
 ; ***** Sidepanel putty session launchers
 Iniread, currentPSLauncher, %inifilename%, PuttySessionLaunchers, CurrentLauncher, 1
+nextLauncher := currentPSlauncher
+nextini := % "Ini" . nextLauncher
+while (nextini != 0) {
+	maxPSLauncher := nextLauncher
+	nextLauncher := nextLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, nextini, %inifilename%, PuttySessionLaunchers, %nextini%, 0
+}
 InitIni := % "Ini" . currentPSLauncher
 Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %InitIni%, PuttySessions1.ini
 xsidepanel := xsidepanelbutton + 30
-ysidepanel += 40
+ysidepanel += 30
+Gui, Add, button, x%xsidepanel% y%ysidepanel% gPSLaunchersClick HwndbtnPSLaunchersID w28 -default, % currentPSLauncher . "/" . maxPSLauncher
+xsidepanel := xsidepanel + 30
+ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty session launchers:
-xbtnLauncher := xsidepanel + 120
-ybtnLauncher := ysidepanel - 5
-Gui, Add, button, x%xbtnLauncher% y%ybtnLauncher% gPSLaunchersClick HwndbtnPSLaunchersID -default, %currentPSLauncher%
+;
+xsidepanel := xsidepanelbutton + 30
 ysidepanel += 20
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty1 gbtnPutty1 HwndbtnPutty1ID -default, Putty1
 xsidepanel += 67
@@ -478,14 +498,24 @@ GoSub, LoadPSLaunchers
 
 ; ***** Sidepanel Putty commands
 Iniread, currentCmdLauncher, %inifilename%, CommandLaunchers, CurrentLauncher, 1
+nextLauncher := currentCmdlauncher
+nextini := % "Ini" . nextLauncher
+while (nextini != 0) {
+	maxCmdLauncher := nextLauncher
+	nextLauncher := nextLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, nextini, %inifilename%, CommandLaunchers, %nextini%, 0
+}
 InitIni := % "Ini" . currentCmdLauncher
 Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %InitIni%, Commands1.ini
 xsidepanel := xsidepanelbutton + 30
-ysidepanel += 40
+ysidepanel += 30
+Gui, Add, button, x%xsidepanel% y%ysidepanel% gCmdLaunchersClick HwndbtnCmdLaunchersID w28 -default, % currentCmdLauncher . "/" . maxCmdLauncher
+xsidepanel := xsidepanel + 30
+ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty commands:
-xbtnLauncher := xsidepanel + 85
-ybtnLauncher := ysidepanel - 5
-Gui, Add, button, x%xbtnLauncher% y%ybtnLauncher% gCmdLaunchersClick HwndbtnCmdLaunchersID -default, %currentCmdLauncher%
+;
+xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand1 gbtnCommand1 HwndbtnCommand1ID -default, Cmd1
 xsidepanel += 65
@@ -580,6 +610,7 @@ WM_MOUSEMOVE()
 		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT
 		StringReplace, CurrControlTT, CurrControlTT, &,
 		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _
+		StringReplace, CurrControlTT, CurrControlTT, /, _
 		If (CurrControlTT == "Paste_Clipboard_TT") {
 			currentclip=%clipboard%
 			StringLen, currlen, currentclip
@@ -671,11 +702,11 @@ AppLaunchersClick:
 	if (newini == 0) {
 		currentApplauncher := 1
 		Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, Ini1, AppLaunchers1.ini
-		ControlSetText, , %currentApplauncher%, ahk_id %btnAppLaunchersID% 
+		ControlSetText, , % currentApplauncher . "/" . maxAppLauncher, ahk_id %btnAppLaunchersID% 
 	} else {
 		currentApplauncher := nextLauncher
 		Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, %nextini%, AppLaunchers1.ini
-		ControlSetText, , %currentApplauncher%, ahk_id %btnAppLaunchersID% 
+		ControlSetText, , % currentAppLauncher . "/" . maxAppLauncher, ahk_id %btnAppLaunchersID% 
 	}
 	GoSub, LoadLaunchers
 Return
@@ -687,11 +718,11 @@ PSLaunchersClick:
 	if (newini == 0) {
 		currentPSlauncher := 1
 		Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, Ini1, PuttySessions1.ini
-		ControlSetText, , %currentPSlauncher%, ahk_id %btnPSLaunchersID% 
+		ControlSetText, , % currentPSlauncher . "/" . maxPSLauncher, ahk_id %btnPSLaunchersID% 
 	} else {
 		currentPSlauncher := nextLauncher
 		Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %nextini%, PuttySessions1.ini
-		ControlSetText, , %currentPSlauncher%, ahk_id %btnPSLaunchersID% 
+		ControlSetText, , % currentPSlauncher . "/" . maxPSLauncher, ahk_id %btnPSLaunchersID% 
 	}
 	GoSub, LoadPSLaunchers
 Return
@@ -703,11 +734,11 @@ CmdLaunchersClick:
 	if (newini == 0) {
 		currentCmdlauncher := 1
 		Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, Ini1, Commands1.ini
-		ControlSetText, , %currentCmdlauncher%, ahk_id %btnCmdLaunchersID% 
+		ControlSetText, , % currentCmdlauncher . "/" . maxCmdLauncher, ahk_id %btnCmdLaunchersID% 
 	} else {
 		currentCmdlauncher := nextLauncher
 		Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %nextini%, Commands1.ini
-		ControlSetText, , %currentCmdlauncher%, ahk_id %btnCmdLaunchersID% 
+		ControlSetText, , % currentCmdlauncher . "/" . maxCmdLauncher, ahk_id %btnCmdLaunchersID% 
 	}
 	GoSub, LoadCmdLaunchers
 Return
