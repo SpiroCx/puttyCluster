@@ -119,7 +119,7 @@ then open a new set of putty windows, turn on the invert operator on the first t
 ![About](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot3_about.png)
 ![Edit Launcher](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot5_edit_Launcher.png)
 ![Edit Session](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot6_edit_session.png)
-![Edit Command](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot7_edit_comand.png)
+![Edit Command](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot7_edit_command.png)
 
 ### ToDo
 
