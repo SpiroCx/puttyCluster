@@ -580,10 +580,29 @@ SetTitleMatchMode, RegEx
 
 WM_RBUTTONDOWN()
 {
-	MouseGetPos,,,,ControlHwnd,2
-	if (%ControlHwnd% == ahk_id %btnLauncher1ID%) {
-		MsgBox,Right button clicked!
-	}
+	Global btnLauncher1ID
+	Global btnLauncher2ID
+	Global btnLauncher3ID
+	Global btnLauncher4ID
+	Global btnLauncher5ID
+	Global btnLauncher6ID
+	Global EditControlName
+	MouseGetPos,,,,EditControlHwnd,2
+	if (EditControlHwnd == ahk_id btnLauncher1ID)
+		EditControlName = Launcher 1
+	else if (EditControlHwnd == ahk_id btnLauncher2ID)
+		EditControlName = Launcher 2
+	else if (EditControlHwnd == ahk_id btnLauncher3ID)
+		EditControlName = Launcher 3
+	else if (EditControlHwnd == ahk_id btnLauncher4ID)
+		EditControlName = Launcher 4
+	else if (EditControlHwnd == ahk_id btnLauncher5ID)
+		EditControlName = Launcher 5
+	else if (EditControlHwnd == ahk_id btnLauncher6ID)
+		EditControlName = Launcher 6
+	else
+		Return
+	GoSub, EditBoxAppLauncher
 }
 
 WM_HELP()
@@ -694,6 +713,73 @@ key(wParam, lParam, msg, hwnd)
 return 
 
 ; ******************************************************************************************
+EditBoxAppLauncher:
+	editboxwidth := 800
+	editboxheight := 180
+	Gui, 3:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 3:+AlwaysOnTop
+		Gui, 3:-AlwaysOnTop
+		Return
+	}
+	StringReplace, inisection, EditControlName, %A_Space%,
+	Iniread, ControlLabel, %inifilenameAppLaunchers%, %inisection%, Label, Label
+	xedt := 5
+	yedt := 20
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Label:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
+
+	Iniread, ControlTT, %inifilenameAppLaunchers%, %inisection%, Tooltip, Tooltip
+	xedt := 5
+	yedt += 35
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Tooltip:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
+
+	Iniread, ControlCmd, %inifilenameAppLaunchers%, %inisection%, Command, Command
+	xedt := 5
+	yedt += 35
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Iniread, ControlDir, %inifilenameAppLaunchers%, %inisection%, Dir, Directory
+	xedt := 5
+	yedt += 35
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Directory:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
+	
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 gbtnCancel", Cancel
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 gbtnSave", Save
+	xposEditBox := (ScreenWidth - editboxwidth ) / 2
+	yposEditBox := (ScreenHeight - editboxheight ) / 2
+	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 3:+AlwaysOnTop
+	Gui, 3:-AlwaysOnTop
+Return
+btnSave:
+	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+	IniWrite, %newlabel%, %inifilenameAppLaunchers%, %inisection%, Label
+	ControlGetText, newlabel, , ahk_id %edtControlTTID%
+	IniWrite, %newTT%, %inifilenameAppLaunchers%, %inisection%, Tooltip
+	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+	IniWrite, %newCmd%, %inifilenameAppLaunchers%, %inisection%, Command
+	ControlGetText, newDir, , ahk_id %edtControlDirID%
+	IniWrite, %newDir%, %inifilenameAppLaunchers%, %inisection%, Dir
+	GoSub, LoadLaunchers
+btnCancel:
+3GuiClose:
+	Gui, 3:Destroy
+	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+Return
 
 AppLaunchersClick:
 	nextLauncher := currentAppLauncher + 1
