@@ -519,44 +519,44 @@ xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
 Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand1 gbtnCommand1 HwndbtnCommand1ID -default, Cmd1
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand2 gbtnCommand2 HwndbtnCommand2ID -default, %cmdlbl02%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand2 gbtnCommand2 HwndbtnCommand2ID -default, Cmd2
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand3 gbtnCommand3 HwndbtnCommand3ID -default, %cmdlbl03%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand3 gbtnCommand3 HwndbtnCommand3ID -default, Cmd3
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand4 gbtnCommand4 HwndbtnCommand4ID -default, %cmdlbl04%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand4 gbtnCommand4 HwndbtnCommand4ID -default, Cmd4
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand5 gbtnCommand5 HwndbtnCommand5ID -default, %cmdlbl05%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand5 gbtnCommand5 HwndbtnCommand5ID -default, Cmd5
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand6 gbtnCommand6 HwndbtnCommand6ID -default, %cmdlbl06%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand6 gbtnCommand6 HwndbtnCommand6ID -default, Cmd6
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand7 gbtnCommand7 HwndbtnCommand7ID -default, %cmdlbl07%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand7 gbtnCommand7 HwndbtnCommand7ID -default, Cmd7
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand8 gbtnCommand8 HwndbtnCommand8ID -default, %cmdlbl08%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand8 gbtnCommand8 HwndbtnCommand8ID -default, Cmd8
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand9 gbtnCommand9 HwndbtnCommand9ID -default, %cmdlbl09%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand9 gbtnCommand9 HwndbtnCommand9ID -default, Cmd9
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand10 gbtnCommand10 HwndbtnCommand10ID -default, %cmdlbl10%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand10 gbtnCommand10 HwndbtnCommand10ID -default, Cmd10
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand11 gbtnCommand11 HwndbtnCommand11ID -default, %cmdlbl11%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand11 gbtnCommand11 HwndbtnCommand11ID -default, Cmd11
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand12 gbtnCommand12 HwndbtnCommand12ID -default, %cmdlbl12%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand12 gbtnCommand12 HwndbtnCommand12ID -default, Cmd12
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand13 gbtnCommand13 HwndbtnCommand13ID -default, %cmdlbl13%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand13 gbtnCommand13 HwndbtnCommand13ID -default, Cmd13
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand14 gbtnCommand14 HwndbtnCommand14ID -default, %cmdlbl14%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand14 gbtnCommand14 HwndbtnCommand14ID -default, Cmd14
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand15 gbtnCommand15 HwndbtnCommand15ID -default, %cmdlbl15%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand15 gbtnCommand15 HwndbtnCommand15ID -default, Cmd15
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand16 gbtnCommand16 HwndbtnCommand16ID -default, %cmdlbl16%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand16 gbtnCommand16 HwndbtnCommand16ID -default, Cmd16
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand17 gbtnCommand17 HwndbtnCommand17ID -default, %cmdlbl17%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand17 gbtnCommand17 HwndbtnCommand17ID -default, Cmd17
 xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, %cmdlbl18%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, Cmd18
 GoSub, LoadCmdLaunchers
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
@@ -586,23 +586,125 @@ WM_RBUTTONDOWN()
 	Global btnLauncher4ID
 	Global btnLauncher5ID
 	Global btnLauncher6ID
+	Global btnPutty1ID
+	Global btnPutty2ID
+	Global btnPutty3ID
+	Global btnPutty4ID
+	Global btnPutty5ID
+	Global btnPutty6ID
+	Global btnCommand1ID
+	Global btnCommand2ID
+	Global btnCommand3ID
+	Global btnCommand4ID
+	Global btnCommand5ID
+	Global btnCommand6ID
+	Global btnCommand7ID
+	Global btnCommand8ID
+	Global btnCommand9ID
+	Global btnCommand10ID
+	Global btnCommand11ID
+	Global btnCommand12ID
+	Global btnCommand13ID
+	Global btnCommand14ID
+	Global btnCommand15ID
+	Global btnCommand16ID
+	Global btnCommand17ID
+	Global btnCommand18ID
 	Global EditControlName
 	MouseGetPos,,,,EditControlHwnd,2
-	if (EditControlHwnd == ahk_id btnLauncher1ID)
+	if (EditControlHwnd == ahk_id btnLauncher1ID) {
 		EditControlName = Launcher 1
-	else if (EditControlHwnd == ahk_id btnLauncher2ID)
+		GoSub, EditBoxAppLauncher
+	} else if (EditControlHwnd == ahk_id btnLauncher2ID) {
 		EditControlName = Launcher 2
-	else if (EditControlHwnd == ahk_id btnLauncher3ID)
+		GoSub, EditBoxAppLauncher
+	} else if (EditControlHwnd == ahk_id btnLauncher3ID) {
 		EditControlName = Launcher 3
-	else if (EditControlHwnd == ahk_id btnLauncher4ID)
+		GoSub, EditBoxAppLauncher
+	} else if (EditControlHwnd == ahk_id btnLauncher4ID) {
 		EditControlName = Launcher 4
-	else if (EditControlHwnd == ahk_id btnLauncher5ID)
+		GoSub, EditBoxAppLauncher
+	} else if (EditControlHwnd == ahk_id btnLauncher5ID) {
 		EditControlName = Launcher 5
-	else if (EditControlHwnd == ahk_id btnLauncher6ID)
+		GoSub, EditBoxAppLauncher
+	} else if (EditControlHwnd == ahk_id btnLauncher6ID) {
 		EditControlName = Launcher 6
-	else
-		Return
-	GoSub, EditBoxAppLauncher
+		GoSub, EditBoxAppLauncher
+	;
+	} else if (EditControlHwnd == ahk_id btnPutty1ID) {
+		EditControlName = Putty Session 1
+		GoSub, EditBoxPSLauncher
+	} else if (EditControlHwnd == ahk_id btnPutty2ID) {
+		EditControlName = Putty Session 2
+		GoSub, EditBoxPSLauncher
+	} else if (EditControlHwnd == ahk_id btnPutty3ID) {
+		EditControlName = Putty Session 3
+		GoSub, EditBoxPSLauncher
+	} else if (EditControlHwnd == ahk_id btnPutty4ID) {
+		EditControlName = Putty Session 4
+		GoSub, EditBoxPSLauncher
+	} else if (EditControlHwnd == ahk_id btnPutty5ID) {
+		EditControlName = Putty Session 5
+		GoSub, EditBoxPSLauncher
+	} else if (EditControlHwnd == ahk_id btnPutty6ID) {
+		EditControlName = Putty Session 6
+		GoSub, EditBoxPSLauncher
+	;
+	} else if (EditControlHwnd == ahk_id btnCommand1ID) {
+		EditControlName = Putty Command 1
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand2ID) {
+		EditControlName = Putty Command 2
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand3ID) {
+		EditControlName = Putty Command 3
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand4ID) {
+		EditControlName = Putty Command 4
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand5ID) {
+		EditControlName = Putty Command 5
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand6ID) {
+		EditControlName = Putty Command 6
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand7ID) {
+		EditControlName = Putty Command 7
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand8ID) {
+		EditControlName = Putty Command 8
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand9ID) {
+		EditControlName = Putty Command 9
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand10ID) {
+		EditControlName = Putty Command 10
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand11ID) {
+		EditControlName = Putty Command 11
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand12ID) {
+		EditControlName = Putty Command 12
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand13ID) {
+		EditControlName = Putty Command 13
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand14ID) {
+		EditControlName = Putty Command 14
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand15ID) {
+		EditControlName = Putty Command 15
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand16ID) {
+		EditControlName = Putty Command 16
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand17ID) {
+		EditControlName = Putty Command 17
+		GoSub, EditBoxCmdLauncher
+	} else if (EditControlHwnd == ahk_id btnCommand18ID) {
+		EditControlName = Putty Command 18
+		GoSub, EditBoxCmdLauncher
+	}
 }
 
 WM_HELP()
@@ -625,11 +727,16 @@ WM_MOUSEMOVE()
 	DisplayToolTip:
 		SetTimer, DisplayToolTip, Off
 		CurrControlTT := CurrControl . "_TT"
-		StringReplace, CurrControlTT, CurrControlTT, <<, LTLT
-		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT
-		StringReplace, CurrControlTT, CurrControlTT, &,
-		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _
-		StringReplace, CurrControlTT, CurrControlTT, /, _
+		StringReplace, CurrControlTT, CurrControlTT, <<, LTLT, ,A
+		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT, ,A
+		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _, ,A
+		StringReplace, CurrControlTT, CurrControlTT, &, , ,A
+		StringReplace, CurrControlTT, CurrControlTT, :, , ,A
+		StringReplace, CurrControlTT, CurrControlTT, /, , ,A
+		StringReplace, CurrControlTT, CurrControlTT, \, , ,A
+		StringReplace, CurrControlTT, CurrControlTT, ", , ,A
+		StringReplace, CurrControlTT, CurrControlTT, ., , ,A
+		StringReplace, CurrControlTT, CurrControlTT, -, , ,A
 		If (CurrControlTT == "Paste_Clipboard_TT") {
 			currentclip=%clipboard%
 			StringLen, currlen, currentclip
@@ -723,7 +830,7 @@ EditBoxAppLauncher:
 		Gui, 3:-AlwaysOnTop
 		Return
 	}
-	StringReplace, inisection, EditControlName, %A_Space%,
+	StringReplace, inisection, EditControlName, %A_Space%, , ,A
 	Iniread, ControlLabel, %inifilenameAppLaunchers%, %inisection%, Label, Label
 	xedt := 5
 	yedt := 20
@@ -756,8 +863,8 @@ EditBoxAppLauncher:
 	yedt -= 3
 	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
 	
-	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 gbtnCancel", Cancel
-	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 gbtnSave", Save
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g3btnCancel", Cancel
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g3btnSave", Save
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
@@ -765,19 +872,146 @@ EditBoxAppLauncher:
 	Gui, 3:+AlwaysOnTop
 	Gui, 3:-AlwaysOnTop
 Return
-btnSave:
+3btnSave:
 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
 	IniWrite, %newlabel%, %inifilenameAppLaunchers%, %inisection%, Label
-	ControlGetText, newlabel, , ahk_id %edtControlTTID%
+	ControlGetText, newTT, , ahk_id %edtControlTTID%
 	IniWrite, %newTT%, %inifilenameAppLaunchers%, %inisection%, Tooltip
 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
 	IniWrite, %newCmd%, %inifilenameAppLaunchers%, %inisection%, Command
 	ControlGetText, newDir, , ahk_id %edtControlDirID%
 	IniWrite, %newDir%, %inifilenameAppLaunchers%, %inisection%, Dir
 	GoSub, LoadLaunchers
-btnCancel:
+3btnCancel:
 3GuiClose:
 	Gui, 3:Destroy
+	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+Return
+
+EditBoxPSLauncher:
+	editboxwidth := 800
+	editboxheight := 180
+	Gui, 4:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 4:+AlwaysOnTop
+		Gui, 4:-AlwaysOnTop
+		Return
+	}
+	StringReplace, inisection, EditControlName, %A_Space%, , ,A
+	Iniread, ControlLabel, %inifilenamePSLaunchers%, %inisection%, Label, Label
+	xedt := 5
+	yedt := 20
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Label:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
+
+	Iniread, ControlTT, %inifilenamePSLaunchers%, %inisection%, Tooltip, Tooltip
+	xedt := 5
+	yedt += 35
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Tooltip:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
+
+	Iniread, ControlCmd, %inifilenamePSLaunchers%, %inisection%, Command, Command
+	xedt := 5
+	yedt += 35
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Iniread, ControlDir, %inifilenamePSLaunchers%, %inisection%, Dir, Directory
+	xedt := 5
+	yedt += 35
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Directory:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
+	
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g4btnCancel", Cancel
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g4btnSave", Save
+	xposEditBox := (ScreenWidth - editboxwidth ) / 2
+	yposEditBox := (ScreenHeight - editboxheight ) / 2
+	Gui, 4:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 4:+AlwaysOnTop
+	Gui, 4:-AlwaysOnTop
+Return
+4btnSave:
+	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+	IniWrite, %newlabel%, %inifilenamePSLaunchers%, %inisection%, Label
+	ControlGetText, newTT, , ahk_id %edtControlTTID%
+	IniWrite, %newTT%, %inifilenamePSLaunchers%, %inisection%, Tooltip
+	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+	IniWrite, %newCmd%, %inifilenamePSLaunchers%, %inisection%, Command
+	ControlGetText, newDir, , ahk_id %edtControlDirID%
+	IniWrite, %newDir%, %inifilenamePSLaunchers%, %inisection%, Dir
+	GoSub, LoadPSLaunchers
+4btnCancel:
+4GuiClose:
+	Gui, 4:Destroy
+	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+Return
+
+
+EditBoxCmdLauncher:
+	editboxwidth := 800
+	editboxheight := 180
+	Gui, 5:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 5:+AlwaysOnTop
+		Gui, 5:-AlwaysOnTop
+		Return
+	}
+	StringReplace, inisection, EditControlName, %A_Space%, , ,A
+	Iniread, ControlLabel, %inifilenameCmdLaunchers%, %inisection%, Label, Label
+	xedt := 5
+	yedt := 20
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Label:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
+
+	Iniread, ControlTT, %inifilenameCmdLaunchers%, %inisection%, Tooltip, Tooltip
+	xedt := 5
+	yedt += 35
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Tooltip:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
+
+	Iniread, ControlCmd, %inifilenameCmdLaunchers%, %inisection%, Command, Command
+	xedt := 5
+	yedt += 35
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
+	xposEditBox := (ScreenWidth - editboxwidth ) / 2
+	yposEditBox := (ScreenHeight - editboxheight ) / 2
+	Gui, 5:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 5:+AlwaysOnTop
+	Gui, 5:-AlwaysOnTop
+Return
+5btnSave:
+	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+	IniWrite, %newlabel%, %inifilenameCmdLaunchers%, %inisection%, Label
+	ControlGetText, newTT, , ahk_id %edtControlTTID%
+	IniWrite, %newTT%, %inifilenameCmdLaunchers%, %inisection%, Tooltip
+	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+	IniWrite, %newCmd%, %inifilenameCmdLaunchers%, %inisection%, Command
+	GoSub, LoadCmdLaunchers
+5btnCancel:
+5GuiClose:
+	Gui, 5:Destroy
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
 
@@ -830,203 +1064,81 @@ CmdLaunchersClick:
 Return
 
 LoadLaunchers:
-	IniRead, Launcher1label, %inifilenameAppLaunchers%, Launcher1, Label, NoINI
-	IniRead, btnLauncher1_TT, %inifilenameAppLaunchers%, Launcher1, Tooltip,Configure launcher by editing %inifilenameAppLaunchers% file
-	IniRead, launcher1command, %inifilenameAppLaunchers%, Launcher1, Command, notepad.exe
-	IniRead, launcher1dir, %inifilenameAppLaunchers%, Launcher1, Dir, C:\
-	ControlSetText, , %Launcher1label%, ahk_id %btnLauncher1ID%
-	IniRead, Launcher2label, %inifilenameAppLaunchers%, Launcher2, Label, NoINI
-	IniRead, btnLauncher2_TT, %inifilenameAppLaunchers%, Launcher2, Tooltip, Configure launcher by editing %inifilenameAppLaunchers% file
-	IniRead, Launcher2command, %inifilenameAppLaunchers%, Launcher2, Command, notepad.exe
-	IniRead, Launcher2dir, %inifilenameAppLaunchers%, Launcher2, Dir, C:\
-	ControlSetText, , %Launcher2label%, ahk_id %btnLauncher2ID%
-	IniRead, Launcher3label, %inifilenameAppLaunchers%, Launcher3, Label, NoINI
-	IniRead, btnLauncher3_TT, %inifilenameAppLaunchers%, Launcher3, Tooltip, Configure launcher by editing %inifilenameAppLaunchers% file
-	IniRead, Launcher3command, %inifilenameAppLaunchers%, Launcher3, Command, notepad.exe
-	IniRead, Launcher3dir, %inifilenameAppLaunchers%, Launcher3, Dir, C:\
-	ControlSetText, , %Launcher3label%, ahk_id %btnLauncher3ID%
-	IniRead, Launcher4label, %inifilenameAppLaunchers%, Launcher4, Label, NoINI
-	IniRead, btnLauncher4_TT, %inifilenameAppLaunchers%, Launcher4, Tooltip, Configure launcher by editing %inifilenameAppLaunchers% file
-	IniRead, Launcher4command, %inifilenameAppLaunchers%, Launcher4, Command, notepad.exe
-	IniRead, Launcher4dir, %inifilenameAppLaunchers%, Launcher4, Dir, C:\
-	ControlSetText, , %Launcher4label%, ahk_id %btnLauncher4ID%
-	IniRead, Launcher5label, %inifilenameAppLaunchers%, Launcher5, Label, NoINI
-	IniRead, btnLauncher5_TT, %inifilenameAppLaunchers%, Launcher5, Tooltip, Configure launcher by editing %inifilenameAppLaunchers% file
-	IniRead, Launcher5command, %inifilenameAppLaunchers%, Launcher5, Command, notepad.exe
-	IniRead, Launcher5dir, %inifilenameAppLaunchers%, Launcher5, Dir, C:\
-	ControlSetText, , %Launcher5label%, ahk_id %btnLauncher5ID%
-	IniRead, Launcher6label, %inifilenameAppLaunchers%, Launcher6, Label, NoINI
-	IniRead, btnLauncher6_TT, %inifilenameAppLaunchers%, Launcher6, Tooltip, Configure launcher by editing %inifilenameAppLaunchers% file
-	IniRead, Launcher6command, %inifilenameAppLaunchers%, Launcher6, Command, notepad.exe
-	IniRead, Launcher6dir, %inifilenameAppLaunchers%, Launcher6, Dir, C:\
-	ControlSetText, , %Launcher6label%, ahk_id %btnLauncher6ID%
+	Loop, 6 {
+		inisection = Launcher%A_Index%
+		pcmdvar = launcher%A_Index%command
+		pttvar = btnLauncher%A_Index%_TT
+		pidvar = btnLauncher%A_Index%ID
+		pdirvar = launcher%A_Index%dir
+		
+		cmdvar = %pcmdvar%
+		ttvar = %pttvar%
+		idvar := %pidvar%
+		dirvar = %pdirvar%
+	
+		IniRead, %cmdvar%, %inifilenameAppLaunchers%, %inisection%, Command, notepad.exe
+		IniRead, %ttvar%, %inifilenameAppLaunchers%, %inisection%, Tooltip,Configure launcher by editing %inifilenameAppLaunchers% file
+		IniRead, cmdlbl, %inifilenameAppLaunchers%, %inisection%, Label, NoINI
+		IniRead, %dirvar%, %inifilenameAppLaunchers%, %inisection%, Dir, C:\
+		ControlSetText, , %cmdlbl%, ahk_id %idvar%
+	}
 Return
 
 LoadPSLaunchers:
-	IniRead, btnputty1label, %inifilenamePSLaunchers%, PuttySession1, Label, NoINI
-	IniRead, btnPutty1_TT, %inifilenamePSLaunchers%, PuttySession1, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
-	IniRead, btnputty1command, %inifilenamePSLaunchers%, PuttySession1, Command, ubuntu-r210-8_av
-	IniRead, btnputty1dir, %inifilenamePSLaunchers%, PuttySession1, Dir, C:\
-	ControlSetText, , %btnputty1label%, ahk_id %btnPutty1ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession1, Putty11Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty11ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession1, Putty12Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty12ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession1, Putty13Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty13ID%
-	;
-	IniRead, btnputty2label, %inifilenamePSLaunchers%, PuttySession2, Label, NoINI
-	IniRead, btnPutty2_TT, %inifilenamePSLaunchers%, PuttySession2, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
-	IniRead, btnputty2command, %inifilenamePSLaunchers%, PuttySession2, Command, ubuntu-r210-8_av
-	IniRead, btnputty2dir, %inifilenamePSLaunchers%, PuttySession2, Dir, C:\
-	ControlSetText, , %btnputty2label%, ahk_id %btnPutty2ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession2, Putty21Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty21ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession2, Putty22Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty22ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession2, Putty23Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty23ID%
-	;
-	IniRead, btnputty3label, %inifilenamePSLaunchers%, PuttySession3, Label, NoINI
-	IniRead, btnPutty3_TT, %inifilenamePSLaunchers%, PuttySession3, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
-	IniRead, btnputty3command, %inifilenamePSLaunchers%, PuttySession3, Command, ubuntu-r210-8_av
-	IniRead, btnputty3dir, %inifilenamePSLaunchers%, PuttySession3, Dir, C:\
-	ControlSetText, , %btnputty3label%, ahk_id %btnPutty3ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession3, Putty31Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty31ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession3, Putty32Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty32ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession3, Putty33Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty33ID%
-	;
-	IniRead, btnputty4label, %inifilenamePSLaunchers%, PuttySession4, Label, NoINI
-	IniRead, btnPutty4_TT, %inifilenamePSLaunchers%, PuttySession4, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
-	IniRead, btnputty4command, %inifilenamePSLaunchers%, PuttySession4, Command, ubuntu-r210-8_av
-	IniRead, btnputty4dir, %inifilenamePSLaunchers%, PuttySession4, Dir, C:\
-	ControlSetText, , %btnputty4label%, ahk_id %btnPutty4ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession4, Putty41Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty41ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession4, Putty42Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty42ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession4, Putty43Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty43ID%
-	;
-	IniRead, btnputty5label, %inifilenamePSLaunchers%, PuttySession5, Label, NoINI
-	IniRead, btnPutty5_TT, %inifilenamePSLaunchers%, PuttySession5, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
-	IniRead, btnputty5command, %inifilenamePSLaunchers%, PuttySession5, Command, ubuntu-r210-8_av
-	IniRead, btnputty5dir, %inifilenamePSLaunchers%, PuttySession5, Dir, C:\
-	ControlSetText, , %btnputty5label%, ahk_id %btnPutty5ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession5, Putty51Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty51ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession5, Putty52Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty52ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession5, Putty53Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty53ID%
-	;
-	IniRead, btnputty6label, %inifilenamePSLaunchers%, PuttySession6, Label, NoINI
-	IniRead, btnPutty6_TT, %inifilenamePSLaunchers%, PuttySession6, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
-	IniRead, btnputty6command, %inifilenamePSLaunchers%, PuttySession6, Command, ubuntu-r210-8_av
-	IniRead, btnputty6dir, %inifilenamePSLaunchers%, PuttySession6, Dir, C:\
-	ControlSetText, , %btnputty6label%, ahk_id %btnPutty6ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession6, Putty61Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty61ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession6, Putty62Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty62ID%
-	IniRead, edtPutty, %inifilenamePSLaunchers%, PuttySession6, Putty63Count, 0
-	ControlSetText, , %edtPutty%, ahk_id %edtPutty63ID%
+	Loop, 6 {
+		inisection = PuttySession%A_Index%
+		pcmdvar = btnputty%A_Index%command
+		pttvar = btnPutty%A_Index%_TT
+		pidvar = btnPutty%A_Index%ID
+		pcountini1 = Putty%A_Index%1Count
+		pcountini2 = Putty%A_Index%2Count
+		pcountini3 = Putty%A_Index%3Count
+		pcountID1 = edtPutty%A_Index%1ID
+		pcountID2 = edtPutty%A_Index%2ID
+		pcountID3 = edtPutty%A_Index%3ID
+		pdirvar = btnputty%A_Index%dir
+		
+		cmdvar = %pcmdvar%
+		ttvar = %pttvar%
+		idvar := %pidvar%
+		countini1 = %pcountini1%
+		countini2 = %pcountini2%
+		countini3 = %pcountini3%
+		countID1 := %pcountID1%
+		countID2 := %pcountID2%
+		countID3 := %pcountID3%
+		dirvar = %pdirvar%
+
+		IniRead, %cmdvar%, %inifilenamePSLaunchers%, %inisection%, Command, Default
+		IniRead, %ttvar%, %inifilenamePSLaunchers%, %inisection%, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
+		IniRead, cmdlbl, %inifilenamePSLaunchers%, %inisection%, Label, NoINI
+		IniRead, %dirvar%, %inifilenamePSLaunchers%, %inisection%, Dir, C:\
+		ControlSetText, , %cmdlbl%, ahk_id %idvar%
+		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini1%, 0
+		ControlSetText, , %edtPutty%, ahk_id %countID1%
+		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini2%, 0
+		ControlSetText, , %edtPutty%, ahk_id %countID2%
+		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini3%, 0
+		ControlSetText, , %edtPutty%, ahk_id %countID3%
+	}
 Return
 
 LoadCmdLaunchers:
-	IniRead, command01, %inifilenameCmdLaunchers%, PuttyCommands, Command01, Cmd
-	IniRead, btnCommand1_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command01Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command01label, %command01%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand1ID%
-	;
-	IniRead, command02, %inifilenameCmdLaunchers%, PuttyCommands, Command02, Cmd
-	IniRead, btnCommand2_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command02Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command02label, %command02%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand2ID%
-	;
-	IniRead, command03, %inifilenameCmdLaunchers%, PuttyCommands, Command03, Cmd
-	IniRead, btnCommand3_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command03Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command03label, %command03%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand3ID%
-	;
-	IniRead, command04, %inifilenameCmdLaunchers%, PuttyCommands, Command04, Cmd
-	IniRead, btnCommand4_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command04Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command04label, %command04%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand4ID%
-	;
-	IniRead, command05, %inifilenameCmdLaunchers%, PuttyCommands, Command05, Cmd
-	IniRead, btnCommand5_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command05Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command05label, %command05%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand5ID%
-	;
-	IniRead, command06, %inifilenameCmdLaunchers%, PuttyCommands, Command06, Cmd
-	IniRead, btnCommand6_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command06Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command06label, %command06%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand6ID%
-	;
-	IniRead, command07, %inifilenameCmdLaunchers%, PuttyCommands, Command07, Cmd
-	IniRead, btnCommand7_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command07Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command07label, %command07%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand7ID%
-	;
-	IniRead, command08, %inifilenameCmdLaunchers%, PuttyCommands, Command08, Cmd
-	IniRead, btnCommand8_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command08Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command08label, %command08%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand8ID%
-	;
-	IniRead, command09, %inifilenameCmdLaunchers%, PuttyCommands, Command09, Cmd
-	IniRead, btnCommand9_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command09Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command09label, %command09%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand9ID%
-	;
-	IniRead, command10, %inifilenameCmdLaunchers%, PuttyCommands, Command10, Cmd
-	IniRead, btnCommand10_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command10Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command10label, %command10%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand10ID%
-	;
-	IniRead, command11, %inifilenameCmdLaunchers%, PuttyCommands, Command11, Cmd
-	IniRead, btnCommand11_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command11Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command11label, %command11%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand11ID%
-	;
-	IniRead, command12, %inifilenameCmdLaunchers%, PuttyCommands, Command12, Cmd
-	IniRead, btnCommand12_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command12Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command12label, %command12%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand12ID%
-	;
-	IniRead, command13, %inifilenameCmdLaunchers%, PuttyCommands, Command13, Cmd
-	IniRead, btnCommand13_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command13Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command13label, %command13%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand13ID%
-	;
-	IniRead, command14, %inifilenameCmdLaunchers%, PuttyCommands, Command14, Cmd
-	IniRead, btnCommand14_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command14Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command14label, %command14%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand14ID%
-	;
-	IniRead, command15, %inifilenameCmdLaunchers%, PuttyCommands, Command15, Cmd
-	IniRead, btnCommand15_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command15Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command15label, %command15%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand15ID%
-	;
-	IniRead, command16, %inifilenameCmdLaunchers%, PuttyCommands, Command16, Cmd
-	IniRead, btnCommand16_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command16Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command16label, %command16%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand16ID%
-	;
-	IniRead, command17, %inifilenameCmdLaunchers%, PuttyCommands, Command17, Cmd
-	IniRead, btnCommand17_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command17Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command17label, %command17%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand17ID%
-	;
-	IniRead, command18, %inifilenameCmdLaunchers%, PuttyCommands, Command18, Cmd
-	IniRead, btnCommand18_TT, %inifilenameCmdLaunchers%, PuttyCommands, Command18Tooltip, Cmd_TT
-	IniRead, cmdlbl, %inifilenameCmdLaunchers%, PuttyCommands, Command18label, %command18%
-	ControlSetText, , %cmdlbl%, ahk_id %btnCommand18ID%
-	;
+	Loop, 18 {
+		inisection = PuttyCommand%A_Index%
+		pcmdvar = command%A_Index%
+		pttvar = btnCommand%A_Index%_TT
+		pidvar = btnCommand%A_Index%ID
+		
+		cmdvar = %pcmdvar%
+		ttvar = %pttvar%
+		idvar := %pidvar%
+
+		IniRead, %cmdvar%, %inifilenameCmdLaunchers%, %inisection%, Command, Cmd
+		IniRead, %ttvar%, %inifilenameCmdLaunchers%, %inisection%, Tooltip, % %cmdvar%
+		IniRead, cmdlbl, %inifilenameCmdLaunchers%, %inisection%, Label, % %cmdvar%
+		ControlSetText, , %cmdlbl%, ahk_id %idvar%
+	}
 Return
 
 EnableTimers:
@@ -1288,129 +1400,75 @@ btnCol3:
 Return
 
 btnCommand1:
-	sendstrdata=%command01%
-	if (CrLfVal) {
-		sendstrdata=%command01%`r
-	}
+	sendstrdata=% command1 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand2:
-	sendstrdata=%command02%
-	if (CrLfVal) {
-		sendstrdata=%command02%`r
-	}
+	sendstrdata=% command2 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand3:
-	sendstrdata=%command03%
-	if (CrLfVal) {
-		sendstrdata=%command03%`r
-	}
+	sendstrdata=% command3 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand4:
-	sendstrdata=%command04%
-	if (CrLfVal) {
-		sendstrdata=%command04%`r
-	}
+	sendstrdata=% command4 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand5:
-	sendstrdata=%command05%
-	if (CrLfVal) {
-		sendstrdata=%command05%`r
-	}
+	sendstrdata=% command5 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand6:
-	sendstrdata=%command06%
-	if (CrLfVal) {
-		sendstrdata=%command06%`r
-	}
+	sendstrdata=% command6 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand7:
-	sendstrdata=%command07%
-	if (CrLfVal) {
-		sendstrdata=%command07%`r
-	}
+	sendstrdata=% command7 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand8:
-	sendstrdata=%command08%
-	if (CrLfVal) {
-		sendstrdata=%command08%`r
-	}
+	sendstrdata=% command8 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand9:
-	sendstrdata=%command09%
-	if (CrLfVal) {
-		sendstrdata=%command09%`r
-	}
+	sendstrdata=% command9 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand10:
-	sendstrdata=%command10%
-	if (CrLfVal) {
-		sendstrdata=%command10%`r
-	}
+	sendstrdata=% command10 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand11:
-	sendstrdata=%command11%
-	if (CrLfVal) {
-		sendstrdata=%command11%`r
-	}
+	sendstrdata=% command11 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand12:
-	sendstrdata=%command12%
-	if (CrLfVal) {
-		sendstrdata=%command12%`r
-	}
+	sendstrdata=% command12 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand13:
-	sendstrdata=%command13%
-	if (CrLfVal) {
-		sendstrdata=%command13%`r
-	}
+	sendstrdata=% command13 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand14:
-	sendstrdata=%command14%
-	if (CrLfVal) {
-		sendstrdata=%command14%`r
-	}
+	sendstrdata=% command14 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand15:
-	sendstrdata=%command15%
-	if (CrLfVal) {
-		sendstrdata=%command15%`r
-	}
+	sendstrdata=% command15 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand16:
-	sendstrdata=%command16%
-	if (CrLfVal) {
-		sendstrdata=%command16%`r
-	}
+	sendstrdata=% command16 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand17:
-	sendstrdata=%command17%
-	if (CrLfVal) {
-		sendstrdata=%command17%`r
-	}
+	sendstrdata=% command17 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 btnCommand18:
-	sendstrdata=%command18%
-	if (CrLfVal) {
-		sendstrdata=%command18%`r
-	}
+	sendstrdata=% command18 . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 
@@ -1441,11 +1499,7 @@ Return
 
 OnTopCheck:
 	gui, submit, nohide
-	if ( OnTopVal == 1) {
-		WinSet, AlwaysOnTop, on, %windowname%
-	} else {
-		WinSet, AlwaysOnTop, off, %windowname%
-	}
+	WinSet, AlwaysOnTop, % (OnTopVal ? "on" : "off"), %windowname%
 Return
 
 CrLfCheck:
