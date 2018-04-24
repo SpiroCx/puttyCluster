@@ -89,7 +89,7 @@ PS1="\[\e]0;\u@\h: \w\$(getputtytitle)\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[36m\]\w\[
 ```
 puttyprompt=[A]; puttytitle=[A][$(getip120)]
 ```
-![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/master/screenshot3.png)
+![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot4_putty_tags.png.png)
   
 ### Known issues
 * Most of the script is useless if you don't run it as Administrator.  At least ToBack and ToFront don't get access to the windows without it.
@@ -114,13 +114,12 @@ then open a new set of putty windows, turn on the invert operator on the first t
 
 ### Screenshots
 
-![Main collapsed](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot1_main_collapsed.png)
-![Main expanded](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot2_main_expanded.png)
-![About](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot3_about.png)
-![Putty terminal with tags](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot4_putty_tags.png)
-![Edit Launcher](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot5_edit_Launcher.png)
-![Edit Session](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot6_edit_session.png)
-![Edit Command](https://raw.github.com/SpiroCx/puttyCluster/scMods/_Screenshots/screenshot7_edit_comand.png)
+![Main collapsed](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot1_main_collapsed.png)
+![Main expanded](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot2_main_expanded.png)
+![About](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot3_about.png)
+![Edit Launcher](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot5_edit_Launcher.png)
+![Edit Session](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot6_edit_session.png)
+![Edit Command](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot7_edit_comand.png)
 
 ### ToDo
 
