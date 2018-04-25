@@ -737,7 +737,7 @@ WM_MOUSEMOVE()
 		StringReplace, CurrControlTT, CurrControlTT, ", , ,A
 		StringReplace, CurrControlTT, CurrControlTT, ., , ,A
 		StringReplace, CurrControlTT, CurrControlTT, -, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, %, , ,A
+		StringReplace, CurrControlTT, CurrControlTT, `%, , ,A
 		If (CurrControlTT == "Paste_Clipboard_TT") {
 			currentclip=%clipboard%
 			StringLen, currlen, currentclip
