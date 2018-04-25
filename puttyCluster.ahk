@@ -1137,6 +1137,7 @@ PSLaunchersClick:
 		Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %nextini%, PuttySessions1.ini
 		ControlSetText, , % currentPSlauncher . "/" . maxPSLauncher, ahk_id %btnPSLaunchersID% 
 	}
+	GoSub, SavePuttySessionCounts
 	GoSub, LoadPSLaunchers
 Return
 
@@ -1798,24 +1799,6 @@ GuiClose:
 	ControlGet, AlwaysOnTop, Checked, , , ahk_id %OnTopID%
 	ControlGet, AddCrLf, Checked, , , ahk_id %CrLfID%
 	ControlGet, SingleMatch, Checked, , , ahk_id %SingleMatchID%
-	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
-	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
-	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
-	ControlGetText, edtPutty21, , ahk_id %edtPutty21ID%
-	ControlGetText, edtPutty22, , ahk_id %edtPutty22ID%
-	ControlGetText, edtPutty23, , ahk_id %edtPutty23ID%
-	ControlGetText, edtPutty31, , ahk_id %edtPutty31ID%
-	ControlGetText, edtPutty32, , ahk_id %edtPutty32ID%
-	ControlGetText, edtPutty33, , ahk_id %edtPutty33ID%
-	ControlGetText, edtPutty41, , ahk_id %edtPutty41ID%
-	ControlGetText, edtPutty42, , ahk_id %edtPutty42ID%
-	ControlGetText, edtPutty43, , ahk_id %edtPutty43ID%
-	ControlGetText, edtPutty51, , ahk_id %edtPutty51ID%
-	ControlGetText, edtPutty52, , ahk_id %edtPutty52ID%
-	ControlGetText, edtPutty53, , ahk_id %edtPutty53ID%
-	ControlGetText, edtPutty61, , ahk_id %edtPutty61ID%
-	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
-	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
 	
 	IniWrite, %xpos%, %inifilename%, Autosave, xpos
 	IniWrite, %ypos%, %inifilename%, Autosave, ypos
@@ -1862,6 +1845,33 @@ GuiClose:
 	IniWrite, %MonitorGroup%, %inifilename%, Options, MonitorSelect
 	IniWrite, %edtMonitor3%, %inifilename%, Options, Monitor3
 	IniWrite, %SingleMatch%, %inifilename%, Options, SingleMatch
+	IniWrite, %currentApplauncher%, %inifilename%, ApplicationLaunchers, CurrentLauncher
+	IniWrite, %currentPSlauncher%, %inifilename%, PuttySessionLaunchers, CurrentLauncher
+	IniWrite, %currentCmdlauncher%, %inifilename%, CommandLaunchers, CurrentLauncher
+	
+	GoSub, SavePuttySessionCounts
+ExitApp
+
+SavePuttySessionCounts:
+	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
+	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
+	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
+	ControlGetText, edtPutty21, , ahk_id %edtPutty21ID%
+	ControlGetText, edtPutty22, , ahk_id %edtPutty22ID%
+	ControlGetText, edtPutty23, , ahk_id %edtPutty23ID%
+	ControlGetText, edtPutty31, , ahk_id %edtPutty31ID%
+	ControlGetText, edtPutty32, , ahk_id %edtPutty32ID%
+	ControlGetText, edtPutty33, , ahk_id %edtPutty33ID%
+	ControlGetText, edtPutty41, , ahk_id %edtPutty41ID%
+	ControlGetText, edtPutty42, , ahk_id %edtPutty42ID%
+	ControlGetText, edtPutty43, , ahk_id %edtPutty43ID%
+	ControlGetText, edtPutty51, , ahk_id %edtPutty51ID%
+	ControlGetText, edtPutty52, , ahk_id %edtPutty52ID%
+	ControlGetText, edtPutty53, , ahk_id %edtPutty53ID%
+	ControlGetText, edtPutty61, , ahk_id %edtPutty61ID%
+	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
+	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
+
 	IniWrite, %edtPutty11%, %inifilenamePSLaunchers%, PuttySession1, Putty11Count
 	IniWrite, %edtPutty12%, %inifilenamePSLaunchers%, PuttySession1, Putty12Count
 	IniWrite, %edtPutty13%, %inifilenamePSLaunchers%, PuttySession1, Putty13Count
@@ -1880,11 +1890,7 @@ GuiClose:
 	IniWrite, %edtPutty61%, %inifilenamePSLaunchers%, PuttySession6, Putty61Count
 	IniWrite, %edtPutty62%, %inifilenamePSLaunchers%, PuttySession6, Putty62Count
 	IniWrite, %edtPutty63%, %inifilenamePSLaunchers%, PuttySession6, Putty63Count
-	IniWrite, %currentApplauncher%, %inifilename%, ApplicationLaunchers, CurrentLauncher
-	IniWrite, %currentPSlauncher%, %inifilename%, PuttySessionLaunchers, CurrentLauncher
-	IniWrite, %currentCmdlauncher%, %inifilename%, CommandLaunchers, CurrentLauncher
-	
-ExitApp
+Return
 
 UpdateFoundWindowsFilteredGui:
 	windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
