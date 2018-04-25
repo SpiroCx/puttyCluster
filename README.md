@@ -43,12 +43,12 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 ### Keyboard Shortcuts
 
 * Win-Alt-C 	Bring ClusterPutty window to the foreground
-* Win-Alt-D 	Brings ClusterPutty window to the foreground and toggles the launcher sidebar
-* Win-Alt-T		Tiles Putty Windows
-* Win-Alt-F		Brings Putty Windows to the top of the desktop
-* Win-Alt-B		Pushes Putty Winows to the back of the desktop (hides them)
-* Win-Alt-V		Pastes current clipboard to all windows
-* Win-Alt-L		Toggles "Append CrLf to paste" flag
+* Win-Alt-D 	Brings ClusterPutty window to the foreground and toggle the launcher sidebar
+* Win-Alt-T		Tile Putty Windows
+* Win-Alt-F		Bring Putty Windows to the top of the desktop
+* Win-Alt-B		Push Putty Winows to the back of the desktop (hide them)
+* Win-Alt-V		Paste current clipboard to all windows
+* Win-Alt-L		Toggle "Append CrLf to paste" flag
 
 #### A good Putty window title greatly assists in window filtering
 
