@@ -730,17 +730,7 @@ WM_MOUSEMOVE()
 		StringReplace, CurrControlTT, CurrControlTT, <<, LTLT, ,A
 		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT, ,A
 		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _, ,A
-		StringReplace, CurrControlTT, CurrControlTT, &, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, :, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, /, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, \, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, ", , ,A
-		StringReplace, CurrControlTT, CurrControlTT, ., , ,A
-		StringReplace, CurrControlTT, CurrControlTT, -, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, `%, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, +, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, (, , ,A
-		StringReplace, CurrControlTT, CurrControlTT, ), , ,A
+		CurrControlTT := RegExReplace(CurrControlTT, "[^a-zA-Z0-9_]+")
 		If (CurrControlTT == "Paste_Clipboard_TT") {
 			currentclip=%clipboard%
 			StringLen, currlen, currentclip
