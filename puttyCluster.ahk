@@ -738,6 +738,7 @@ WM_MOUSEMOVE()
 		StringReplace, CurrControlTT, CurrControlTT, ., , ,A
 		StringReplace, CurrControlTT, CurrControlTT, -, , ,A
 		StringReplace, CurrControlTT, CurrControlTT, `%, , ,A
+		StringReplace, CurrControlTT, CurrControlTT, +, , ,A
 		If (CurrControlTT == "Paste_Clipboard_TT") {
 			currentclip=%clipboard%
 			StringLen, currlen, currentclip
@@ -838,7 +839,9 @@ EditBoxAppLauncher:
 	Gui, 3:Add, Text, x%xedt% y%yedt%, Label:
 	xedt += 55
 	yedt -= 3
-	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 90 . " r1 HwndedtControlLabelID", %ControlLabel%
+	Gui, 3:Add, Button, % "x" . (xedt + editboxwidth - 90) . " y" . (yedt - 1) . "w30 g3LaunchSelectClick v3LaunchSelect", ...
+	3LaunchSelect_TT := "Select an existing file for the launcher"
 
 	Iniread, ControlTT, %inifilenameAppLaunchers%, %inisection%, Tooltip, Tooltip
 	xedt := 5
@@ -864,14 +867,21 @@ EditBoxAppLauncher:
 	yedt -= 3
 	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
 	
-	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnCancel", Cancel
-	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnSave", Save
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnSave", Save
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnCancel", Cancel
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnClear", Clear
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 3:+AlwaysOnTop
 	Gui, 3:-AlwaysOnTop
+Return
+3btnClear:
+		ControlSetText, , , ahk_id %edtControlLabelID%
+		ControlSetText, , , ahk_id %edtControlTTID%
+		ControlSetText, , , ahk_id %edtControlCmdID%
+		ControlSetText, , , ahk_id %edtControlDirID%
 Return
 3btnSave:
 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
@@ -887,6 +897,41 @@ Return
 3GuiClose:
 	Gui, 3:Destroy
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+Return
+3LaunchSelectClick:
+	Iniread, tooltipprefix, %inifilename%, ApplicationLaunchers, DefaultTooltipPrefix, Run:
+	Iniread, clipregex1search, %inifilename%, ApplicationLaunchers, LabelClipRegex1search, _[^_]+$
+	Iniread, clipregex1replace, %inifilename%, ApplicationLaunchers, LabelClipRegex1replace,
+	Iniread, clipregex2search, %inifilename%, ApplicationLaunchers, LabelClipRegex2search, ^ccimx6
+	Iniread, clipregex2replace, %inifilename%, ApplicationLaunchers, LabelClipRegex2replace,
+	Iniread, clipregex3search, %inifilename%, ApplicationLaunchers, LabelClipRegex3search, %A_Space%
+	Iniread, clipregex3replace, %inifilename%, ApplicationLaunchers, LabelClipRegex3replace,
+	Iniread, clipregex4search, %inifilename%, ApplicationLaunchers, LabelClipRegex4search, [-_]+
+	Iniread, clipregex4replace, %inifilename%, ApplicationLaunchers, LabelClipRegex4replace,
+	Iniread, clipregex5search, %inifilename%, ApplicationLaunchers, LabelClipRegex5search, _.*$
+	Iniread, clipregex5replace, %inifilename%, ApplicationLaunchers, LabelClipRegex5replace,
+	FileSelectFile, selectedfilename, 1
+	if (selectedfilename != "") {
+		SplitPath, selectedfilename, selectedfile, selecteddir
+		newlabel := selectedfile
+		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
+		; This is particular for how I name my putty sessions
+		StringUpper, newlabel, newlabel, T
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
+		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
+		ControlSetText, , % tooltipprefix . " " . selectedfile, ahk_id %edtControlTTID%
+		ControlSetText, , %selectedfilename%, ahk_id %edtControlCmdID%
+		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
+	}
 Return
 
 EditBoxPSLauncher:
@@ -907,8 +952,8 @@ EditBoxPSLauncher:
 	xedt += 55
 	yedt -= 3
 	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 90 . " r1 HwndedtControlLabelID", %ControlLabel%
-	Gui, 4:Add, Button, % "x" . (xedt + editboxwidth - 90) . " y" . (yedt - 1) . "w30 g4LaunchSelectClick vLaunchSelect", ...
-	LaunchSelect_TT := "Select an existing session from the Putty sessions folder"
+	Gui, 4:Add, Button, % "x" . (xedt + editboxwidth - 90) . " y" . (yedt - 1) . "w30 g4LaunchSelectClick v4LaunchSelect", ...
+	4LaunchSelect_TT := "Select an existing session from the Putty sessions folder"
 
 	Iniread, ControlTT, %inifilenamePSLaunchers%, %inisection%, Tooltip, Tooltip
 	xedt := 5
@@ -983,8 +1028,8 @@ Return
 	Iniread, clipregex5search, %inifilename%, PuttySessionLaunchers, LabelClipRegex5search, _.*$
 	Iniread, clipregex5replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex5replace,
 	FileSelectFile, selectedsession, 1, %sessiondir%
-	SplitPath, selectedsession, selectedsession
 	if (selectedsession != "") {
+		SplitPath, selectedsession, selectedsession, selecteddir
 		newlabel := selectedsession
 		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
 		; This is particular for how I name my putty sessions
@@ -1003,7 +1048,7 @@ Return
 		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
 		ControlSetText, , % tooltipprefix . " " . selectedsession, ahk_id %edtControlTTID%
 		ControlSetText, , % commandprefix . " """ . selectedsession . """", ahk_id %edtControlCmdID%
-		ControlSetText, , %sessiondir%, ahk_id %edtControlDirID%
+		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
 	}
 Return
 
@@ -1042,14 +1087,20 @@ EditBoxCmdLauncher:
 	yedt -= 3
 	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
 
-	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
-	Gui, 5:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnClear", Clear
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 5:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 5:+AlwaysOnTop
 	Gui, 5:-AlwaysOnTop
+Return
+5btnClear:
+		ControlSetText, , , ahk_id %edtControlLabelID%
+		ControlSetText, , , ahk_id %edtControlTTID%
+		ControlSetText, , , ahk_id %edtControlCmdID%
 Return
 5btnSave:
 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
