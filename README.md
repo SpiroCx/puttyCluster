@@ -15,8 +15,9 @@ For me personally this makes the script even more useful with a few simple exten
 * ToBack and To Front buttons to quickly bring the matched windows to the front on the Desktop
 * Laucher side panel for apps, Putty sessions and Putty commands.  
 * INI file for configuration if you want to compile to exe
-* Global shortcuts to bring to top and toggle side panel.  There is also a StayOnTop flag if you prefer
+* Global shortcuts to bring to top and toggle side panel.  There is also a StayOnTop flag if you prefer that to keyboard shortcuts
 * Mulitple monitor supprt for Tile/Cascade functions
+* Fast Putty Session button set up (...if you use ExtraPutty or any putty that keeps putty sessions as separate files on HDD rather than the registry). Right click on blank button to pick existing session.
 
 ### install
 
@@ -34,11 +35,20 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Screen size for  Tile/Cascade can be quick switched with selector
 * Paste Clipboard adds cr(lf)
 * The Found Windows Filters let you further filter windows based on their screen position (after the title matches are applied).  This is useful if, say, you have putty windows arranged in groups per device (eg 3 on your Linux server, and 3 on your embedded device) and you temporarily only want one window from each of these groups to respond.  Lets say for example you switch from a command for all windows (ls, pwd, tail log.txt), to a command you only want to run once on each box (apt update, apt install).  That's when you use the Found Windows filter.  There are 3 options.  "All" just goes ahead and selects all windows as determined by the 5 title matching boxes, "1-8 on/off toggle" lets you pick up to the first 8 windows individually, and the text box (init value FFFF) lets you use a bitfield to specify the box positions.  Lets say you wanted boxes 2, 4, 7 and 8, the you put CA in this text box. 
-* Global shortcut Win-Alt-C brings ClusterPutty window to the foreground
-* Global shortcut Win-Alt-D brings ClusterPutty window to the foreground and toggles the launcher sidebar
 * App shortcuts Alt-C (Paste Clipboard), Alt-L (toggle "add +CrLF" to clipboard paste), Alt-T (Tile), Alt+B/F (To Back/Front)
 * Optional command line parameter for optional alternate ini file. eg: puttyCluster <work01.ini>
 * Right click on sidebar launchers to edit item
+* The exe file included in the repo is built with: "Ahk2Exe.exe" /in "puttyCluster.ahk" /out "scputtyCluster.exe" /icon "C:\_Portable\__scIcons\Notepad++.ico" /bin "<path to ahk>\Compiler\Unicode 64-bit.bin"
+
+### Keyboard Shortcuts
+
+* Win-Alt-C 	Bring ClusterPutty window to the foreground
+* Win-Alt-D 	Brings ClusterPutty window to the foreground and toggles the launcher sidebar
+* Win-Alt-T		Tiles Putty Windows
+* Win-Alt-F		Brings Putty Windows to the top of the desktop
+* Win-Alt-B		Pushes Putty Winows to the back of the desktop (hides them)
+* Win-Alt-V		Pastes current clipboard to all windows
+* Win-Alt-L		Toggles "Append CrLf to paste" flag
 
 #### A good Putty window title greatly assists in window filtering
 

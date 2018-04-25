@@ -863,8 +863,8 @@ EditBoxAppLauncher:
 	yedt -= 3
 	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
 	
-	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g3btnCancel", Cancel
-	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g3btnSave", Save
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnCancel", Cancel
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnSave", Save
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
@@ -905,7 +905,9 @@ EditBoxPSLauncher:
 	Gui, 4:Add, Text, x%xedt% y%yedt%, Label:
 	xedt += 55
 	yedt -= 3
-	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 90 . " r1 HwndedtControlLabelID", %ControlLabel%
+	Gui, 4:Add, Button, % "x" . (xedt + editboxwidth - 90) . " y" . (yedt - 1) . "w30 g4LaunchSelectClick vLaunchSelect", ...
+	LaunchSelect_TT := "Select an existing session from the Putty sessions folder"
 
 	Iniread, ControlTT, %inifilenamePSLaunchers%, %inisection%, Tooltip, Tooltip
 	xedt := 5
@@ -931,14 +933,23 @@ EditBoxPSLauncher:
 	yedt -= 3
 	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
 	
-	Gui, 4:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g4btnCancel", Cancel
-	Gui, 4:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g4btnSave", Save
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g4btnSave", Save
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g4btnCancel", Cancel
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g4btnClear", Clear
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 4:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 4:+AlwaysOnTop
 	Gui, 4:-AlwaysOnTop
+	if (ControlLabel == "")
+		GoSub, 4LaunchSelectClick
+Return
+4btnClear:
+		ControlSetText, , , ahk_id %edtControlLabelID%
+		ControlSetText, , , ahk_id %edtControlTTID%
+		ControlSetText, , , ahk_id %edtControlCmdID%
+		ControlSetText, , , ahk_id %edtControlDirID%
 Return
 4btnSave:
 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
@@ -955,7 +966,45 @@ Return
 	Gui, 4:Destroy
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
-
+4LaunchSelectClick:
+	Iniread, tooltipprefix, %inifilename%, PuttySessionLaunchers, DefaultTooltipPrefix, Launch putty session:
+	Iniread, commandprefix, %inifilename%, PuttySessionLaunchers, DefaultPuttyCommandPrefix, C:\_Portable\_Putty\_ExtraPuTTY\putty.exe -load
+	Iniread, puttydir, %inifilename%, PuttySessionLaunchers, DefaultPuttyDir, C:\_Portable\_Putty\_ExtraPuTTY\
+	Iniread, sessiondir, %inifilename%, PuttySessionLaunchers, DefaultPuttySessionDir, C:\_Portable\_Putty\_ExtraPuTTY\Sessions
+	Iniread, clipregex1search, %inifilename%, PuttySessionLaunchers, LabelClipRegex1search, _[^_]+$
+	Iniread, clipregex1replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex1replace,
+	Iniread, clipregex2search, %inifilename%, PuttySessionLaunchers, LabelClipRegex2search, ^ccimx6
+	Iniread, clipregex2replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex2replace,
+	Iniread, clipregex3search, %inifilename%, PuttySessionLaunchers, LabelClipRegex3search, %A_Space%
+	Iniread, clipregex3replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex3replace,
+	Iniread, clipregex4search, %inifilename%, PuttySessionLaunchers, LabelClipRegex4search, [-_]+
+	Iniread, clipregex4replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex4replace,
+	Iniread, clipregex5search, %inifilename%, PuttySessionLaunchers, LabelClipRegex5search, _.*$
+	Iniread, clipregex5replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex5replace,
+	FileSelectFile, selectedsession, 1, %sessiondir%
+	SplitPath, selectedsession, selectedsession
+	if (selectedsession != "") {
+		newlabel := selectedsession
+		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
+		; This is particular for how I name my putty sessions
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
+		if (StrLen(newlabel) > 9)
+			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
+		if (StrLen(newlabel) > 10)
+			StringLower, newlabel, newlabel
+		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
+		ControlSetText, , % tooltipprefix . " " . selectedsession, ahk_id %edtControlTTID%
+		ControlSetText, , % commandprefix . " """ . selectedsession . """", ahk_id %edtControlCmdID%
+		ControlSetText, , %sessiondir%, ahk_id %edtControlDirID%
+	}
+Return
 
 EditBoxCmdLauncher:
 	editboxwidth := 800
@@ -992,8 +1041,8 @@ EditBoxCmdLauncher:
 	yedt -= 3
 	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
 
-	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
-	Gui, 5:Add, Button, % "x" . (editboxwidth /2) + 60 -20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 5:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
@@ -2336,6 +2385,11 @@ Return
 ; Win+Alt+V
 #!v::
 	GoSub, GoPaste
+Return
+
+; Win+Alt+R
+#!l::
+	ControlSend, , {Space}, ahk_id %CrLfID%
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4
