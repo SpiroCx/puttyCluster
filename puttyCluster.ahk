@@ -150,17 +150,17 @@ ypos := 200
 Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Found windows filter (bitfield HEX eg FFFF):
 xpos += 20
 ypos += 20
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " vFilterGroup" . ( (matchbyte1type == 1) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " gFocusInput vFilterGroup" . ( (matchbyte1type == 1) ? " Checked" : "" )
 FilterGroup_TT := "This section lets you filter windows based on the order in which they were found. Regex title matches are applied first, then these are applied"
 xpos += 0
 ypos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup2ID w23" . ( (matchbyte1type == 2) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup2ID w23" . ( (matchbyte1type == 2) ? " Checked" : "" )
 xpos += 90
 ypos -= 30
 Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup3ID w23" . ( (matchbyte1type == 3) ? " Checked" : "" )
 xpos -= 90
 ypos += 60
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup4ID w23" . ( (matchbyte1type == 4) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup4ID w23" . ( (matchbyte1type == 4) ? " Checked" : "" )
 xpos += 23
 ypos -= 60
 Gui, Add, Text,  x%xpos% y%ypos%, All
@@ -326,12 +326,12 @@ IniRead, monitorsel, %inifilename%, Options, MonitorSelect, 1
 IniRead, edtMonitor3, %inifilename%, Options, Monitor3, 3
 xpos := xbase
 ypos3 += 5
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
 MonitorGroup_TT := "Use monitor 1"
 xpos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor2" . ( (monitorsel == 2) ? " Checked" : "" ), 2
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor2" . ( (monitorsel == 2) ? " Checked" : "" ), 2
 xpos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor3" . ( (monitorsel == 3) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor3" . ( (monitorsel == 3) ? " Checked" : "" )
 xpos += 23
 ;ypos3 -= 3
 ;Gui, Add, Edit,  x%xpos% y%ypos3% gedtMonitorClick3 HwndedtMonitor3ID vedtMonitor3 w20 h20 Number, %edtMonitor3%
@@ -1397,6 +1397,7 @@ check5:
 	ControlFocus, , ahk_id %InputBoxID%
 Return
 
+FocusInput:
 checkinv1:
 checkinv2:
 checkinv3:
@@ -1759,26 +1760,32 @@ else if (RadioGroup = 2) {
 else if (RadioGroup = 3) {
 	width := ScreenWidth
 	height := ScreenHeight
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 4) {
 	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 5) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 6) {
 	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight / 2
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 7) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 2
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 8) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 3
+	ControlFocus, , ahk_id %InputBoxID%
 }
 Return
 
