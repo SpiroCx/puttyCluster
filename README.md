@@ -96,7 +96,6 @@ then open a new set of putty windows, turn on the invert operator on the first t
 * Add sanity checking to the launchers.  The script throws and error for invalid paths/commands. Script still works ok (doesn't crash) but it's ugly.
 * Find space for the label "Select Monitor" above the monitor selection radio buttons
 * Make the hotkeys configurable
-* Add escape key (= Cancel) for launcher config windows
 * Add shortcuts for Always On Top, Single Filter toggle and the 5 title match expresssions
 * Do the same for the 5 x tile match edit boxes as I did for the Launchers - move them to a separate INI file, then add buttons to cycle through multiple versions.
 

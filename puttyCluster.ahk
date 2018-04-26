@@ -864,7 +864,8 @@ EditBoxAppLauncher:
 	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnClear", Clear
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
-	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
+	editTitle := % "Edit " . EditControlName
+	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, %editTitle%
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 3:+AlwaysOnTop
 	Gui, 3:-AlwaysOnTop
@@ -887,6 +888,7 @@ Return
 	GoSub, LoadLaunchers
 3btnCancel:
 3GuiClose:
+3GuiEscape:
 	Gui, 3:Destroy
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
@@ -999,8 +1001,11 @@ Return
 	ControlGetText, newDir, , ahk_id %edtControlDirID%
 	IniWrite, %newDir%, %inifilenamePSLaunchers%, %inisection%, Dir
 	GoSub, LoadPSLaunchers
+#IfWinActive 4
+	$ESC::
 4btnCancel:
 4GuiClose:
+4GuiEscape:
 	Gui, 4:Destroy
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
@@ -1102,8 +1107,11 @@ Return
 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
 	IniWrite, %newCmd%, %inifilenameCmdLaunchers%, %inisection%, Command
 	GoSub, LoadCmdLaunchers
+#IfWinActive 5
+	$ESC::
 5btnCancel:
 5GuiClose:
+5GuiEscape:
 	Gui, 5:Destroy
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
