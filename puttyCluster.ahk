@@ -1125,6 +1125,7 @@ AppLaunchersClick:
 Return
 
 PSLaunchersClick:
+	GoSub, SavePSCounts
 	nextLauncher := currentPSLauncher + 1
 	nextini := % "Ini" . nextLauncher
 	Iniread, newini, %inifilename%, PuttySessionLaunchers, %nextini%, 0
@@ -1137,7 +1138,6 @@ PSLaunchersClick:
 		Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %nextini%, PuttySessions1.ini
 		ControlSetText, , % currentPSlauncher . "/" . maxPSLauncher, ahk_id %btnPSLaunchersID% 
 	}
-	GoSub, SavePuttySessionCounts
 	GoSub, LoadPSLaunchers
 Return
 
@@ -1849,10 +1849,10 @@ GuiClose:
 	IniWrite, %currentPSlauncher%, %inifilename%, PuttySessionLaunchers, CurrentLauncher
 	IniWrite, %currentCmdlauncher%, %inifilename%, CommandLaunchers, CurrentLauncher
 	
-	GoSub, SavePuttySessionCounts
+	GoSub, SavePSCounts
 ExitApp
 
-SavePuttySessionCounts:
+SavePSCounts:
 	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
 	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
 	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
