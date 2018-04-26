@@ -1262,31 +1262,32 @@ AboutBox:
 	FormatTime, FileTime, %FileTime%
 	; Include the scriptname also to remind us which is running for when both exe and ahk are in the folder
 	AboutMessage2 = % "`r" . "Last modification date:`r" . A_ScriptName . ": " . FileTime
-	AboutMessage3 = % "`r" . "INI file in use: " . inifilename . "`r"
-	AboutMessage4 = % "`r" . "Win-Alt-C 	Bring ClusterPutty window to the top"
-	AboutMessage5 = Win-Alt-D 	Toggle the launcher sidebar (+ bring to top)
-	AboutMessage6 = Win-Alt-T	Tile Putty Windows
-	AboutMessage7 = Win-Alt-F	Bring Putty Windows to the top of the desktop
-	AboutMessage8 = Win-Alt-B	Push Putty Winows to the back of the desktop (hide them)
-	AboutMessage9 = Win-Alt-V	Paste current clipboard to all windows
-	AboutMessage10 = Win-Alt-L	Toggle ""Append CrLf to paste"" flag
+	AboutMessage3 = % "`r" . "Script/exe path:`r" . A_ScriptFullPath
+	AboutMessage4 = % "`r" . "INI file in use: " . inifilename . "`r"
+	AboutMessage5 = % "`r" . "Win-Alt-C 	Bring ClusterPutty window to the top"
+	AboutMessage6 = Win-Alt-D 	Toggle the launcher sidebar (+ bring to top)
+	AboutMessage7 = Win-Alt-T	Tile Putty Windows
+	AboutMessage8 = Win-Alt-F	Bring Putty Windows to the top of the desktop
+	AboutMessage9 = Win-Alt-B	Push Putty Winows to the back of the desktop (hide them)
+	AboutMessage10 = Win-Alt-V	Paste current clipboard to all windows
+	AboutMessage11 = Win-Alt-L	Toggle 'Append CrLf' flag
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
-		%AboutMessage3%
-		%AboutMessage4%`r%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%
+		%AboutMessage3%`r%AboutMessage4%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%
 	)
 
 	Gui, 2:Font, cBlue
 	Gui, 2:Add, Text, vAboutLink gGotoSite, %homepage%
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
-	Gui, 2:Add, Text, , %AboutMessage%
-	Gui, 2:Add, Button, x180 y260 w40 h25 gbtnOk, Ok
-	xposabout := ScreenWidth / 2 - 200
+	Gui, 2:Add, Text, vAboutText, %AboutMessage%
+	Gui, 2:Add, Button, x210 y265 w40 h25 gbtnOk, Ok
+	xposabout := ScreenWidth / 2 - 230
 	yposabout := ScreenHeight / 2 - 160
-	Gui, 2:Show, x%xposabout% y%yposabout% h300 w400, About
+	Gui, 2:Show, x%xposabout% y%yposabout% h300 w460, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop

@@ -48,7 +48,7 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Win-Alt-F		Bring Putty Windows to the top of the desktop
 * Win-Alt-B		Push Putty Winows to the back of the desktop (hide them)
 * Win-Alt-V		Paste current clipboard to all windows
-* Win-Alt-L		Toggle "Append CrLf to paste" flag
+* Win-Alt-L		Toggle 'Append CrLf' flag
 
 #### A good Putty window title greatly assists in window filtering
 
@@ -133,8 +133,9 @@ then open a new set of putty windows, turn on the invert operator on the first t
 
 ### ToDo
 
-* Add Mimimise To Tray once the hotkeys are working
-* Add configurable hotkeys to INI file
+* Add sanity checking to the launchers.  It throws and error for invalid/paths commands. Script still works ok (doesn't crash) but it's ugly.
+* Find space for the label "Select Monitor" above the monitor selection radio buttons
+* Make the hotkeys configurable
 
 ### license
 * free as in free beer and free as in free speech
