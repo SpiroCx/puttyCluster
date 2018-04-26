@@ -42,8 +42,8 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
 ### Keyboard Shortcuts
 
-* Win-Alt-C 	Bring ClusterPutty window to the foreground
-* Win-Alt-D 	Brings ClusterPutty window to the foreground and toggle the launcher sidebar
+* Win-Alt-C 	Bring ClusterPutty window to the top
+* Win-Alt-D 	Toggle the launcher sidebar (+ bring to top)
 * Win-Alt-T		Tile Putty Windows
 * Win-Alt-F		Bring Putty Windows to the top of the desktop
 * Win-Alt-B		Push Putty Winows to the back of the desktop (hide them)

@@ -1256,16 +1256,26 @@ AboutBox:
 		Return
 	}
 	homepage = https://github.com/SpiroCx/puttyCluster
-	MajorVersion = 1.0
+	MajorVersion = 1.0rc
 	AboutMessage1 = % "Version: " . MajorVersion
 	FileGetTime, FileTime, %A_ScriptFullPath%
 	FormatTime, FileTime, %FileTime%
 	; Include the scriptname also to remind us which is running for when both exe and ahk are in the folder
 	AboutMessage2 = % "`r" . "Last modification date:`r" . A_ScriptName . ": " . FileTime
+	AboutMessage3 = % "`r" . "INI file in use: " . inifilename . "`r"
+	AboutMessage4 = % "`r" . "Win-Alt-C 	Bring ClusterPutty window to the top"
+	AboutMessage5 = Win-Alt-D 	Toggle the launcher sidebar (+ bring to top)
+	AboutMessage6 = Win-Alt-T	Tile Putty Windows
+	AboutMessage7 = Win-Alt-F	Bring Putty Windows to the top of the desktop
+	AboutMessage8 = Win-Alt-B	Push Putty Winows to the back of the desktop (hide them)
+	AboutMessage9 = Win-Alt-V	Paste current clipboard to all windows
+	AboutMessage10 = Win-Alt-L	Toggle ""Append CrLf to paste"" flag
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
+		%AboutMessage3%
+		%AboutMessage4%`r%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%
 	)
 
 	Gui, 2:Font, cBlue
@@ -1273,10 +1283,10 @@ AboutBox:
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
 	Gui, 2:Add, Text, , %AboutMessage%
-	Gui, 2:Add, Button, x120 y100 w40 h25 gbtnOk, Ok
-	xposabout := ScreenWidth / 2 - 120
-	yposabout := ScreenHeight / 2 - 70
-	Gui, 2:Show, x%xposabout% y%yposabout% h140 w280, About
+	Gui, 2:Add, Button, x180 y260 w40 h25 gbtnOk, Ok
+	xposabout := ScreenWidth / 2 - 200
+	yposabout := ScreenHeight / 2 - 160
+	Gui, 2:Show, x%xposabout% y%yposabout% h300 w400, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
