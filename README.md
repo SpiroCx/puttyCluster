@@ -49,56 +49,16 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Win-Alt-B		Push Putty Winows to the back of the desktop (hide them)
 * Win-Alt-V		Paste current clipboard to all windows
 * Win-Alt-L		Toggle 'Append CrLf' flag
+* Win-Alt-O		Locate Putty Windows (Bring to top, flash border)
 
 #### A good Putty window title greatly assists in window filtering
 
 This script regex searches all the text in the Putty window titles.  Adding more info to your Putty window title gives you more power for filtering the windows out.  There are some crazy complicated prompts out there eg https://www.askapache.com/linux/bash-power-prompt/.  This relatively modest prompt puts the hostname and current path into the Putty window title.  
-on the command line:
+on the command line.  Here is a prompt that places a tag in the title and prompt, as well as an ip address in the title.  This works for both a full bash shell and even busybox:
 ```
-PS1="\[\e]0;\u@\h: \w\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
+IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\h: \w[C][$IP]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\][C]$\[\e[m\] "
 ```
-You can also add a custom tag in between the \w and \a which lets you put arbitrary text in the title.  This allows you to group Putty windows arbitrarily with puttyCluster.  On a session running a full bash, you can add a script to poke in a title tag like this:
-in .bashrc or .profile:
-```
-getputtytag(){
-   echo $puttytag
-}
-PS1="\[\e]0;\u@\h: \w\$(getputtytag)\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
-```
-which allows you to set the Title tag with:
-on the command line:
-```
-export puttytag=[AAA]
-```
-Smaller embeded platforms tend use busybox instead of a full shell.  If you are working with busybox, the getputtytag() script won't work (at least it doesn't on any of mine) but you can include a tag in the title directly in the PS1 command:
-on the command line:
-```
-PS1="\[\e]0;\u@\h: \w[AAA]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\]$\[\e[m\] "
-```
-I am using this one at the moment which includes git info, an ip address in the title, and an additional tag in the prompt to remind myself which puttyCluster group the putty session is part of:
-in .bashrc or .profile:
-```
-getip120(){
-   ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'
-}
-getip235(){
-   ifconfig | grep 235 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'
-}
-getputtytitle(){
-   echo $puttytitle
-}
-getputtyprompt(){
-   echo $puttyprompt
-}
-parse_git_branch() {
-     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
-PS1="\[\e]0;\u@\h: \w\$(getputtytitle)\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[36m\]\w\[\e[31m\]$(parse_git_branch)\[\e[36m\]\$(getputtyprompt)$\[\e[m\] "
-```
-(Note in the above example the 120 and 235 are specific to my lan segments of interest).  I can then set putty terminal with:
-```
-puttyprompt=[A]; puttytitle=[A][$(getip120)]
-```
+(Note in the above example the 120 that I grep is specific to my lan segment of interest).
 ![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot4_putty_tags.png.png)
   
 ### Known issues
@@ -133,9 +93,12 @@ then open a new set of putty windows, turn on the invert operator on the first t
 
 ### ToDo
 
-* Add sanity checking to the launchers.  It throws and error for invalid/paths commands. Script still works ok (doesn't crash) but it's ugly.
+* Add sanity checking to the launchers.  The script throws and error for invalid paths/commands. Script still works ok (doesn't crash) but it's ugly.
 * Find space for the label "Select Monitor" above the monitor selection radio buttons
 * Make the hotkeys configurable
+* Add escape key (= Cancel) for launcher config windows
+* Add shortcuts for Always On Top, Single Filter toggle and the 5 title match expresssions
+* Do the same for the 5 x tile match edit boxes as I did for the Launchers - move them to a separate INI file, then add buttons to cycle through multiple versions.
 
 ### license
 * free as in free beer and free as in free speech

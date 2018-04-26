@@ -1271,12 +1271,13 @@ AboutBox:
 	AboutMessage9 = Win-Alt-B	Push Putty Winows to the back of the desktop (hide them)
 	AboutMessage10 = Win-Alt-V	Paste current clipboard to all windows
 	AboutMessage11 = Win-Alt-L	Toggle 'Append CrLf' flag
+	AboutMessage12 = Win-Alt-O	Locate Putty Windows
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
 		%AboutMessage3%`r%AboutMessage4%
-		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%
 	)
 
 	Gui, 2:Font, cBlue
@@ -1284,10 +1285,10 @@ AboutBox:
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
 	Gui, 2:Add, Text, vAboutText, %AboutMessage%
-	Gui, 2:Add, Button, x210 y265 w40 h25 gbtnOk, Ok
+	Gui, 2:Add, Button, x210 y285 w40 h25 gbtnOk, Ok
 	xposabout := ScreenWidth / 2 - 230
 	yposabout := ScreenHeight / 2 - 160
-	Gui, 2:Show, x%xposabout% y%yposabout% h300 w460, About
+	Gui, 2:Show, x%xposabout% y%yposabout% h320 w460, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
@@ -1967,6 +1968,8 @@ Tile:
 	    {
 			this_id := id_array[A_Index]
 			;WinActivate, ahk_id %this_id_tile%,				
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			WinMove, ahk_id %this_id%,, x,y,width,height
 			x:=x+width
 			if( (x+width) >= MonRight){
@@ -1991,6 +1994,8 @@ Tile:
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
 				;WinActivate, ahk_id %this_id_tile%,				
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 				WinMove, ahk_id %this_id%,, x,y,width,height
 				x:=x+width
 				if( (x+width) >= MonRight){
@@ -2242,6 +2247,8 @@ Locate:
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			WinSet, Transparent, 30, ahk_id %this_id%
 			Sleep, 200
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
@@ -2264,6 +2271,8 @@ Locate:
 		{
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 				WinSet, Transparent, 30, ahk_id %this_id%
 				Sleep, 200
 				WinSet, Transparent, %alpha%, ahk_id %this_id%
@@ -2425,13 +2434,17 @@ InsertionSort(ar)
 
 ; Win+Alt+C
 #!c::
-	WinActivate, %windowname%
+	;WinActivate, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
 	ControlFocus, Edit7,  %windowname%
 Return
 
 ; Win+Alt+D
 #!d::
-	WinActivate, %windowname%
+	;WinActivate, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
 	GoSub, SidePanelToggle
 Return
 
@@ -2458,6 +2471,11 @@ Return
 ; Win+Alt+R
 #!l::
 	ControlSend, , {Space}, ahk_id %CrLfID%
+Return
+
+; Win+Alt+O
+#!o::
+	GoSub, Locate
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4
