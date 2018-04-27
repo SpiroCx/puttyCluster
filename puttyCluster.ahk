@@ -1234,7 +1234,7 @@ LoadPositionMatches:
 		IniRead, tmval, %inifilenamepositionmatch%, MatchBits1, %tmvar%, 0
 		ptogglestate = bit1%A_Index%state
 		togglestate = %ptogglestate%
-		ptoggleroutine = bit1%A_Index%toggle
+		ptoggleroutine = bit1%A_Index%toggle_update_value
 		toggleroutine = %ptoggleroutine%
 		if (tmval != %togglestate%)
 			GoSub, %toggleroutine%
@@ -1244,11 +1244,12 @@ LoadPositionMatches:
 		IniRead, tmval, %inifilenamepositionmatch%, MatchBits2, %tmvar%, 0
 		ptogglestate = bit2%A_Index%state
 		togglestate = %ptogglestate%
-		ptoggleroutine = bit2%A_Index%toggle
+		ptoggleroutine = bit2%A_Index%toggle_update_value
 		toggleroutine = %ptoggleroutine%
 		if (tmval != %togglestate%)
 			GoSub, %toggleroutine%
 	}
+	GoSub, UpdateFoundWindowsFilteredGui
 	IniRead, matchbyte, %inifilenamepositionmatch%, Options, MatchByte, FFFF
 	ControlSetText, , %matchbyte%, ahk_id %FindFilterID%
 
@@ -1256,11 +1257,8 @@ LoadPositionMatches:
 	Loop, 4 {
 		pidvar = FilterGroup%A_Index%ID
 		idvar := %pidvar%
-		Control, uncheck, , , ahk_id %idvar%
+		Control, % ((A_Index == matchtype) ? "check" : "uncheck" ), , , ahk_id %idvar%
 	}
-	pidvar = FilterGroup%matchtype%ID
-	idvar := %pidvar%
-	Control, check, , , ahk_id %idvar%
 Return
 
 LoadLaunchers:
@@ -1728,114 +1726,162 @@ Return
 
 bit11toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit11toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit11toggle_update_value:
 	bit11state := !bit11state
 	GuiControl,, %btnBit11ID%, % ( (bit11state) ? "1" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit12toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit12toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit12toggle_update_value:
 	bit12state := !bit12state
 	GuiControl,, %btnBit12ID%, % ( (bit12state) ? "2" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit13toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit13toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit13toggle_update_value:
 	bit13state := !bit13state
 	GuiControl,, %btnBit13ID%, % ( (bit13state) ? "3" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit14toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit14toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit14toggle_update_value:
 	bit14state := !bit14state
 	GuiControl,, %btnBit14ID%, % ( (bit14state) ? "4" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit15toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit15toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit15toggle_update_value:
 	bit15state := !bit15state
 	GuiControl,, %btnBit15ID%, % ( (bit15state) ? "5" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit16toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit16toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit16toggle_update_value:
 	bit16state := !bit16state
 	GuiControl,, %btnBit16ID%, % ( (bit16state) ? "6" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit17toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit17toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit17toggle_update_value:
 	bit17state := !bit17state
 	GuiControl,, %btnBit17ID%, % ( (bit17state) ? "7" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit18toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+	GoSub, bit18toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit18toggle_update_value:
 	bit18state := !bit18state
 	GuiControl,, %btnBit18ID%, % ( (bit18state) ? "8" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit21toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit21toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit21toggle_update_value:
 	bit21state := !bit21state
 	GuiControl,, %btnBit21ID%, % ( (bit21state) ? "1" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit22toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit22toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit22toggle_update_value:
 	bit22state := !bit22state
 	GuiControl,, %btnBit22ID%, % ( (bit22state) ? "2" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit23toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit23toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit23toggle_update_value:
 	bit23state := !bit23state
 	GuiControl,, %btnBit23ID%, % ( (bit23state) ? "3" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit24toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit24toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit24toggle_update_value:
 	bit24state := !bit24state
 	GuiControl,, %btnBit24ID%, % ( (bit24state) ? "4" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit25toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit25toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit25toggle_update_value:
 	bit25state := !bit25state
 	GuiControl,, %btnBit25ID%, % ( (bit25state) ? "5" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit26toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit26toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit26toggle_update_value:
 	bit26state := !bit26state
 	GuiControl,, %btnBit26ID%, % ( (bit26state) ? "6" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit27toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit27toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit27toggle_update_value:
 	bit27state := !bit27state
 	GuiControl,, %btnBit27ID%, % ( (bit27state) ? "7" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 bit28toggle:
 	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+	GoSub, bit28toggle_update_value
+	GoSub, UpdateFoundWindowsFilteredGui
+Return
+bit28toggle_update_value:
 	bit28state := !bit28state
 	GuiControl,, %btnBit28ID%, % ( (bit28state) ? "8" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
 Return
 
 SetScreenWidthHeight:
