@@ -25,6 +25,15 @@ For me personally this makes the script even more useful with a few simple exten
 git clone git://github.com/SpiroCx/puttyCluster.git
 cd puttyCluster\
 ```
+Then if you have autohotkey installed you can directly run the script:
+```
+puttyCluster.ahk
+```
+Or you may build it for example with:
+```
+Ahk2Exe.exe /in "puttyCluster.ahk" /out "puttyCluster.exe" /icon "puttyCluster.ico" /bin "<path to ahk>\Compiler\Unicode 64-bit.bin"
+```
+And run the generated puttyCluster.exe
 
 ### Usage
 
@@ -38,7 +47,6 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * App shortcuts Alt-C (Paste Clipboard), Alt-L (toggle "add +CrLF" to clipboard paste), Alt-T (Tile), Alt+B/F (To Back/Front)
 * Optional command line parameter for optional alternate ini file. eg: puttyCluster <work01.ini>
 * Right click on sidebar launchers to edit item
-* The exe file included in the repo is built with: "Ahk2Exe.exe" /in "puttyCluster.ahk" /out "scputtyCluster.exe" /icon "C:\_Portable\__scIcons\Notepad++.ico" /bin "<path to ahk>\Compiler\Unicode 64-bit.bin"
 
 ### Keyboard Shortcuts
 
@@ -97,7 +105,6 @@ then open a new set of putty windows, turn on the invert operator on the first t
 * Find space for the label "Select Monitor" above the monitor selection radio buttons
 * Make the hotkeys configurable
 * Add shortcuts for Always On Top, Single Filter toggle and the 5 title match expresssions
-* Do the same for the 5 x tile match edit boxes as I did for the Launchers - move them to a separate INI file, then add buttons to cycle through multiple versions.
 
 ### license
 * free as in free beer and free as in free speech

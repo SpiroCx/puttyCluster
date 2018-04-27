@@ -61,73 +61,72 @@ global TimerPeriod := 1000
 global sendstrdata
 
 ; ***** Title Row
-Gui, Add, Text,, Window Title RegEx:                       En     Inv
-;Gui, Add, Text, x250 y5, Enable
+Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
+nextini := currentTitleMatchini
+nextininame := % "Ini" . nextini
+while (nextininame != 0) {
+	maxTitleMatchini := nextini
+	nextini := nextini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, nextininame, %inifilename%, TitleMatches, %nextininame%, 0
+}
+InitIni := % "Ini" . currentTitleMatchini
+Iniread, inifilenametitlematch, %inifilename%, TitleMatches, %InitIni%, WindowTitleMatch1.ini
+xpos := 10
+ypos := 1
+Gui, Add, button, x%xpos% y%ypos% gWindowTitleClick HwndbtnWindowTitleID w28 -default,  % currentTitleMatchini . "/" . maxTitleMatchini
+xpos += 30
+ypos += 9
+Gui, Add, Text, x%xpos% y%ypos%, Window title filter:                   En     Inv
 
 ; ***** Title matching text boxes
-IniRead, edit1, %inifilename%, TitleMatch, Title1, .*
-IniRead, edit2, %inifilename%, TitleMatch, Title2, %A_Space%
-IniRead, edit3, %inifilename%, TitleMatch, Title3, %A_Space%
-IniRead, edit4, %inifilename%, TitleMatch, Title4, %A_Space%
-IniRead, edit5, %inifilename%, TitleMatch, Title5, %A_Space%
 xpos := 10
 ypos := 25
 ewidth := 160
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit1ID vtitle1 w%ewidth%, %edit1%
+Gui, Add, Edit, x%xpos% y%ypos% Hwndedit1ID vtitle1 w%ewidth%, .*
 ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit2ID vtitle2 w%ewidth%, %edit2%
+Gui, Add, Edit, x%xpos% y%ypos% Hwndedit2ID vtitle2 w%ewidth%,
 ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit3ID vtitle3 w%ewidth%, %edit3%
+Gui, Add, Edit, x%xpos% y%ypos% Hwndedit3ID vtitle3 w%ewidth%,
 ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit4ID vtitle4 w%ewidth%, %edit4%
+Gui, Add, Edit, x%xpos% y%ypos% Hwndedit4ID vtitle4 w%ewidth%,
 ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit5ID vtitle5 w%ewidth%, %edit5%
+Gui, Add, Edit, x%xpos% y%ypos% Hwndedit5ID vtitle5 w%ewidth%,
 
 ; ***** Enable checkboxes
-IniRead, check1, %inifilename%, TitleMatchEnabled, TitleMatch1, 1
-IniRead, check2, %inifilename%, TitleMatchEnabled, TitleMatch2, 0
-IniRead, check3, %inifilename%, TitleMatchEnabled, TitleMatch3, 0
-IniRead, check4, %inifilename%, TitleMatchEnabled, TitleMatch4, 0
-IniRead, check5, %inifilename%, TitleMatchEnabled, TitleMatch5, 0
-IniRead, SingleMatch, %inifilename%, Options, SingleMatch, 0
 xpos := 180
 ypos := 30
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck1ID gcheck1 vcheck1" . ( check1 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck1ID gcheck1 vcheck1 Checked"
 check1_TT := "Enable title match regex 1"
 ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck2ID gcheck2 vcheck2" . ( check2 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck2ID gcheck2 vcheck2"
 check2_TT := "Enable title match regex 2"
 ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck3ID gcheck3 vcheck3" . ( check3 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck3ID gcheck3 vcheck3"
 check3_TT := "Enable title match regex 3"
 ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck4ID gcheck4 vcheck4" . ( check4 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck4ID gcheck4 vcheck4"
 check4_TT := "Enable title match regex 4"
 ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck5ID gcheck5 vcheck5" . ( check5 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck5ID gcheck5 vcheck5"
 check5_TT := "Enable title match regex 5"
 
 ; ***** Invert checkboxes
-IniRead, checkinv1, %inifilename%, TitleMatchEnabled, TitleMatchInv1, 0
-IniRead, checkinv2, %inifilename%, TitleMatchEnabled, TitleMatchInv2, 0
-IniRead, checkinv3, %inifilename%, TitleMatchEnabled, TitleMatchInv3, 0
-IniRead, checkinv4, %inifilename%, TitleMatchEnabled, TitleMatchInv4, 0
-IniRead, checkinv5, %inifilename%, TitleMatchEnabled, TitleMatchInv5, 0
 xpos += 30
 ypos := 30
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv1ID gcheckinv1 vcheckinv1" . ( checkinv1 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv1ID gcheckinv1 vcheckinv1"
 checkinv1_TT := "Invert regex 1 (NOT regex 1)"
 ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv2ID gcheckinv2 vcheckinv2" . ( checkinv2 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv2ID gcheckinv2 vcheckinv2"
 checkinv2_TT := "Invert regex 2 (NOT regex 2)"
 ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv3ID gcheckinv3 vcheckinv3" . ( checkinv3 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv3ID gcheckinv3 vcheckinv3"
 checkinv3_TT := "Invert regex 3 (NOT regex 3)"
 ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv4ID gcheckinv4 vcheckinv4" . ( checkinv4 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv4ID gcheckinv4 vcheckinv4"
 checkinv4_TT := "Invert regex 4 (NOT regex 4)"
 ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv5ID gcheckinv5 vcheckinv5" . ( checkinv5 ? " Checked" : "" )
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv5ID gcheckinv5 vcheckinv5"
 checkinv5_TT := "Invert regex 5 (NOT regex 5)"
 
 ; ***** Found n windows and Locate Windows button
@@ -135,101 +134,99 @@ xpos := 10
 ypos := 165
 Gui, Add, Text, x%xpos% y%ypos% HwndFoundCountID, Found 0 window(s)
 xpos += 170
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch" . ( SingleMatch ? " Checked" : "" ), Single
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch", Single
 SingleMatch_TT := "Selecting any regex enable box disables the other regexs"
 xpos := 120
 ypos -= 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, Locate
+GoSub, LoadTitleMatches
 
 
 ; ***** Found filter radio buttons
-IniRead, matchbyte1type, %inifilename%, MatchBits1, MatchByte1Type, 1
-IniRead, matchbyte1, %inifilename%, MatchBits1, MatchByte1, FFFF
+Iniread, currentPositionMatchini, %inifilename%, PositionMatches, CurrentIni, 1
+nextini := currentPositionMatchini
+nextininame := % "Ini" . nextini
+while (nextininame != 0) {
+	maxPositionMatchini := nextini
+	nextini := nextini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, nextininame, %inifilename%, PositionMatches, %nextininame%, 0
+}
+InitIni := % "Ini" . currentPositionMatchini
+Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, %InitIni%, WindowPositionMatch1.ini
 xpos := 10
-ypos := 200
-Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Found windows filter (bitfield HEX eg FFFF):
-xpos += 20
+ypos := 192
+Gui, Add, button, x%xpos% y%ypos% gWindowPositionClick HwndbtnWindowPositionID w28 -default,  % currentPositionMatchini . "/" . maxPositionMatchini
+xpos += 30
+ypos += 8
+Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Window position filter:
+xpos -= 10
 ypos += 20
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " gFocusInput vFilterGroup" . ( (matchbyte1type == 1) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " gFocusInput HwndFilterGroup1ID vFilterGroup Checked"
 FilterGroup_TT := "This section lets you filter windows based on the order in which they were found. Regex title matches are applied first, then these are applied"
 xpos += 0
 ypos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup2ID w23" . ( (matchbyte1type == 2) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup2ID w23"
 xpos += 90
 ypos -= 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup3ID w23" . ( (matchbyte1type == 3) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup3ID w23"
 xpos -= 90
 ypos += 60
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup4ID w23" . ( (matchbyte1type == 4) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup4ID w23"
 xpos += 23
 ypos -= 60
 Gui, Add, Text,  x%xpos% y%ypos%, All
 xpos += 90
 ypos -= 3
-Gui, Add, Edit,  x%xpos% y%ypos% vFindFilterTxt HwndFindFilterID gFindFilterClick w33, %matchbyte1%
+Gui, Add, Edit,  x%xpos% y%ypos% vFindFilterTxt HwndFindFilterID gFindFilterClick w33, FFFF
 xpos += 50
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup3InfoID vFilterGroup3InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 1
-IniRead, bit11state, %inifilename%, MatchBits1, MatchBit11, 0
-IniRead, bit12state, %inifilename%, MatchBits1, MatchBit12, 0
-IniRead, bit13state, %inifilename%, MatchBits1, MatchBit13, 0
-IniRead, bit14state, %inifilename%, MatchBits1, MatchBit14, 0
-IniRead, bit15state, %inifilename%, MatchBits1, MatchBit15, 0
-IniRead, bit16state, %inifilename%, MatchBits1, MatchBit16, 0
-IniRead, bit17state, %inifilename%, MatchBits1, MatchBit17, 0
-IniRead, bit18state, %inifilename%, MatchBits1, MatchBit18, 0
 xpos := 52
 ypos := 247
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit11ID gbit11toggle -default, % ( bit11state ? "1" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit11ID gbit11toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit12ID gbit12toggle -default, % ( bit12state ? "2" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit12ID gbit12toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit13ID gbit13toggle -default, % ( bit13state ? "3" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit13ID gbit13toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit14ID gbit14toggle -default, % ( bit14state ? "4" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit14ID gbit14toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit15ID gbit15toggle -default, % ( bit15state ? "5" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit15ID gbit15toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit16ID gbit16toggle -default, % ( bit16state ? "6" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit16ID gbit16toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit17ID gbit17toggle -default, % ( bit17state ? "7" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit17ID gbit17toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit18ID gbit18toggle -default, % ( bit18state ? "8" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit18ID gbit18toggle -default
 xpos += 30
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup2InfoID vFilterGroup2InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 2
-IniRead, bit21state, %inifilename%, MatchBits2, MatchBit21, 0
-IniRead, bit22state, %inifilename%, MatchBits2, MatchBit22, 0
-IniRead, bit23state, %inifilename%, MatchBits2, MatchBit23, 0
-IniRead, bit24state, %inifilename%, MatchBits2, MatchBit24, 0
-IniRead, bit25state, %inifilename%, MatchBits2, MatchBit25, 0
-IniRead, bit26state, %inifilename%, MatchBits2, MatchBit26, 0
-IniRead, bit27state, %inifilename%, MatchBits2, MatchBit27, 0
-IniRead, bit28state, %inifilename%, MatchBits2, MatchBit28, 0
 xpos := 52
 ypos := 277
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit21ID gbit21toggle -default, % ( bit21state ? "1" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit21ID gbit21toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit22ID gbit22toggle -default, % ( bit22state ? "2" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit22ID gbit22toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit23ID gbit23toggle -default, % ( bit23state ? "3" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit23ID gbit23toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit24ID gbit24toggle -default, % ( bit24state ? "4" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit24ID gbit24toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit25ID gbit25toggle -default, % ( bit25state ? "5" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit25ID gbit25toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit26ID gbit26toggle -default, % ( bit26state ? "6" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit26ID gbit26toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit27ID gbit27toggle -default, % ( bit27state ? "7" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit27ID gbit27toggle -default
 xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit28ID gbit28toggle -default, % ( bit28state ? "8" : "" )
+Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit28ID gbit28toggle -default
 xpos += 30
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup4InfoID vFilterGroup4InfoVal, % "(0/0)"
+GoSub, LoadPositionMatches
 
 ; ***** Window transparency slider
 ; yposslider := 190
@@ -373,7 +370,7 @@ Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, %InitIni%
 xsidepanel := xsidepanelbutton + 30
 ysidepanel := 20
 Gui, Add, button, x%xsidepanel% y%ysidepanel% gAppLaunchersClick HwndbtnAppLaunchersID w28 -default, % currentAppLauncher . "/" . maxAppLauncher
-xsidepanel := xsidepanel + 30
+xsidepanel += 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
 ;
@@ -1116,7 +1113,44 @@ Return
 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
 Return
 
+WindowTitleClick:
+	gui, submit, nohide
+	GoSub, SaveTitleMatches
+	nextini := currentTitleMatchini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, newini, %inifilename%, TitleMatches, %nextininame%, 0
+	if (newini == 0) {
+		currentTitleMatchini := 1
+		Iniread, inifilenametitlematch, %inifilename%, TitleMatches, Ini1, WindowTitleMatch1.ini
+		ControlSetText, , % currentTitleMatchini . "/" . maxTitleMatchini, ahk_id %btnWindowTitleID% 
+	} else {
+		currentTitleMatchini := nextini
+		Iniread, inifilenametitlematch, %inifilename%, TitleMatches, %nextininame%, WindowTitleMatch1.ini
+		ControlSetText, , % currentTitleMatchini . "/" . maxTitleMatchini, ahk_id %btnWindowTitleID% 
+	}
+	GoSub, LoadTitleMatches
+Return
+
+WindowPositionClick:
+	gui, submit, nohide
+	GoSub, SavePositionMatches
+	nextini := currentPositionMatchini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, newini, %inifilename%, PositionMatches, %nextininame%, 0
+	if (newini == 0) {
+		currentPositionMatchini := 1
+		Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, Ini1, WindowPositionMatch1.ini
+		ControlSetText, , % currentPositionMatchini . "/" . maxPositionMatchini, ahk_id %btnWindowPositionID% 
+	} else {
+		currentPositionMatchini := nextini
+		Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, %nextininame%, WindowPositionMatch1.ini
+		ControlSetText, , % currentPositionMatchini . "/" . maxPositionMatchini, ahk_id %btnWindowPositionID% 
+	}
+	GoSub, LoadPositionMatches
+Return
+
 AppLaunchersClick:
+	gui, submit, nohide
 	nextLauncher := currentAppLauncher + 1
 	nextini := % "Ini" . nextLauncher
 	Iniread, newini, %inifilename%, ApplicationLaunchers, %nextini%, 0
@@ -1133,6 +1167,7 @@ AppLaunchersClick:
 Return
 
 PSLaunchersClick:
+	gui, submit, nohide
 	GoSub, SavePSCounts
 	nextLauncher := currentPSLauncher + 1
 	nextini := % "Ini" . nextLauncher
@@ -1163,6 +1198,69 @@ CmdLaunchersClick:
 		ControlSetText, , % currentCmdlauncher . "/" . maxCmdLauncher, ahk_id %btnCmdLaunchersID% 
 	}
 	GoSub, LoadCmdLaunchers
+Return
+
+LoadTitleMatches:
+	Loop, 5 {
+		ptmvar = Title%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenametitlematch%, TitleMatch, %tmvar%, .*
+		pidvar = edit%A_Index%ID
+		idvar := %pidvar%
+		ControlSetText, , %tmval%, ahk_id %idvar%
+		
+		ptmvar = TitleMatch%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, .*
+		pidvar = check%A_Index%ID
+		idvar := %pidvar%
+		Control, % (tmval ? "check" : "uncheck"), , , ahk_id %idvar%
+		
+		ptmvar = TitleMatchInv%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, .*
+		pidvar = checkinv%A_Index%ID
+		idvar := %pidvar%
+		Control, % (tmval ? "check" : "uncheck"), , , ahk_id %idvar%
+	}
+	IniRead, SingleMatch, %inifilenametitlematch%, Options, SingleMatch, 0
+	Control, % (SingleMatch ? "check" : "uncheck"), , , ahk_id %SingleMatchID%
+Return
+
+LoadPositionMatches:
+	Loop, 8 {
+		ptmvar = MatchBit1%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenamepositionmatch%, MatchBits1, %tmvar%, 0
+		ptogglestate = bit1%A_Index%state
+		togglestate = %ptogglestate%
+		ptoggleroutine = bit1%A_Index%toggle
+		toggleroutine = %ptoggleroutine%
+		if (tmval != %togglestate%)
+			GoSub, %toggleroutine%
+			
+		ptmvar = MatchBit2%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenamepositionmatch%, MatchBits2, %tmvar%, 0
+		ptogglestate = bit2%A_Index%state
+		togglestate = %ptogglestate%
+		ptoggleroutine = bit2%A_Index%toggle
+		toggleroutine = %ptoggleroutine%
+		if (tmval != %togglestate%)
+			GoSub, %toggleroutine%
+	}
+	IniRead, matchbyte, %inifilenamepositionmatch%, Options, MatchByte, FFFF
+	ControlSetText, , %matchbyte%, ahk_id %FindFilterID%
+
+	IniRead, matchtype, %inifilenamepositionmatch%, Options, MatchType, 1
+	Loop, 4 {
+		pidvar = FilterGroup%A_Index%ID
+		idvar := %pidvar%
+		Control, uncheck, , , ahk_id %idvar%
+	}
+	pidvar = FilterGroup%matchtype%ID
+	idvar := %pidvar%
+	Control, check, , , ahk_id %idvar%
 Return
 
 LoadLaunchers:
@@ -1803,6 +1901,36 @@ GuiClose:
 	WinGetPos, xpos, ypos
 	if (SidePanelOpen == 1)
 		xpos += sidepanelwidth + 10
+	ControlGetText, xsize1, , ahk_id %width1ID%
+	ControlGetText, ysize1, , ahk_id %height1ID%
+	ControlGetText, xsize2, , ahk_id %width2ID%
+	ControlGetText, ysize2, , ahk_id %height2ID%
+	ControlGet, AlwaysOnTop, Checked, , , ahk_id %OnTopID%
+	ControlGet, AddCrLf, Checked, , , ahk_id %CrLfID%
+	
+	IniWrite, %xpos%, %inifilename%, Autosave, xpos
+	IniWrite, %ypos%, %inifilename%, Autosave, ypos
+	IniWrite, %RadioGroup%, %inifilename%, WindowSize, Selected
+	IniWrite, %xsize1%, %inifilename%, XYSize, x1
+	IniWrite, %ysize1%, %inifilename%, XYSize, y1
+	IniWrite, %xsize2%, %inifilename%, XYSize, x2
+	IniWrite, %ysize2%, %inifilename%, XYSize, y2
+	IniWrite, %AlwaysOnTop%, %inifilename%, Options, AlwaysOnTop
+	IniWrite, %AddCrLf%, %inifilename%, Options, AddCrLf
+	IniWrite, %MonitorGroup%, %inifilename%, Options, MonitorSelect
+	IniWrite, %edtMonitor3%, %inifilename%, Options, Monitor3
+	IniWrite, %currentTitleMatchini%, %inifilename%, TitleMatches, CurrentIni
+	IniWrite, %currentPositionMatchini%, %inifilename%, PositionMatches, CurrentIni
+	IniWrite, %currentApplauncher%, %inifilename%, ApplicationLaunchers, CurrentLauncher
+	IniWrite, %currentPSlauncher%, %inifilename%, PuttySessionLaunchers, CurrentLauncher
+	IniWrite, %currentCmdlauncher%, %inifilename%, CommandLaunchers, CurrentLauncher
+	
+	GoSub, SaveTitleMatches
+	GoSub, SavePositionMatches
+	GoSub, SavePSCounts
+ExitApp
+
+SaveTitleMatches:
 	ControlGetText, edit1, , ahk_id %edit1ID%
 	ControlGetText, edit2, , ahk_id %edit2ID%
 	ControlGetText, edit3, , ahk_id %edit3ID%
@@ -1818,66 +1946,48 @@ GuiClose:
 	ControlGet, enableinv3, Checked, , , ahk_id %checkinv3ID%
 	ControlGet, enableinv4, Checked, , , ahk_id %checkinv4ID%
 	ControlGet, enableinv5, Checked, , , ahk_id %checkinv5ID%
-	ControlGetText, xsize1, , ahk_id %width1ID%
-	ControlGetText, ysize1, , ahk_id %height1ID%
-	ControlGetText, xsize2, , ahk_id %width2ID%
-	ControlGetText, ysize2, , ahk_id %height2ID%
-	ControlGetText, edit6, , ahk_id %FindFilterID%
-	ControlGet, AlwaysOnTop, Checked, , , ahk_id %OnTopID%
-	ControlGet, AddCrLf, Checked, , , ahk_id %CrLfID%
 	ControlGet, SingleMatch, Checked, , , ahk_id %SingleMatchID%
-	
-	IniWrite, %xpos%, %inifilename%, Autosave, xpos
-	IniWrite, %ypos%, %inifilename%, Autosave, ypos
-	IniWrite, %edit1%, %inifilename%, TitleMatch, Title1
-	IniWrite, %edit2%, %inifilename%, TitleMatch, Title2
-	IniWrite, %edit3%, %inifilename%, TitleMatch, Title3
-	IniWrite, %edit4%, %inifilename%, TitleMatch, Title4
-	IniWrite, %edit5%, %inifilename%, TitleMatch, Title5
-	IniWrite, %enable1%, %inifilename%, TitleMatchEnabled, TitleMatch1
-	IniWrite, %enable2%, %inifilename%, TitleMatchEnabled, TitleMatch2
-	IniWrite, %enable3%, %inifilename%, TitleMatchEnabled, TitleMatch3
-	IniWrite, %enable4%, %inifilename%, TitleMatchEnabled, TitleMatch4
-	IniWrite, %enable5%, %inifilename%, TitleMatchEnabled, TitleMatch5
-	IniWrite, %enableinv1%, %inifilename%, TitleMatchEnabled, TitleMatchInv1
-	IniWrite, %enableinv2%, %inifilename%, TitleMatchEnabled, TitleMatchInv2
-	IniWrite, %enableinv3%, %inifilename%, TitleMatchEnabled, TitleMatchInv3
-	IniWrite, %enableinv4%, %inifilename%, TitleMatchEnabled, TitleMatchInv4
-	IniWrite, %enableinv5%, %inifilename%, TitleMatchEnabled, TitleMatchInv5
-	IniWrite, %RadioGroup%, %inifilename%, WindowSize, Selected
-	IniWrite, %xsize1%, %inifilename%, XYSize, x1
-	IniWrite, %ysize1%, %inifilename%, XYSize, y1
-	IniWrite, %xsize2%, %inifilename%, XYSize, x2
-	IniWrite, %ysize2%, %inifilename%, XYSize, y2
-	IniWrite, %bit11state%, %inifilename%, MatchBits1, MatchBit11
-	IniWrite, %bit12state%, %inifilename%, MatchBits1, MatchBit12
-	IniWrite, %bit13state%, %inifilename%, MatchBits1, MatchBit13
-	IniWrite, %bit14state%, %inifilename%, MatchBits1, MatchBit14
-	IniWrite, %bit15state%, %inifilename%, MatchBits1, MatchBit15
-	IniWrite, %bit16state%, %inifilename%, MatchBits1, MatchBit16
-	IniWrite, %bit17state%, %inifilename%, MatchBits1, MatchBit17
-	IniWrite, %bit18state%, %inifilename%, MatchBits1, MatchBit18
-	IniWrite, %bit21state%, %inifilename%, MatchBits2, MatchBit21
-	IniWrite, %bit22state%, %inifilename%, MatchBits2, MatchBit22
-	IniWrite, %bit23state%, %inifilename%, MatchBits2, MatchBit23
-	IniWrite, %bit24state%, %inifilename%, MatchBits2, MatchBit24
-	IniWrite, %bit25state%, %inifilename%, MatchBits2, MatchBit25
-	IniWrite, %bit26state%, %inifilename%, MatchBits2, MatchBit26
-	IniWrite, %bit27state%, %inifilename%, MatchBits2, MatchBit27
-	IniWrite, %bit28state%, %inifilename%, MatchBits2, MatchBit28
-	IniWrite, %edit6%, %inifilename%, MatchBits1, MatchByte1
-	IniWrite, %FilterGroup%, %inifilename%, MatchBits1, MatchByte1Type
-	IniWrite, %AlwaysOnTop%, %inifilename%, Options, AlwaysOnTop
-	IniWrite, %AddCrLf%, %inifilename%, Options, AddCrLf
-	IniWrite, %MonitorGroup%, %inifilename%, Options, MonitorSelect
-	IniWrite, %edtMonitor3%, %inifilename%, Options, Monitor3
-	IniWrite, %SingleMatch%, %inifilename%, Options, SingleMatch
-	IniWrite, %currentApplauncher%, %inifilename%, ApplicationLaunchers, CurrentLauncher
-	IniWrite, %currentPSlauncher%, %inifilename%, PuttySessionLaunchers, CurrentLauncher
-	IniWrite, %currentCmdlauncher%, %inifilename%, CommandLaunchers, CurrentLauncher
-	
-	GoSub, SavePSCounts
-ExitApp
+
+	IniWrite, %edit1%, %inifilenametitlematch%, TitleMatch, Title1
+	IniWrite, %edit2%, %inifilenametitlematch%, TitleMatch, Title2
+	IniWrite, %edit3%, %inifilenametitlematch%, TitleMatch, Title3
+	IniWrite, %edit4%, %inifilenametitlematch%, TitleMatch, Title4
+	IniWrite, %edit5%, %inifilenametitlematch%, TitleMatch, Title5
+	IniWrite, %enable1%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch1
+	IniWrite, %enable2%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch2
+	IniWrite, %enable3%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch3
+	IniWrite, %enable4%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch4
+	IniWrite, %enable5%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch5
+	IniWrite, %enableinv1%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv1
+	IniWrite, %enableinv2%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv2
+	IniWrite, %enableinv3%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv3
+	IniWrite, %enableinv4%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv4
+	IniWrite, %enableinv5%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv5
+	IniWrite, %SingleMatch%, %inifilenametitlematch%, Options, SingleMatch
+Return
+
+SavePositionMatches:
+	ControlGetText, edit6, , ahk_id %FindFilterID%
+
+	IniWrite, %bit11state%, %inifilenamepositionmatch%, MatchBits1, MatchBit11
+	IniWrite, %bit12state%, %inifilenamepositionmatch%, MatchBits1, MatchBit12
+	IniWrite, %bit13state%, %inifilenamepositionmatch%, MatchBits1, MatchBit13
+	IniWrite, %bit14state%, %inifilenamepositionmatch%, MatchBits1, MatchBit14
+	IniWrite, %bit15state%, %inifilenamepositionmatch%, MatchBits1, MatchBit15
+	IniWrite, %bit16state%, %inifilenamepositionmatch%, MatchBits1, MatchBit16
+	IniWrite, %bit17state%, %inifilenamepositionmatch%, MatchBits1, MatchBit17
+	IniWrite, %bit18state%, %inifilenamepositionmatch%, MatchBits1, MatchBit18
+	IniWrite, %bit21state%, %inifilenamepositionmatch%, MatchBits2, MatchBit21
+	IniWrite, %bit22state%, %inifilenamepositionmatch%, MatchBits2, MatchBit22
+	IniWrite, %bit23state%, %inifilenamepositionmatch%, MatchBits2, MatchBit23
+	IniWrite, %bit24state%, %inifilenamepositionmatch%, MatchBits2, MatchBit24
+	IniWrite, %bit25state%, %inifilenamepositionmatch%, MatchBits2, MatchBit25
+	IniWrite, %bit26state%, %inifilenamepositionmatch%, MatchBits2, MatchBit26
+	IniWrite, %bit27state%, %inifilenamepositionmatch%, MatchBits2, MatchBit27
+	IniWrite, %bit28state%, %inifilenamepositionmatch%, MatchBits2, MatchBit28
+	IniWrite, %edit6%, %inifilenamepositionmatch%, Options, MatchByte
+	IniWrite, %FilterGroup%, %inifilenamepositionmatch%, Options, MatchType
+Return
 
 SavePSCounts:
 	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
