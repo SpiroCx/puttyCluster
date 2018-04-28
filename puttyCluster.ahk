@@ -254,10 +254,10 @@ xpos2 := xbase + 63
 ypos1 := ybase
 ypos2 := ybase + 27
 ypos3 := ybase + 54
-Gui, Add, Edit,  x%xpos1% y%ypos1% gwidthClick1 Hwndwidth1ID vwidth1 w30 Number, %xsize1%
-Gui, Add, Edit,  x%xpos2% y%ypos1% gheightClick1 Hwndheight1ID vheight1 w30 Number, %ysize1%
-Gui, Add, Edit,  x%xpos1% y%ypos2% gwidthClick2 Hwndwidth2ID vwidth2 w30 Number, %xsize2%
-Gui, Add, Edit,  x%xpos2% y%ypos2% gHeightClick2 Hwndheight2ID vheight2 w30 Number, %ysize2%
+Gui, Add, Edit,  x%xpos1% y%ypos1% gwhFocusRadioButton Hwndwidth1ID vwidth1 w30 Number, %xsize1%
+Gui, Add, Edit,  x%xpos2% y%ypos1% gwhFocusRadioButton Hwndheight1ID vheight1 w30 Number, %ysize1%
+Gui, Add, Edit,  x%xpos1% y%ypos2% gwhFocusRadioButton Hwndwidth2ID vwidth2 w30 Number, %xsize2%
+Gui, Add, Edit,  x%xpos2% y%ypos2% gwhFocusRadioButton Hwndheight2ID vheight2 w30 Number, %ysize2%
 
 ; ***** Monitor selector
 IniRead, monitorsel, %inifilename%, Options, MonitorSelect, 1
@@ -1166,21 +1166,14 @@ edtMonitorClick3:
 	ControlSend, , {Space}, ahk_id %Monitor3%
 Return
 
-widthClick1:
-	ControlSend, , {Space}, ahk_id %RadioCheck1%
-	ControlFocus, , ahk_id %width1ID%
-Return
-heightClick1:
-	ControlSend, , {Space}, ahk_id %RadioCheck1%
-	ControlFocus, , ahk_id %height1ID%
-Return
-widthClick2:
-	ControlSend, , {Space}, ahk_id %RadioCheck2%
-	ControlFocus, , ahk_id %width2ID%
-Return
-heightClick2:
-	ControlSend, , {Space}, ahk_id %RadioCheck2%
-	ControlFocus, , ahk_id %height2ID%
+whFocusRadioButton:
+	FoundPos := RegExMatch(A_GuiControl, "[12]")
+	pcontrolID = % "RadioCheck" . SubStr(A_GuiControl, FoundPos, 1)
+	contrlID := %pcontrolID%
+	pfocuslID = % A_GuiControl . "ID"
+	focusID := %pfocuslID%
+	ControlSend, , {Space}, ahk_id %contrlID%
+	ControlFocus, , ahk_id %focusID%
 Return
 
 titleDoSingle:
