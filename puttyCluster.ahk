@@ -59,6 +59,7 @@ global FoundWindowsFiltered3 := 22
 global FoundWindowsFiltered4 := 33
 global TimerPeriod := 1000
 global sendstrdata
+global enableGuiUpdates := 1
 
 ; ***** Title Row
 Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
@@ -1251,6 +1252,7 @@ LoadPositionMatches:
 	}
 	GoSub, UpdateFoundWindowsFilteredGui
 	IniRead, matchbyte, %inifilenamepositionmatch%, Options, MatchByte, FFFF
+	enableGuiUpdates = 0
 	ControlSetText, , %matchbyte%, ahk_id %FindFilterID%
 
 	IniRead, matchtype, %inifilenamepositionmatch%, Options, MatchType, 1
@@ -1259,6 +1261,7 @@ LoadPositionMatches:
 		idvar := %pidvar%
 		Control, % ((A_Index == matchtype) ? "check" : "uncheck" ), , , ahk_id %idvar%
 	}
+	enableGuiUpdates = 1
 Return
 
 LoadLaunchers:
@@ -1719,9 +1722,11 @@ CrLfCheck:
 Return
 
 FindFilterClick:
-	ControlSend, , {Space}, ahk_id %FilterGroup3ID%
-	ControlFocus, , ahk_id %FindFilterID%
-	GoSub, UpdateFoundWindowsFilteredGui
+	If (enableGuiUpdates == 1) {
+		ControlSend, , {Space}, ahk_id %FilterGroup3ID%
+		ControlFocus, , ahk_id %FindFilterID%
+		GoSub, UpdateFoundWindowsFilteredGui
+	}
 Return
 
 bit11toggle:
