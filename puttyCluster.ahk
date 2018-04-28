@@ -79,7 +79,7 @@ Loop, 5 {
 xpos := 180
 ypos := 30
 Loop, 5 {
-	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck" .A_Index . "ID gcheck" . A_Index . " vcheck" . A_Index
+	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck" . A_Index . "ID gtitleDoSingle vcheck" . A_Index
 	ypos += 27                               
 }
 check1_TT := "Enable title match regex"
@@ -88,7 +88,7 @@ check1_TT := "Enable title match regex"
 xpos += 30
 ypos := 30
 Loop, 5 {
-	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv" . A_Index . "ID gcheckinv" . A_Index . " vcheckinv" . A_Index
+	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv" . A_Index . "ID gFocusInput vcheckinv" . A_Index
 	ypos += 27
 }
 checkinv1_TT := "Invert regex"
@@ -231,7 +231,7 @@ Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " HwndRadioCheck6  gRadi
 Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " HwndRadioCheck7  gRadioCheck" . ( (winsize == 7) ? " Checked" : "" )
 Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndRadioCheck8  gRadioCheck" . ( (winsize == 8) ? " Checked" : "" )
 
-; ***** Radio button text boxes
+; ***** Window size radio button text boxes
 IniRead, xsize1, %inifilename%, XYSize, x1, 400
 IniRead, ysize1, %inifilename%, XYSize, y1, 500
 IniRead, xsize2, %inifilename%, XYSize, x2, 400
@@ -248,7 +248,7 @@ Gui, Add, Text,  x%xpos% y%ypos1%, 2x2
 Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
 Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
 
-; ***** Radio button edit boxes
+; ***** Window size radio button edit boxes
 xpos1 := xbase + 23
 xpos2 := xbase + 63
 ypos1 := ybase
@@ -402,7 +402,7 @@ Loop, 6 {
 GoSub, LoadCmdLaunchers
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
-ControlFocus, , ahk_id %InputBox1ID%
+ControlFocus, , ahk_id %InputBoxID%
 WinActivate, %windowname%
 	
 onMessage(0x100,"key")  ; key down
@@ -968,14 +968,14 @@ LoadTitleMatches:
 		
 		ptmvar = TitleMatch%A_Index%
 		tmvar = %ptmvar%
-		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, .*
+		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, 0
 		pidvar = check%A_Index%ID
 		idvar := %pidvar%
 		Control, % (tmval ? "check" : "uncheck"), , , ahk_id %idvar%
 		
 		ptmvar = TitleMatchInv%A_Index%
 		tmvar = %ptmvar%
-		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, .*
+		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, 0
 		pidvar = checkinv%A_Index%ID
 		idvar := %pidvar%
 		Control, % (tmval ? "check" : "uncheck"), , , ahk_id %idvar%
@@ -1183,87 +1183,28 @@ heightClick2:
 	ControlFocus, , ahk_id %height2ID%
 Return
 
-check1:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check1 == 1)) {
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
-	ControlFocus, , ahk_id %InputBoxID%
-Return
-
-check2:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check2 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
-	ControlFocus, , ahk_id %InputBoxID%
-Return
-
-check3:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check3 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
-	ControlFocus, , ahk_id %InputBoxID%
-Return
-
-check4:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check4 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
-	ControlFocus, , ahk_id %InputBoxID%
-Return
-
-check5:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check5 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
+titleDoSingle:
+	gui, submit, nohide	
+	if (SingleMatch != 1)
+		Return
+	Index := SubStr(A_GuiControl, 6, 1)
+	controlVal := check%Index%
+	if (controlVal != 1)
+		Return
+	Loop, 5 {
+		If (Index == A_Index)
+			Continue
+		controlVal := check%A_Index%
+		If (controlVal == 1) {
+			pControlID = check%A_Index%ID
+			ControlID := %pControlID%
+			ControlSend, , {Space}, ahk_id %ControlID%
+		}
 	}
 	ControlFocus, , ahk_id %InputBoxID%
 Return
 
 FocusInput:
-checkinv1:
-checkinv2:
-checkinv3:
-checkinv4:
-checkinv5:
 	ControlFocus, , ahk_id %InputBoxID%
 Return
 
