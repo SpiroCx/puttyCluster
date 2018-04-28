@@ -21,22 +21,6 @@ inifilename = puttyCluster.ini
 if (%0% > 0)
 	inifilename = %1%
 
-global bit11state := 0
-global bit12state := 0
-global bit13state := 0
-global bit14state := 0
-global bit15state := 0
-global bit16state := 0
-global bit17state := 0
-global bit18state := 0
-global bit21state := 0
-global bit22state := 0
-global bit23state := 0
-global bit24state := 0
-global bit25state := 0
-global bit26state := 0
-global bit27state := 0
-global bit28state := 0
 global windowname = "Mingbo's cluster Putty"
 SysGet, ScreenWidth, 0
 SysGet, ScreenHeight, 1
@@ -60,6 +44,8 @@ global FoundWindowsFiltered4 := 33
 global TimerPeriod := 1000
 global sendstrdata
 global enableGuiUpdates := 1
+global MatchBits1
+global MatchBits2
 
 ; ***** Title Row
 Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
@@ -84,51 +70,28 @@ Gui, Add, Text, x%xpos% y%ypos%, Window title filter:                   En     I
 xpos := 10
 ypos := 25
 ewidth := 160
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit1ID vtitle1 w%ewidth%, .*
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit2ID vtitle2 w%ewidth%,
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit3ID vtitle3 w%ewidth%,
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit4ID vtitle4 w%ewidth%,
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit5ID vtitle5 w%ewidth%,
+Loop, 5 {
+	Gui, Add, Edit, x%xpos% y%ypos% Hwndedit%A_Index%ID vtitle%A_Index% w%ewidth%,
+	ypos += 27
+}
 
 ; ***** Enable checkboxes
 xpos := 180
 ypos := 30
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck1ID gcheck1 vcheck1 Checked"
-check1_TT := "Enable title match regex 1"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck2ID gcheck2 vcheck2"
-check2_TT := "Enable title match regex 2"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck3ID gcheck3 vcheck3"
-check3_TT := "Enable title match regex 3"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck4ID gcheck4 vcheck4"
-check4_TT := "Enable title match regex 4"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck5ID gcheck5 vcheck5"
-check5_TT := "Enable title match regex 5"
+Loop, 5 {
+	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck" .A_Index . "ID gcheck" . A_Index . " vcheck" . A_Index
+	ypos += 27                               
+}
+check1_TT := "Enable title match regex"
 
 ; ***** Invert checkboxes
 xpos += 30
 ypos := 30
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv1ID gcheckinv1 vcheckinv1"
-checkinv1_TT := "Invert regex 1 (NOT regex 1)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv2ID gcheckinv2 vcheckinv2"
-checkinv2_TT := "Invert regex 2 (NOT regex 2)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv3ID gcheckinv3 vcheckinv3"
-checkinv3_TT := "Invert regex 3 (NOT regex 3)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv4ID gcheckinv4 vcheckinv4"
-checkinv4_TT := "Invert regex 4 (NOT regex 4)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv5ID gcheckinv5 vcheckinv5"
-checkinv5_TT := "Invert regex 5 (NOT regex 5)"
+Loop, 5 {
+	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv" . A_Index . "ID gcheckinv" . A_Index . " vcheckinv" . A_Index
+	ypos += 27
+}
+checkinv1_TT := "Invert regex"
 
 ; ***** Found n windows and Locate Windows button
 xpos := 10
@@ -187,50 +150,27 @@ Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup3InfoID vFilterGroup3InfoVal
 ; ***** Found filter bit selection buttons 1
 xpos := 52
 ypos := 247
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit11ID gbit11toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit12ID gbit12toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit13ID gbit13toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit14ID gbit14toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit15ID gbit15toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit16ID gbit16toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit17ID gbit17toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit18ID gbit18toggle -default
-xpos += 30
+Loop, 8 {
+	Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit1%A_Index%ID gbit1toggle vbit1%A_Index%state -default
+	xpos += 16
+}
+xpos += 14
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup2InfoID vFilterGroup2InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 2
 xpos := 52
 ypos := 277
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit21ID gbit21toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit22ID gbit22toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit23ID gbit23toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit24ID gbit24toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit25ID gbit25toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit26ID gbit26toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit27ID gbit27toggle -default
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit28ID gbit28toggle -default
-xpos += 30
+Loop, 8 {
+	Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit2%A_Index%ID gbit2toggle vbit2%A_Index%state -default
+	xpos += 16
+}
+xpos += 14
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup4InfoID vFilterGroup4InfoVal, % "(0/0)"
 GoSub, LoadPositionMatches
 
 ; ***** Window transparency slider
-; yposslider := 190
 yposslider := 310
 xpos := 10
 ypos := yposslider
@@ -331,8 +271,6 @@ Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonito
 xpos += 30
 Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor3" . ( (monitorsel == 3) ? " Checked" : "" )
 xpos += 23
-;ypos3 -= 3
-;Gui, Add, Edit,  x%xpos% y%ypos3% gedtMonitorClick3 HwndedtMonitor3ID vedtMonitor3 w20 h20 Number, %edtMonitor3%
 Gui, Add, Text,  x%xpos% y%ypos3% w24 h16, %edtMonitor3%
 Gui, Add, UpDown, gedtMonitorClick3 vedtMonitor3 HwndedtMonitor3ID Range1-8, %edtMonitor3%
 edtMonitor3_TT := "Enter a monitor number here.  Default 3"
@@ -375,20 +313,18 @@ xsidepanel += 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
 ;
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 20
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher1 gbtnLauncher1 HwndbtnLauncher1ID -default, Launcher1
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher2 gbtnLauncher2 HwndbtnLauncher2ID -default, Launcher2
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher3 gbtnLauncher3 HwndbtnLauncher3ID -default, Launcher3
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher4 gbtnLauncher4 HwndbtnLauncher4ID -default, Launcher4
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher5 gbtnLauncher5 HwndbtnLauncher5ID -default, Launcher5
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher6 gbtnLauncher6 HwndbtnLauncher6ID -default, Launcher6
+ysidepanel -= 10
+Index := 1
+Loop, 2 {
+	row := A_Index
+	xsidepanel := xsidepanelbutton + 30
+	ysidepanel += 30
+	Loop, 3 {
+		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher%Index% gbtnLauncher%Index% HwndbtnLauncher%Index%ID -default, Launcher%Index%
+		xsidepanel += 65
+		Index += 1
+	}
+}
 GoSub, LoadLaunchers
 
 ; ***** Sidepanel putty session launchers
@@ -410,88 +346,27 @@ xsidepanel := xsidepanel + 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty session launchers:
 ;
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 20
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty1 gbtnPutty1 HwndbtnPutty1ID -default, Putty1
-xsidepanel += 67
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty11 HwndedtPutty11ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty11UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty12 HwndedtPutty12ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty12UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty13 HwndedtPutty13ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty13UpDown Range0-10, 0
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty2 gbtnPutty2 HwndbtnPutty2ID -default, Putty2
-xsidepanel += 67
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty21 HwndedtPutty21ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty21UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty22 HwndedtPutty22ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty22UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty23 HwndedtPutty23ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty23UpDown Range0-10, 0
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty3 gbtnPutty3 HwndbtnPutty3ID -default, Putty3
-xsidepanel += 67
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty31 HwndedtPutty31ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty31UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty32 HwndedtPutty32ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty32UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty33 HwndedtPutty33ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty33UpDown Range0-10, 0
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty4 gbtnPutty4 HwndbtnPutty4ID -default, Putty4
-xsidepanel += 67
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty41 HwndedtPutty41ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty41UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty42 HwndedtPutty42ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty42UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty43 HwndedtPutty43ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty43UpDown Range0-10, 0
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty5 gbtnPutty5 HwndbtnPutty5ID -default, Putty5
-xsidepanel += 67
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty51 HwndedtPutty51ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty51UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty52 HwndedtPutty52ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty52UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty53 HwndedtPutty53ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty53UpDown Range0-10, 0
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty6 gbtnPutty6 HwndbtnPutty6ID -default, Putty6
-xsidepanel += 67
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty61 HwndedtPutty61ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty61UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty62 HwndedtPutty62ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty62UpDown Range0-10, 0
-xsidepanel += 40
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty63 HwndedtPutty63ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty63UpDown Range0-10, 0
+ysidepanel -= 10
+Loop, 6 {
+	row := A_Index
+	xsidepanel := xsidepanelbutton + 30
+	ysidepanel += 30
+	Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty%row% gbtnPutty%row% HwndbtnPutty%row%ID -default, Putty%row%
+	xsidepanel += 67
+	Loop, 3 {
+		Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty%row%%A_Index% HwndedtPutty%row%%A_Index%ID w37
+		Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty%row%%A_Index%UpDown Range0-10, 0
+		xsidepanel += 40
+	}
+}
+
 xsidepanel := xsidepanelbutton + 97
 ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol1 gbtnCol1 HwndbtnCol1ID -default, Col
+Loop, 3 {
+	Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol%A_Index% gbtnCol%A_Index% HwndbtnCol%A_Index%ID -default, Col
+	xsidepanel += 40
+}
 btnCol1_TT := "Launch the 1st column of sessions"
-xsidepanel += 40
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol2 gbtnCol2 HwndbtnCol2ID -default, Col
-btnCol2_TT := "Launch the 2nd column of sessions"
-xsidepanel += 40
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol3 gbtnCol3 HwndbtnCol3ID -default, Col
-btnCol3_TT := "Launch the 3rd column of sessions"
 GoSub, LoadPSLaunchers
 
 ; ***** Sidepanel Putty commands
@@ -513,52 +388,21 @@ xsidepanel := xsidepanel + 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty commands:
 ;
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand1 gbtnCommand1 HwndbtnCommand1ID -default, Cmd1
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand2 gbtnCommand2 HwndbtnCommand2ID -default, Cmd2
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand3 gbtnCommand3 HwndbtnCommand3ID -default, Cmd3
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand4 gbtnCommand4 HwndbtnCommand4ID -default, Cmd4
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand5 gbtnCommand5 HwndbtnCommand5ID -default, Cmd5
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand6 gbtnCommand6 HwndbtnCommand6ID -default, Cmd6
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand7 gbtnCommand7 HwndbtnCommand7ID -default, Cmd7
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand8 gbtnCommand8 HwndbtnCommand8ID -default, Cmd8
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand9 gbtnCommand9 HwndbtnCommand9ID -default, Cmd9
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand10 gbtnCommand10 HwndbtnCommand10ID -default, Cmd10
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand11 gbtnCommand11 HwndbtnCommand11ID -default, Cmd11
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand12 gbtnCommand12 HwndbtnCommand12ID -default, Cmd12
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand13 gbtnCommand13 HwndbtnCommand13ID -default, Cmd13
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand14 gbtnCommand14 HwndbtnCommand14ID -default, Cmd14
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand15 gbtnCommand15 HwndbtnCommand15ID -default, Cmd15
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand16 gbtnCommand16 HwndbtnCommand16ID -default, Cmd16
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand17 gbtnCommand17 HwndbtnCommand17ID -default, Cmd17
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, Cmd18
+Index := 1
+Loop, 6 {
+	xsidepanel := xsidepanelbutton + 30
+	ysidepanel += 25
+	Loop, 3 {
+		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand%Index% gbtnCommand%Index% HwndbtnCommand%Index%ID -default, Cmd%Index%
+		xsidepanel += 65
+		Index += 1
+	}
+}
+
 GoSub, LoadCmdLaunchers
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
-ControlFocus, , ahk_id %InputBoxID%
+ControlFocus, , ahk_id %InputBox1ID%
 WinActivate, %windowname%
 	
 onMessage(0x100,"key")  ; key down
@@ -610,98 +454,24 @@ WM_RBUTTONDOWN()
 	Global btnCommand18ID
 	Global EditControlName
 	MouseGetPos,,,,EditControlHwnd,2
-	if (EditControlHwnd == ahk_id btnLauncher1ID) {
-		EditControlName = Launcher 1
-		GoSub, EditBoxAppLauncher
-	} else if (EditControlHwnd == ahk_id btnLauncher2ID) {
-		EditControlName = Launcher 2
-		GoSub, EditBoxAppLauncher
-	} else if (EditControlHwnd == ahk_id btnLauncher3ID) {
-		EditControlName = Launcher 3
-		GoSub, EditBoxAppLauncher
-	} else if (EditControlHwnd == ahk_id btnLauncher4ID) {
-		EditControlName = Launcher 4
-		GoSub, EditBoxAppLauncher
-	} else if (EditControlHwnd == ahk_id btnLauncher5ID) {
-		EditControlName = Launcher 5
-		GoSub, EditBoxAppLauncher
-	} else if (EditControlHwnd == ahk_id btnLauncher6ID) {
-		EditControlName = Launcher 6
-		GoSub, EditBoxAppLauncher
-	;
-	} else if (EditControlHwnd == ahk_id btnPutty1ID) {
-		EditControlName = Putty Session 1
-		GoSub, EditBoxPSLauncher
-	} else if (EditControlHwnd == ahk_id btnPutty2ID) {
-		EditControlName = Putty Session 2
-		GoSub, EditBoxPSLauncher
-	} else if (EditControlHwnd == ahk_id btnPutty3ID) {
-		EditControlName = Putty Session 3
-		GoSub, EditBoxPSLauncher
-	} else if (EditControlHwnd == ahk_id btnPutty4ID) {
-		EditControlName = Putty Session 4
-		GoSub, EditBoxPSLauncher
-	} else if (EditControlHwnd == ahk_id btnPutty5ID) {
-		EditControlName = Putty Session 5
-		GoSub, EditBoxPSLauncher
-	} else if (EditControlHwnd == ahk_id btnPutty6ID) {
-		EditControlName = Putty Session 6
-		GoSub, EditBoxPSLauncher
-	;
-	} else if (EditControlHwnd == ahk_id btnCommand1ID) {
-		EditControlName = Putty Command 1
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand2ID) {
-		EditControlName = Putty Command 2
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand3ID) {
-		EditControlName = Putty Command 3
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand4ID) {
-		EditControlName = Putty Command 4
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand5ID) {
-		EditControlName = Putty Command 5
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand6ID) {
-		EditControlName = Putty Command 6
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand7ID) {
-		EditControlName = Putty Command 7
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand8ID) {
-		EditControlName = Putty Command 8
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand9ID) {
-		EditControlName = Putty Command 9
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand10ID) {
-		EditControlName = Putty Command 10
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand11ID) {
-		EditControlName = Putty Command 11
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand12ID) {
-		EditControlName = Putty Command 12
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand13ID) {
-		EditControlName = Putty Command 13
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand14ID) {
-		EditControlName = Putty Command 14
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand15ID) {
-		EditControlName = Putty Command 15
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand16ID) {
-		EditControlName = Putty Command 16
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand17ID) {
-		EditControlName = Putty Command 17
-		GoSub, EditBoxCmdLauncher
-	} else if (EditControlHwnd == ahk_id btnCommand18ID) {
-		EditControlName = Putty Command 18
-		GoSub, EditBoxCmdLauncher
+	Loop, 6 {
+		If (EditControlHwnd == ahk_id btnLauncher%A_Index%ID) {
+			EditControlName = % "Launcher " . A_Index
+			GoSub, EditBoxAppLauncher
+			Return
+		}
+		If (EditControlHwnd == ahk_id btnPutty%A_Index%ID) {
+			EditControlName = % "Putty Session " . A_Index
+			GoSub, EditBoxPSLauncher
+			Return
+		}
+	}
+	Loop, 18 {
+		If (EditControlHwnd == ahk_id btnCommand%A_Index%ID) {
+			EditControlName = % "Putty Command " . A_Index
+			GoSub, EditBoxCmdLauncher
+			Return
+		}
 	}
 }
 
@@ -761,22 +531,8 @@ key(wParam, lParam, msg, hwnd)
 	global id_array_count
 	global FilterGroup
 	global FindFilterTxt
-	global bit11state
-	global bit12state
-	global bit13state
-	global bit14state
-	global bit15state
-	global bit16state
-	global bit17state
-	global bit18state
-	global bit21state
-	global bit22state
-	global bit23state
-	global bit24state
-	global bit25state
-	global bit26state
-	global bit27state
-	global bit28state
+	global MatchBits1
+	global MatchBits2
 
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
@@ -787,9 +543,9 @@ key(wParam, lParam, msg, hwnd)
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1229,27 +985,24 @@ LoadTitleMatches:
 Return
 
 LoadPositionMatches:
+	enableGuiUpdates = 0
+	IniRead, MatchBits1, %inifilenamepositionmatch%, Options, MatchBits1, 0
+	bit := 1
 	Loop, 8 {
-		ptmvar = MatchBit1%A_Index%
-		tmvar = %ptmvar%
-		IniRead, tmval, %inifilenamepositionmatch%, MatchBits1, %tmvar%, 0
-		ptogglestate = bit1%A_Index%state
-		togglestate = %ptogglestate%
-		ptoggleroutine = bit1%A_Index%toggle_update_value
-		toggleroutine = %ptoggleroutine%
-		if (tmval != %togglestate%)
-			GoSub, %toggleroutine%
-			
-		ptmvar = MatchBit2%A_Index%
-		tmvar = %ptmvar%
-		IniRead, tmval, %inifilenamepositionmatch%, MatchBits2, %tmvar%, 0
-		ptogglestate = bit2%A_Index%state
-		togglestate = %ptogglestate%
-		ptoggleroutine = bit2%A_Index%toggle_update_value
-		toggleroutine = %ptoggleroutine%
-		if (tmval != %togglestate%)
-			GoSub, %toggleroutine%
+		btnid := "btnBit1" . A_Index . "ID"
+		biten := bit & MatchBits1
+		GuiControl,, % %btnid% , % ( (biten > 0) ? A_Index : "" )
+		bit *= 2
 	}
+	bit := 1
+	IniRead, MatchBits2, %inifilenamepositionmatch%, Options, MatchBits2, 0
+	Loop, 8 {
+		btnid := "btnBit2" . A_Index . "ID"
+		biten := bit & MatchBits2
+		GuiControl,, % %btnid% , % ( (biten > 0) ? A_Index : "" )
+		bit *= 2
+	}
+	enableGuiUpdates = 1
 	GoSub, UpdateFoundWindowsFilteredGui
 	IniRead, matchbyte, %inifilenamepositionmatch%, Options, MatchByte, FFFF
 	enableGuiUpdates = 0
@@ -1729,164 +1482,30 @@ FindFilterClick:
 	}
 Return
 
-bit11toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit11toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit11toggle_update_value:
-	bit11state := !bit11state
-	GuiControl,, %btnBit11ID%, % ( (bit11state) ? "1" : "" )
-Return
-
-bit12toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit12toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit12toggle_update_value:
-	bit12state := !bit12state
-	GuiControl,, %btnBit12ID%, % ( (bit12state) ? "2" : "" )
+bit1toggle:
+	Index := SubStr(A_GuiControl, 5, 1)
+	mask := 2**(Index-1)
+	Matchbits1 ^= mask
+	test := Matchbits1 & mask
+	btnid := "btnBit1" . Index . "ID"
+	GuiControl,, % %btnid% , % ((test > 0) ? Index : "" )
+	If (enableGuiUpdates == 1) {
+		ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+		GoSub, UpdateFoundWindowsFilteredGui
+	}
 Return
 
-bit13toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit13toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit13toggle_update_value:
-	bit13state := !bit13state
-	GuiControl,, %btnBit13ID%, % ( (bit13state) ? "3" : "" )
-Return
-
-bit14toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit14toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit14toggle_update_value:
-	bit14state := !bit14state
-	GuiControl,, %btnBit14ID%, % ( (bit14state) ? "4" : "" )
-Return
-
-bit15toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit15toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit15toggle_update_value:
-	bit15state := !bit15state
-	GuiControl,, %btnBit15ID%, % ( (bit15state) ? "5" : "" )
-Return
-
-bit16toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit16toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit16toggle_update_value:
-	bit16state := !bit16state
-	GuiControl,, %btnBit16ID%, % ( (bit16state) ? "6" : "" )
-Return
-
-bit17toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit17toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit17toggle_update_value:
-	bit17state := !bit17state
-	GuiControl,, %btnBit17ID%, % ( (bit17state) ? "7" : "" )
-Return
-
-bit18toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	GoSub, bit18toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit18toggle_update_value:
-	bit18state := !bit18state
-	GuiControl,, %btnBit18ID%, % ( (bit18state) ? "8" : "" )
-Return
-
-bit21toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit21toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit21toggle_update_value:
-	bit21state := !bit21state
-	GuiControl,, %btnBit21ID%, % ( (bit21state) ? "1" : "" )
-Return
-
-bit22toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit22toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit22toggle_update_value:
-	bit22state := !bit22state
-	GuiControl,, %btnBit22ID%, % ( (bit22state) ? "2" : "" )
-Return
-
-bit23toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit23toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit23toggle_update_value:
-	bit23state := !bit23state
-	GuiControl,, %btnBit23ID%, % ( (bit23state) ? "3" : "" )
-Return
-
-bit24toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit24toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit24toggle_update_value:
-	bit24state := !bit24state
-	GuiControl,, %btnBit24ID%, % ( (bit24state) ? "4" : "" )
-Return
-
-bit25toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit25toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit25toggle_update_value:
-	bit25state := !bit25state
-	GuiControl,, %btnBit25ID%, % ( (bit25state) ? "5" : "" )
-Return
-
-bit26toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit26toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit26toggle_update_value:
-	bit26state := !bit26state
-	GuiControl,, %btnBit26ID%, % ( (bit26state) ? "6" : "" )
-Return
-
-bit27toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit27toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit27toggle_update_value:
-	bit27state := !bit27state
-	GuiControl,, %btnBit27ID%, % ( (bit27state) ? "7" : "" )
-Return
-
-bit28toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	GoSub, bit28toggle_update_value
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-bit28toggle_update_value:
-	bit28state := !bit28state
-	GuiControl,, %btnBit28ID%, % ( (bit28state) ? "8" : "" )
+bit2toggle:
+	Index := SubStr(A_GuiControl, 5, 1)
+	mask := 2**(Index-1)
+	Matchbits2 ^= mask
+	test := Matchbits2 & mask
+	btnid := "btnBit2" . Index . "ID"
+	GuiControl,, % %btnid% , % ((test > 0) ? Index : "" )
+	If (enableGuiUpdates == 1) {
+		ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+		GoSub, UpdateFoundWindowsFilteredGui
+	}
 Return
 
 SetScreenWidthHeight:
@@ -2020,22 +1639,8 @@ Return
 SavePositionMatches:
 	ControlGetText, edit6, , ahk_id %FindFilterID%
 
-	IniWrite, %bit11state%, %inifilenamepositionmatch%, MatchBits1, MatchBit11
-	IniWrite, %bit12state%, %inifilenamepositionmatch%, MatchBits1, MatchBit12
-	IniWrite, %bit13state%, %inifilenamepositionmatch%, MatchBits1, MatchBit13
-	IniWrite, %bit14state%, %inifilenamepositionmatch%, MatchBits1, MatchBit14
-	IniWrite, %bit15state%, %inifilenamepositionmatch%, MatchBits1, MatchBit15
-	IniWrite, %bit16state%, %inifilenamepositionmatch%, MatchBits1, MatchBit16
-	IniWrite, %bit17state%, %inifilenamepositionmatch%, MatchBits1, MatchBit17
-	IniWrite, %bit18state%, %inifilenamepositionmatch%, MatchBits1, MatchBit18
-	IniWrite, %bit21state%, %inifilenamepositionmatch%, MatchBits2, MatchBit21
-	IniWrite, %bit22state%, %inifilenamepositionmatch%, MatchBits2, MatchBit22
-	IniWrite, %bit23state%, %inifilenamepositionmatch%, MatchBits2, MatchBit23
-	IniWrite, %bit24state%, %inifilenamepositionmatch%, MatchBits2, MatchBit24
-	IniWrite, %bit25state%, %inifilenamepositionmatch%, MatchBits2, MatchBit25
-	IniWrite, %bit26state%, %inifilenamepositionmatch%, MatchBits2, MatchBit26
-	IniWrite, %bit27state%, %inifilenamepositionmatch%, MatchBits2, MatchBit27
-	IniWrite, %bit28state%, %inifilenamepositionmatch%, MatchBits2, MatchBit28
+	IniWrite, %MatchBits1%, %inifilenamepositionmatch%, Options, MatchBits1
+	IniWrite, %MatchBits2%, %inifilenamepositionmatch%, Options, MatchBits2
 	IniWrite, %edit6%, %inifilenamepositionmatch%, Options, MatchByte
 	IniWrite, %FilterGroup%, %inifilenamepositionmatch%, Options, MatchType
 Return
@@ -2081,24 +1686,22 @@ SavePSCounts:
 Return
 
 UpdateFoundWindowsFilteredGui:
-	windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
 	titlematchbit := 1
 	matchcount := 0
 	Loop, %id_array_count%
 	{
-		if ( ( titlematchbit & windowfilter ) > 0 ) {
+		if ( ( titlematchbit & MatchBits1 ) > 0 ) {
 			matchcount += 1
 		}
 		titlematchbit *= 2
 	}
 	FoundWindowsFiltered2 := matchcount
 
-	windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 	titlematchbit := 1
 	matchcount := 0
 	Loop, %id_array_count%
 	{
-		if ( ( titlematchbit & windowfilter ) > 0 ) {
+		if ( ( titlematchbit & MatchBits2 ) > 0 ) {
 			matchcount += 1
 		}
 		titlematchbit *= 2
@@ -2149,9 +1752,9 @@ Tile:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2194,9 +1797,9 @@ ToFront:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2233,9 +1836,9 @@ ToBack:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2273,9 +1876,9 @@ CloseWin:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2315,9 +1918,9 @@ Cascade:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2388,9 +1991,9 @@ SendString_LeaveTimers:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2427,9 +2030,9 @@ Locate:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -2570,9 +2173,9 @@ Alpha:
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
