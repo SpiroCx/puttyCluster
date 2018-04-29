@@ -1,7 +1,6 @@
 #SingleInstance force
 #NoTrayIcon
 SetWorkingDir %A_ScriptDir%
-;DetectHiddenWindows, On
 
 Menu, Tray, Icon, puttyCluster.ico
 
@@ -104,7 +103,6 @@ xpos := 120
 ypos -= 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, Locate
 GoSub, LoadTitleMatches
-
 
 ; ***** Found filter radio buttons
 Iniread, currentPositionMatchini, %inifilename%, PositionMatches, CurrentIni, 1
@@ -312,7 +310,6 @@ Gui, Add, button, x%xsidepanel% y%ysidepanel% gAppLaunchersClick HwndbtnAppLaunc
 xsidepanel += 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
-;
 ysidepanel -= 10
 Index := 1
 Loop, 2 {
@@ -320,7 +317,7 @@ Loop, 2 {
 	xsidepanel := xsidepanelbutton + 30
 	ysidepanel += 30
 	Loop, 3 {
-		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher%Index% gbtnLauncher%Index% HwndbtnLauncher%Index%ID -default, Launcher%Index%
+		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher%Index% gbtnLauncher HwndbtnLauncher%Index%ID -default, Launcher%Index%
 		xsidepanel += 65
 		Index += 1
 	}
@@ -345,13 +342,12 @@ Gui, Add, button, x%xsidepanel% y%ysidepanel% gPSLaunchersClick HwndbtnPSLaunche
 xsidepanel := xsidepanel + 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty session launchers:
-;
 ysidepanel -= 10
 Loop, 6 {
 	row := A_Index
 	xsidepanel := xsidepanelbutton + 30
 	ysidepanel += 30
-	Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty%row% gbtnPutty%row% HwndbtnPutty%row%ID -default, Putty%row%
+	Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty%row% gbtnPutty HwndbtnPutty%row%ID -default, Putty%row%
 	xsidepanel += 67
 	Loop, 3 {
 		Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty%row%%A_Index% HwndedtPutty%row%%A_Index%ID w37
@@ -363,7 +359,7 @@ Loop, 6 {
 xsidepanel := xsidepanelbutton + 97
 ysidepanel += 30
 Loop, 3 {
-	Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol%A_Index% gbtnCol%A_Index% HwndbtnCol%A_Index%ID -default, Col
+	Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol%A_Index% gbtnCol HwndbtnCol%A_Index%ID -default, Col
 	xsidepanel += 40
 }
 btnCol1_TT := "Launch the 1st column of sessions"
@@ -387,18 +383,16 @@ Gui, Add, button, x%xsidepanel% y%ysidepanel% gCmdLaunchersClick HwndbtnCmdLaunc
 xsidepanel := xsidepanel + 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty commands:
-;
 Index := 1
 Loop, 6 {
 	xsidepanel := xsidepanelbutton + 30
 	ysidepanel += 25
 	Loop, 3 {
-		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand%Index% gbtnCommand%Index% HwndbtnCommand%Index%ID -default, Cmd%Index%
+		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand%Index% gbtnCommand HwndbtnCommand%Index%ID -default, Cmd%Index%
 		xsidepanel += 65
 		Index += 1
 	}
 }
-
 GoSub, LoadCmdLaunchers
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
@@ -624,63 +618,63 @@ EditBoxAppLauncher:
 	Gui, 3:+AlwaysOnTop
 	Gui, 3:-AlwaysOnTop
 Return
-3btnClear:
-		ControlSetText, , , ahk_id %edtControlLabelID%
-		ControlSetText, , , ahk_id %edtControlTTID%
-		ControlSetText, , , ahk_id %edtControlCmdID%
-		ControlSetText, , , ahk_id %edtControlDirID%
-Return
-3btnSave:
-	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
-	IniWrite, %newlabel%, %inifilenameAppLaunchers%, %inisection%, Label
-	ControlGetText, newTT, , ahk_id %edtControlTTID%
-	IniWrite, %newTT%, %inifilenameAppLaunchers%, %inisection%, Tooltip
-	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
-	IniWrite, %newCmd%, %inifilenameAppLaunchers%, %inisection%, Command
-	ControlGetText, newDir, , ahk_id %edtControlDirID%
-	IniWrite, %newDir%, %inifilenameAppLaunchers%, %inisection%, Dir
-	GoSub, LoadLaunchers
-3btnCancel:
-3GuiClose:
-3GuiEscape:
-	Gui, 3:Destroy
-	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
-Return
-3LaunchSelectClick:
-	Iniread, tooltipprefix, %inifilename%, ApplicationLaunchers, DefaultTooltipPrefix, Run:
-	Iniread, clipregex1search, %inifilename%, ApplicationLaunchers, LabelClipRegex1search, _[^_]+$
-	Iniread, clipregex1replace, %inifilename%, ApplicationLaunchers, LabelClipRegex1replace,
-	Iniread, clipregex2search, %inifilename%, ApplicationLaunchers, LabelClipRegex2search, ^ccimx6
-	Iniread, clipregex2replace, %inifilename%, ApplicationLaunchers, LabelClipRegex2replace,
-	Iniread, clipregex3search, %inifilename%, ApplicationLaunchers, LabelClipRegex3search, %A_Space%
-	Iniread, clipregex3replace, %inifilename%, ApplicationLaunchers, LabelClipRegex3replace,
-	Iniread, clipregex4search, %inifilename%, ApplicationLaunchers, LabelClipRegex4search, [-_]+
-	Iniread, clipregex4replace, %inifilename%, ApplicationLaunchers, LabelClipRegex4replace,
-	Iniread, clipregex5search, %inifilename%, ApplicationLaunchers, LabelClipRegex5search, _.*$
-	Iniread, clipregex5replace, %inifilename%, ApplicationLaunchers, LabelClipRegex5replace,
-	FileSelectFile, selectedfilename, 1
-	if (selectedfilename != "") {
-		SplitPath, selectedfilename, selectedfile, selecteddir
-		newlabel := selectedfile
-		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
-		; This is particular for how I name my putty sessions
-		StringUpper, newlabel, newlabel, T
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
-		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
-		ControlSetText, , % tooltipprefix . " " . selectedfile, ahk_id %edtControlTTID%
-		ControlSetText, , %selectedfilename%, ahk_id %edtControlCmdID%
-		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
-	}
-Return
+ 3btnClear:
+ 		ControlSetText, , , ahk_id %edtControlLabelID%
+ 		ControlSetText, , , ahk_id %edtControlTTID%
+ 		ControlSetText, , , ahk_id %edtControlCmdID%
+ 		ControlSetText, , , ahk_id %edtControlDirID%
+ Return
+ 3btnSave:
+ 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+ 	IniWrite, %newlabel%, %inifilenameAppLaunchers%, %inisection%, Label
+ 	ControlGetText, newTT, , ahk_id %edtControlTTID%
+ 	IniWrite, %newTT%, %inifilenameAppLaunchers%, %inisection%, Tooltip
+ 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+ 	IniWrite, %newCmd%, %inifilenameAppLaunchers%, %inisection%, Command
+ 	ControlGetText, newDir, , ahk_id %edtControlDirID%
+ 	IniWrite, %newDir%, %inifilenameAppLaunchers%, %inisection%, Dir
+ 	GoSub, LoadLaunchers
+ 3btnCancel:
+ 3GuiClose:
+ 3GuiEscape:
+ 	Gui, 3:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+ Return
+ 3LaunchSelectClick:
+ 	Iniread, tooltipprefix, %inifilename%, ApplicationLaunchers, DefaultTooltipPrefix, Run:
+ 	Iniread, clipregex1search, %inifilename%, ApplicationLaunchers, LabelClipRegex1search, _[^_]+$
+ 	Iniread, clipregex1replace, %inifilename%, ApplicationLaunchers, LabelClipRegex1replace,
+ 	Iniread, clipregex2search, %inifilename%, ApplicationLaunchers, LabelClipRegex2search, ^ccimx6
+ 	Iniread, clipregex2replace, %inifilename%, ApplicationLaunchers, LabelClipRegex2replace,
+ 	Iniread, clipregex3search, %inifilename%, ApplicationLaunchers, LabelClipRegex3search, %A_Space%
+ 	Iniread, clipregex3replace, %inifilename%, ApplicationLaunchers, LabelClipRegex3replace,
+ 	Iniread, clipregex4search, %inifilename%, ApplicationLaunchers, LabelClipRegex4search, [-_]+
+ 	Iniread, clipregex4replace, %inifilename%, ApplicationLaunchers, LabelClipRegex4replace,
+ 	Iniread, clipregex5search, %inifilename%, ApplicationLaunchers, LabelClipRegex5search, _.*$
+ 	Iniread, clipregex5replace, %inifilename%, ApplicationLaunchers, LabelClipRegex5replace,
+ 	FileSelectFile, selectedfilename, 1
+ 	if (selectedfilename != "") {
+ 		SplitPath, selectedfilename, selectedfile, selecteddir
+ 		newlabel := selectedfile
+ 		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
+ 		; This is particular for how I name my putty sessions
+ 		StringUpper, newlabel, newlabel, T
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
+ 		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
+ 		ControlSetText, , % tooltipprefix . " " . selectedfile, ahk_id %edtControlTTID%
+ 		ControlSetText, , %selectedfilename%, ahk_id %edtControlCmdID%
+ 		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
+ 	}
+ Return
 
 EditBoxPSLauncher:
 	editboxwidth := 800
@@ -739,69 +733,69 @@ EditBoxPSLauncher:
 	if (ControlLabel == "")
 		GoSub, 4LaunchSelectClick
 Return
-4btnClear:
-		ControlSetText, , , ahk_id %edtControlLabelID%
-		ControlSetText, , , ahk_id %edtControlTTID%
-		ControlSetText, , , ahk_id %edtControlCmdID%
-		ControlSetText, , , ahk_id %edtControlDirID%
-Return
-4btnSave:
-	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
-	IniWrite, %newlabel%, %inifilenamePSLaunchers%, %inisection%, Label
-	ControlGetText, newTT, , ahk_id %edtControlTTID%
-	IniWrite, %newTT%, %inifilenamePSLaunchers%, %inisection%, Tooltip
-	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
-	IniWrite, %newCmd%, %inifilenamePSLaunchers%, %inisection%, Command
-	ControlGetText, newDir, , ahk_id %edtControlDirID%
-	IniWrite, %newDir%, %inifilenamePSLaunchers%, %inisection%, Dir
-	GoSub, LoadPSLaunchers
-#IfWinActive 4
-	$ESC::
-4btnCancel:
-4GuiClose:
-4GuiEscape:
-	Gui, 4:Destroy
-	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
-Return
-4LaunchSelectClick:
-	Iniread, tooltipprefix, %inifilename%, PuttySessionLaunchers, DefaultTooltipPrefix, Launch putty session:
-	Iniread, commandprefix, %inifilename%, PuttySessionLaunchers, DefaultPuttyCommandPrefix, C:\_Portable\_Putty\_ExtraPuTTY\putty.exe -load
-	Iniread, puttydir, %inifilename%, PuttySessionLaunchers, DefaultPuttyDir, C:\_Portable\_Putty\_ExtraPuTTY\
-	Iniread, sessiondir, %inifilename%, PuttySessionLaunchers, DefaultPuttySessionDir, C:\_Portable\_Putty\_ExtraPuTTY\Sessions
-	Iniread, clipregex1search, %inifilename%, PuttySessionLaunchers, LabelClipRegex1search, _[^_]+$
-	Iniread, clipregex1replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex1replace,
-	Iniread, clipregex2search, %inifilename%, PuttySessionLaunchers, LabelClipRegex2search, ^ccimx6
-	Iniread, clipregex2replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex2replace,
-	Iniread, clipregex3search, %inifilename%, PuttySessionLaunchers, LabelClipRegex3search, %A_Space%
-	Iniread, clipregex3replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex3replace,
-	Iniread, clipregex4search, %inifilename%, PuttySessionLaunchers, LabelClipRegex4search, [-_]+
-	Iniread, clipregex4replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex4replace,
-	Iniread, clipregex5search, %inifilename%, PuttySessionLaunchers, LabelClipRegex5search, _.*$
-	Iniread, clipregex5replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex5replace,
-	FileSelectFile, selectedsession, 1, %sessiondir%
-	if (selectedsession != "") {
-		SplitPath, selectedsession, selectedsession, selecteddir
-		newlabel := selectedsession
-		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
-		; This is particular for how I name my putty sessions
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
-		if (StrLen(newlabel) > 9)
-			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
-		if (StrLen(newlabel) > 10)
-			StringLower, newlabel, newlabel
-		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
-		ControlSetText, , % tooltipprefix . " " . selectedsession, ahk_id %edtControlTTID%
-		ControlSetText, , % commandprefix . " """ . selectedsession . """", ahk_id %edtControlCmdID%
-		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
-	}
-Return
+ 4btnClear:
+ 		ControlSetText, , , ahk_id %edtControlLabelID%
+ 		ControlSetText, , , ahk_id %edtControlTTID%
+ 		ControlSetText, , , ahk_id %edtControlCmdID%
+ 		ControlSetText, , , ahk_id %edtControlDirID%
+ Return
+ 4btnSave:
+ 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+ 	IniWrite, %newlabel%, %inifilenamePSLaunchers%, %inisection%, Label
+ 	ControlGetText, newTT, , ahk_id %edtControlTTID%
+ 	IniWrite, %newTT%, %inifilenamePSLaunchers%, %inisection%, Tooltip
+ 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+ 	IniWrite, %newCmd%, %inifilenamePSLaunchers%, %inisection%, Command
+ 	ControlGetText, newDir, , ahk_id %edtControlDirID%
+ 	IniWrite, %newDir%, %inifilenamePSLaunchers%, %inisection%, Dir
+ 	GoSub, LoadPSLaunchers
+ #IfWinActive 4
+ 	$ESC::
+ 4btnCancel:
+ 4GuiClose:
+ 4GuiEscape:
+ 	Gui, 4:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+ Return
+ 4LaunchSelectClick:
+ 	Iniread, tooltipprefix, %inifilename%, PuttySessionLaunchers, DefaultTooltipPrefix, Launch putty session:
+ 	Iniread, commandprefix, %inifilename%, PuttySessionLaunchers, DefaultPuttyCommandPrefix, C:\_Portable\_Putty\_ExtraPuTTY\putty.exe -load
+ 	Iniread, puttydir, %inifilename%, PuttySessionLaunchers, DefaultPuttyDir, C:\_Portable\_Putty\_ExtraPuTTY\
+ 	Iniread, sessiondir, %inifilename%, PuttySessionLaunchers, DefaultPuttySessionDir, C:\_Portable\_Putty\_ExtraPuTTY\Sessions
+ 	Iniread, clipregex1search, %inifilename%, PuttySessionLaunchers, LabelClipRegex1search, _[^_]+$
+ 	Iniread, clipregex1replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex1replace,
+ 	Iniread, clipregex2search, %inifilename%, PuttySessionLaunchers, LabelClipRegex2search, ^ccimx6
+ 	Iniread, clipregex2replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex2replace,
+ 	Iniread, clipregex3search, %inifilename%, PuttySessionLaunchers, LabelClipRegex3search, %A_Space%
+ 	Iniread, clipregex3replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex3replace,
+ 	Iniread, clipregex4search, %inifilename%, PuttySessionLaunchers, LabelClipRegex4search, [-_]+
+ 	Iniread, clipregex4replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex4replace,
+ 	Iniread, clipregex5search, %inifilename%, PuttySessionLaunchers, LabelClipRegex5search, _.*$
+ 	Iniread, clipregex5replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex5replace,
+ 	FileSelectFile, selectedsession, 1, %sessiondir%
+ 	if (selectedsession != "") {
+ 		SplitPath, selectedsession, selectedsession, selecteddir
+ 		newlabel := selectedsession
+ 		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
+ 		; This is particular for how I name my putty sessions
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
+ 		if (StrLen(newlabel) > 10)
+ 			StringLower, newlabel, newlabel
+ 		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
+ 		ControlSetText, , % tooltipprefix . " " . selectedsession, ahk_id %edtControlTTID%
+ 		ControlSetText, , % commandprefix . " """ . selectedsession . """", ahk_id %edtControlCmdID%
+ 		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
+ 	}
+ Return
 
 EditBoxCmdLauncher:
 	editboxwidth := 800
@@ -848,27 +842,27 @@ EditBoxCmdLauncher:
 	Gui, 5:+AlwaysOnTop
 	Gui, 5:-AlwaysOnTop
 Return
-5btnClear:
-		ControlSetText, , , ahk_id %edtControlLabelID%
-		ControlSetText, , , ahk_id %edtControlTTID%
-		ControlSetText, , , ahk_id %edtControlCmdID%
-Return
-5btnSave:
-	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
-	IniWrite, %newlabel%, %inifilenameCmdLaunchers%, %inisection%, Label
-	ControlGetText, newTT, , ahk_id %edtControlTTID%
-	IniWrite, %newTT%, %inifilenameCmdLaunchers%, %inisection%, Tooltip
-	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
-	IniWrite, %newCmd%, %inifilenameCmdLaunchers%, %inisection%, Command
-	GoSub, LoadCmdLaunchers
-#IfWinActive 5
-	$ESC::
-5btnCancel:
-5GuiClose:
-5GuiEscape:
-	Gui, 5:Destroy
-	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
-Return
+ 5btnClear:
+ 		ControlSetText, , , ahk_id %edtControlLabelID%
+ 		ControlSetText, , , ahk_id %edtControlTTID%
+ 		ControlSetText, , , ahk_id %edtControlCmdID%
+ Return
+ 5btnSave:
+ 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+ 	IniWrite, %newlabel%, %inifilenameCmdLaunchers%, %inisection%, Label
+ 	ControlGetText, newTT, , ahk_id %edtControlTTID%
+ 	IniWrite, %newTT%, %inifilenameCmdLaunchers%, %inisection%, Tooltip
+ 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+ 	IniWrite, %newCmd%, %inifilenameCmdLaunchers%, %inisection%, Command
+ 	GoSub, LoadCmdLaunchers
+ #IfWinActive 5
+ 	$ESC::
+ 5btnCancel:
+ 5GuiClose:
+ 5GuiEscape:
+ 	Gui, 5:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+ Return
 
 WindowTitleClick:
 	gui, submit, nohide
@@ -1153,14 +1147,14 @@ AboutBox:
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
 Return
-btnOk:
-2GuiClose:
-	Gui, 2:Destroy
-	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
-Return
-GotoSite:
-	Run, %homepage%
-Return
+ btnOk:
+ 2GuiClose:
+ 	Gui, 2:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+ Return
+ GotoSite:
+ 	Run, %homepage%
+ Return
 
 edtMonitorClick3:
 	ControlSend, , {Space}, ahk_id %Monitor3%
@@ -1201,175 +1195,45 @@ FocusInput:
 	ControlFocus, , ahk_id %InputBoxID%
 Return
 
-btnLauncher1:
-	Run, %launcher1command%, %launcher1dir%
-Return
-btnLauncher2:
-	Run, %launcher2command%, %launcher2dir%
-Return
-btnLauncher3:
-	Run, %launcher3command%, %launcher3dir%
-Return
-btnLauncher4:
-	Run, %launcher4command%, %launcher4dir%
-Return
-btnLauncher5:
-	Run, %launcher5command%, %launcher5dir%
-Return
-btnLauncher6:
-	Run, %launcher6command%, %launcher6dir%
+btnLauncher:
+	Index := SubStr(A_GuiControl, 12, 1)
+	pCmd := "launcher" . Index . "command"
+	Cmd := %pCmd%
+	pDir := "launcher" . Index . "dir"
+	Dir := %pDir%
+	Run, %Cmd%, %Dir%
 Return
 
-btnPutty1:
-	Run, %btnputty1command%, %btnputty1dir%
-Return
-btnPutty2:
-	Run, %btnputty2command%, %btnputty2dir%
-Return
-btnPutty3:
-	Run, %btnputty3command%, %btnputty3dir%
-Return
-btnPutty4:
-	Run, %btnputty4command%, %btnputty4dir%
-Return
-btnPutty5:
-	Run, %btnputty5command%, %btnputty5dir%
-Return
-btnPutty6:
-	Run, %btnputty6command%, %btnputty6dir%
+btnPutty:
+	Index := SubStr(A_GuiControl, 9, 1)
+	pCmd := "btnputty" . Index . "command"
+	Cmd := %pCmd%
+	pDir := "btnputty" . Index . "dir"
+	Dir := %pDir%
+	Run, %Cmd%, %Dir%
 Return
 
-btnCol1:
-	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
-	Loop, %edtPutty11%
-		GoSub, btnPutty1
-	ControlGetText, edtPutty21, , ahk_id %edtPutty21ID%
-	Loop, %edtPutty21%
-		GoSub, btnPutty2
-	ControlGetText, edtPutty31, , ahk_id %edtPutty31ID%
-	Loop, %edtPutty31%
-		GoSub, btnPutty3
-	ControlGetText, edtPutty41, , ahk_id %edtPutty41ID%
-	Loop, %edtPutty41%
-		GoSub, btnPutty4
-	ControlGetText, edtPutty51, , ahk_id %edtPutty51ID%
-	Loop, %edtPutty51%
-		GoSub, btnPutty5
-	ControlGetText, edtPutty61, , ahk_id %edtPutty61ID%
-	Loop, %edtPutty61%
-		GoSub, btnPutty6
-Return
-btnCol2:
-	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
-	Loop, %edtPutty12%
-		GoSub, btnPutty1
-	ControlGetText, edtPutty22, , ahk_id %edtPutty22ID%
-	Loop, %edtPutty22%
-		GoSub, btnPutty2
-	ControlGetText, edtPutty32, , ahk_id %edtPutty32ID%
-	Loop, %edtPutty32%
-		GoSub, btnPutty3
-	ControlGetText, edtPutty42, , ahk_id %edtPutty42ID%
-	Loop, %edtPutty42%
-		GoSub, btnPutty4
-	ControlGetText, edtPutty52, , ahk_id %edtPutty52ID%
-	Loop, %edtPutty52%
-		GoSub, btnPutty5
-	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
-	Loop, %edtPutty62%
-		GoSub, btnPutty6
-Return
-btnCol3:
-	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
-	Loop, %edtPutty13%
-		GoSub, btnPutty1
-	ControlGetText, edtPutty23, , ahk_id %edtPutty23ID%
-	Loop, %edtPutty23%
-		GoSub, btnPutty2
-	ControlGetText, edtPutty33, , ahk_id %edtPutty33ID%
-	Loop, %edtPutty33%
-		GoSub, btnPutty3
-	ControlGetText, edtPutty43, , ahk_id %edtPutty43ID%
-	Loop, %edtPutty43%
-		GoSub, btnPutty4
-	ControlGetText, edtPutty53, , ahk_id %edtPutty53ID%
-	Loop, %edtPutty53%
-		GoSub, btnPutty5
-	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
-	Loop, %edtPutty63%
-		GoSub, btnPutty6
+btnCol:
+	col := SubStr(A_GuiControl, 7, 1)
+	Loop, 6 {
+		row := A_Index
+		pControlID = edtPutty%A_Index%%col%ID
+		ControlID := %pControlID%
+		ControlGetText, loopn, , ahk_id %ControlID%
+		Loop, %loopn% {
+			pCmd := "btnputty" . row . "command"
+			Cmd := %pCmd%
+			pDir := "btnputty" . row . "dir"
+			Dir := %pDir%
+			Run, %Cmd%, %Dir%
+		}
+	}
 Return
 
-btnCommand1:
-	sendstrdata=% command1 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand2:
-	sendstrdata=% command2 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand3:
-	sendstrdata=% command3 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand4:
-	sendstrdata=% command4 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand5:
-	sendstrdata=% command5 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand6:
-	sendstrdata=% command6 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand7:
-	sendstrdata=% command7 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand8:
-	sendstrdata=% command8 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand9:
-	sendstrdata=% command9 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand10:
-	sendstrdata=% command10 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand11:
-	sendstrdata=% command11 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand12:
-	sendstrdata=% command12 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand13:
-	sendstrdata=% command13 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand14:
-	sendstrdata=% command14 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand15:
-	sendstrdata=% command15 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand16:
-	sendstrdata=% command16 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand17:
-	sendstrdata=% command17 . (CrLfVal ? "`r" : "")
-	GoSub, SendString
-Return
-btnCommand18:
-	sendstrdata=% command18 . (CrLfVal ? "`r" : "")
+btnCommand:
+	pCmd := "command" . SubStr(A_GuiControl, 11, 1)
+	Cmd := %pCmd%
+	sendstrdata=% Cmd . (CrLfVal ? "`r" : "")
 	GoSub, SendString
 Return
 
@@ -1535,38 +1399,21 @@ GuiClose:
 ExitApp
 
 SaveTitleMatches:
-	ControlGetText, edit1, , ahk_id %edit1ID%
-	ControlGetText, edit2, , ahk_id %edit2ID%
-	ControlGetText, edit3, , ahk_id %edit3ID%
-	ControlGetText, edit4, , ahk_id %edit4ID%
-	ControlGetText, edit5, , ahk_id %edit5ID%
-	ControlGet, enable1, Checked, , , ahk_id %check1ID%
-	ControlGet, enable2, Checked, , , ahk_id %check2ID%
-	ControlGet, enable3, Checked, , , ahk_id %check3ID%
-	ControlGet, enable4, Checked, , , ahk_id %check4ID%
-	ControlGet, enable5, Checked, , , ahk_id %check5ID%
-	ControlGet, enableinv1, Checked, , , ahk_id %checkinv1ID%
-	ControlGet, enableinv2, Checked, , , ahk_id %checkinv2ID%
-	ControlGet, enableinv3, Checked, , , ahk_id %checkinv3ID%
-	ControlGet, enableinv4, Checked, , , ahk_id %checkinv4ID%
-	ControlGet, enableinv5, Checked, , , ahk_id %checkinv5ID%
+	Loop, 5 {
+		pControlID = edit%A_Index%ID
+		ControlID := %pControlID%
+		ControlGetText, saveval, , ahk_id %ControlID%
+		IniWrite, %saveval%, %inifilenametitlematch%, TitleMatch, % "Title" . A_Index
+		pControlID = check%A_Index%ID
+		ControlID := %pControlID%
+		ControlGet, saveval, Checked, , , ahk_id %ControlID%
+		IniWrite, %saveval%, %inifilenametitlematch%, TitleMatchEnabled, % "TitleMatch" . A_Index
+		pControlID = checkinv%A_Index%ID
+		ControlID := %pControlID%
+		ControlGet, saveval, Checked, , , ahk_id %ControlID%
+		IniWrite, %saveval%, %inifilenametitlematch%, TitleMatchEnabled, % "TitleMatchInv" . A_Index
+	}
 	ControlGet, SingleMatch, Checked, , , ahk_id %SingleMatchID%
-
-	IniWrite, %edit1%, %inifilenametitlematch%, TitleMatch, Title1
-	IniWrite, %edit2%, %inifilenametitlematch%, TitleMatch, Title2
-	IniWrite, %edit3%, %inifilenametitlematch%, TitleMatch, Title3
-	IniWrite, %edit4%, %inifilenametitlematch%, TitleMatch, Title4
-	IniWrite, %edit5%, %inifilenametitlematch%, TitleMatch, Title5
-	IniWrite, %enable1%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch1
-	IniWrite, %enable2%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch2
-	IniWrite, %enable3%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch3
-	IniWrite, %enable4%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch4
-	IniWrite, %enable5%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatch5
-	IniWrite, %enableinv1%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv1
-	IniWrite, %enableinv2%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv2
-	IniWrite, %enableinv3%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv3
-	IniWrite, %enableinv4%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv4
-	IniWrite, %enableinv5%, %inifilenametitlematch%, TitleMatchEnabled, TitleMatchInv5
 	IniWrite, %SingleMatch%, %inifilenametitlematch%, Options, SingleMatch
 Return
 
@@ -1580,43 +1427,15 @@ SavePositionMatches:
 Return
 
 SavePSCounts:
-	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
-	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
-	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
-	ControlGetText, edtPutty21, , ahk_id %edtPutty21ID%
-	ControlGetText, edtPutty22, , ahk_id %edtPutty22ID%
-	ControlGetText, edtPutty23, , ahk_id %edtPutty23ID%
-	ControlGetText, edtPutty31, , ahk_id %edtPutty31ID%
-	ControlGetText, edtPutty32, , ahk_id %edtPutty32ID%
-	ControlGetText, edtPutty33, , ahk_id %edtPutty33ID%
-	ControlGetText, edtPutty41, , ahk_id %edtPutty41ID%
-	ControlGetText, edtPutty42, , ahk_id %edtPutty42ID%
-	ControlGetText, edtPutty43, , ahk_id %edtPutty43ID%
-	ControlGetText, edtPutty51, , ahk_id %edtPutty51ID%
-	ControlGetText, edtPutty52, , ahk_id %edtPutty52ID%
-	ControlGetText, edtPutty53, , ahk_id %edtPutty53ID%
-	ControlGetText, edtPutty61, , ahk_id %edtPutty61ID%
-	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
-	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
-
-	IniWrite, %edtPutty11%, %inifilenamePSLaunchers%, PuttySession1, Putty11Count
-	IniWrite, %edtPutty12%, %inifilenamePSLaunchers%, PuttySession1, Putty12Count
-	IniWrite, %edtPutty13%, %inifilenamePSLaunchers%, PuttySession1, Putty13Count
-	IniWrite, %edtPutty21%, %inifilenamePSLaunchers%, PuttySession2, Putty21Count
-	IniWrite, %edtPutty22%, %inifilenamePSLaunchers%, PuttySession2, Putty22Count
-	IniWrite, %edtPutty23%, %inifilenamePSLaunchers%, PuttySession2, Putty23Count
-	IniWrite, %edtPutty31%, %inifilenamePSLaunchers%, PuttySession3, Putty31Count
-	IniWrite, %edtPutty32%, %inifilenamePSLaunchers%, PuttySession3, Putty32Count
-	IniWrite, %edtPutty33%, %inifilenamePSLaunchers%, PuttySession3, Putty33Count
-	IniWrite, %edtPutty41%, %inifilenamePSLaunchers%, PuttySession4, Putty41Count
-	IniWrite, %edtPutty42%, %inifilenamePSLaunchers%, PuttySession4, Putty42Count
-	IniWrite, %edtPutty43%, %inifilenamePSLaunchers%, PuttySession4, Putty43Count
-	IniWrite, %edtPutty51%, %inifilenamePSLaunchers%, PuttySession5, Putty51Count
-	IniWrite, %edtPutty52%, %inifilenamePSLaunchers%, PuttySession5, Putty52Count
-	IniWrite, %edtPutty53%, %inifilenamePSLaunchers%, PuttySession5, Putty53Count
-	IniWrite, %edtPutty61%, %inifilenamePSLaunchers%, PuttySession6, Putty61Count
-	IniWrite, %edtPutty62%, %inifilenamePSLaunchers%, PuttySession6, Putty62Count
-	IniWrite, %edtPutty63%, %inifilenamePSLaunchers%, PuttySession6, Putty63Count
+	Loop, 6 {
+		row := A_Index
+		Loop, 3 {
+			pControlID = edtPutty%row%%A_Index%ID
+			ControlID := %pControlID%
+			ControlGetText, saveval, , ahk_id %ControlID%
+			IniWrite, %saveval%, %inifilenamePSLaunchers%, % "PuttySession" . row, % "Putty" . row . A_Index . "Count"
+		}
+	}
 Return
 
 UpdateFoundWindowsFilteredGui:
