@@ -451,11 +451,13 @@ WM_RBUTTONDOWN()
 	Loop, 6 {
 		If (EditControlHwnd == ahk_id btnLauncher%A_Index%ID) {
 			EditControlName = % "Launcher " . A_Index
+			GoSub, DisableTimers
 			GoSub, EditBoxAppLauncher
 			Return
 		}
 		If (EditControlHwnd == ahk_id btnPutty%A_Index%ID) {
 			EditControlName = % "Putty Session " . A_Index
+			GoSub, DisableTimers
 			GoSub, EditBoxPSLauncher
 			Return
 		}
@@ -463,6 +465,7 @@ WM_RBUTTONDOWN()
 	Loop, 18 {
 		If (EditControlHwnd == ahk_id btnCommand%A_Index%ID) {
 			EditControlName = % "Putty Command " . A_Index
+			GoSub, DisableTimers
 			GoSub, EditBoxCmdLauncher
 			Return
 		}
@@ -639,6 +642,7 @@ Return
  3GuiEscape:
  	Gui, 3:Destroy
  	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+	GoSub, EnableTimers
  Return
  3LaunchSelectClick:
  	Iniread, tooltipprefix, %inifilename%, ApplicationLaunchers, DefaultTooltipPrefix, Run:
@@ -749,13 +753,12 @@ Return
  	ControlGetText, newDir, , ahk_id %edtControlDirID%
  	IniWrite, %newDir%, %inifilenamePSLaunchers%, %inisection%, Dir
  	GoSub, LoadPSLaunchers
- #IfWinActive 4
- 	$ESC::
  4btnCancel:
  4GuiClose:
  4GuiEscape:
  	Gui, 4:Destroy
  	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+	GoSub, EnableTimers
  Return
  4LaunchSelectClick:
  	Iniread, tooltipprefix, %inifilename%, PuttySessionLaunchers, DefaultTooltipPrefix, Launch putty session:
@@ -808,29 +811,30 @@ EditBoxCmdLauncher:
 		Return
 	}
 	StringReplace, inisection, EditControlName, %A_Space%, , ,A
-	Iniread, ControlLabel, %inifilenameCmdLaunchers%, %inisection%, Label, Label
+
+	Iniread, ControlCmd, %inifilenameCmdLaunchers%, %inisection%, Command, Command
 	xedt := 5
 	yedt := 20
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Iniread, ControlLabel, %inifilenameCmdLaunchers%, %inisection%, Label, %ControlCmd%
+	xedt := 5
+	yedt += 35
 	Gui, 5:Add, Text, x%xedt% y%yedt%, Label:
 	xedt += 55
 	yedt -= 3
 	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
 
-	Iniread, ControlTT, %inifilenameCmdLaunchers%, %inisection%, Tooltip, Tooltip
+	Iniread, ControlTT, %inifilenameCmdLaunchers%, %inisection%, Tooltip, %ControlCmd%
 	xedt := 5
 	yedt += 35
 	Gui, 5:Add, Text, x%xedt% y%yedt%, Tooltip:
 	xedt += 55
 	yedt -= 3
 	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
-
-	Iniread, ControlCmd, %inifilenameCmdLaunchers%, %inisection%, Command, Command
-	xedt := 5
-	yedt += 35
-	Gui, 5:Add, Text, x%xedt% y%yedt%, Command:
-	xedt += 55
-	yedt -= 3
-	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
 
 	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
 	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
@@ -855,13 +859,12 @@ Return
  	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
  	IniWrite, %newCmd%, %inifilenameCmdLaunchers%, %inisection%, Command
  	GoSub, LoadCmdLaunchers
- #IfWinActive 5
- 	$ESC::
  5btnCancel:
  5GuiClose:
  5GuiEscape:
  	Gui, 5:Destroy
  	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+	GoSub, EnableTimers
  Return
 
 WindowTitleClick:
