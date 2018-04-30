@@ -17,15 +17,19 @@ For me personally this makes the script even more useful with a few simple exten
 * INI file for configuration if you want to compile to exe
 * Global shortcuts to bring to top and toggle side panel.  There is also a StayOnTop flag if you prefer that to keyboard shortcuts
 * Mulitple monitor supprt for Tile/Cascade functions
-* Fast Putty Session button set up (...if you use ExtraPutty or any putty that keeps putty sessions as separate files on HDD rather than the registry). Right click on blank button to pick existing session.
 
 ### install
 
+1.  Install putty.  If you use ExtraPutty (http://www.extraputty.com) or any putty that keeps putty sessions as separate files on HDD rather than the registry, right clicking on blank Putty Session Launcher button to pick existing session will work nicely.  Set up your sessions in ExtraPutty so it's working to your liking.  Optionally setup PuttyAgent also for authentication. It makes logging into multiple sessions fast.
+
+2.  Install this script
 ```
 git clone git://github.com/SpiroCx/puttyCluster.git
 cd puttyCluster\
 ```
-Then if you have autohotkey installed you can directly run the script:
+3.  Edit puttyCluster.ini to set DefaultPuttyCommandPrefix, DefaultPuttyDir, DefaultPuttySessionDir.
+
+4. Then if you have autohotkey installed you can directly run the script:
 ```
 puttyCluster.ahk
 ```
@@ -45,7 +49,7 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Paste Clipboard adds cr(lf)
 * The Found Windows Filters let you further filter windows based on their screen position (after the title matches are applied).  This is useful if, say, you have putty windows arranged in groups per device (eg 3 on your Linux server, and 3 on your embedded device) and you temporarily only want one window from each of these groups to respond.  Lets say for example you switch from a command for all windows (ls, pwd, tail log.txt), to a command you only want to run once on each box (apt update, apt install).  That's when you use the Found Windows filter.  There are 3 options.  "All" just goes ahead and selects all windows as determined by the 5 title matching boxes, "1-8 on/off toggle" lets you pick up to the first 8 windows individually, and the text box (init value FFFF) lets you use a bitfield to specify the box positions.  Lets say you wanted boxes 2, 4, 7 and 8, the you put CA in this text box. 
 * App shortcuts Alt-C (Paste Clipboard), Alt-L (toggle "add +CrLF" to clipboard paste), Alt-T (Tile), Alt+B/F (To Back/Front)
-* Optional command line parameter for optional alternate ini file. eg: puttyCluster <work01.ini>
+* Optional command line parameter for optional alternate ini file. eg: puttyCluster <work.ini>
 * Right click on sidebar launchers to edit item
 
 ### Keyboard Shortcuts
@@ -67,7 +71,7 @@ on the command line.  Here is a prompt that places a tag in the title and prompt
 IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\h: \w[C][$IP]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\][C]$\[\e[m\] "
 ```
 (Note in the above example the 120 that I grep is specific to my lan segment of interest).
-![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot4_putty_tags.png.png)
+![Tags Example](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot4_putty_tags.png)
   
 ### Known issues
 * Most of the script is useless if you don't run it as Administrator.  At least ToBack and ToFront don't get access to the windows without it.
@@ -81,13 +85,13 @@ where MATCH is regex edit box term.  Using multiple enabled regex searches with 
 ```
 ^((?!MATCH1).)*$)|(^((?!MATCH2).)*$)
 ```
-These results can get confusing.  I usually use the invert operator on a single title match this way.  First tag a group of putty windows:
+These results can get confusing.  I usually use the invert operator on a single title match this way.  First tag a group of putty windows (with "[A] + IP" in this example):
 ```
-(puttyprompt=[A]; puttytitle=[A][$(getip120)])
+IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\h: \w[A][$IP]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\][A]$\[\e[m\] "
 ```
-then open a new set of putty windows, turn on the invert operator on the first tag eg "[A]" to isolate the new set of windows, then tag the second set of windows
+then Tile them to another monitor, open a new set of putty windows, turn on the invert operator on the first tag eg "[A]" to isolate the new set of windows, then tag the second set of windows (with "[B]" in this case):
 ```
-(puttyprompt=[B]; puttytitle=[B][$(getip120)])
+IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\h: \w[B][$IP]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\][B]$\[\e[m\] "
 ```
 
 ### Screenshots
