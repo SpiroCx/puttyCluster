@@ -1235,6 +1235,9 @@ Return
 
 btnCommand:
 	pCmd := "command" . SubStr(A_GuiControl, 11, 1)
+	pCmd2 := RegExMatch(A_GuiControl, "[\d]+", 12)
+	If (pCmd2 > 0)
+		pCmd .= SubStr(A_GuiControl, 12, 1)
 	Cmd := %pCmd%
 	sendstrdata=% Cmd . (CrLfVal ? "`r" : "")
 	GoSub, SendString
