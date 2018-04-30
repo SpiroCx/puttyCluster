@@ -199,7 +199,8 @@ Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfChec
 ; ***** Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
 ypos := yposcluster + 45
-Gui, Add, button, x%xpos% y%ypos% gTile -default, Tile
+Gui, Add, button, x%xpos% y%ypos% HwndbtnTileID gTile -default, Tile
+Tile_TT := "LClick: Tile Putty Windows,   RClick: Tile on other monitor (set R-Click monitors in puttyCluster.ini)"
 xpos += 30
 Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
 xpos += 55
@@ -260,6 +261,8 @@ Gui, Add, Edit,  x%xpos2% y%ypos2% gwhFocusRadioButton Hwndheight2ID vheight2 w3
 ; ***** Monitor selector
 IniRead, monitorsel, %inifilename%, Options, MonitorSelect, 1
 IniRead, edtMonitor3, %inifilename%, Options, Monitor3, 3
+IniRead, RightClickMonitor1, %inifilename%, Options, RightClickMonitor1, 1
+IniRead, RightClickMonitor2, %inifilename%, Options, RightClickMonitor2, 1
 xpos := xbase
 ypos3 += 5
 Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
@@ -447,6 +450,13 @@ WM_RBUTTONDOWN()
 	Global btnCommand17ID
 	Global btnCommand18ID
 	Global EditControlName
+	Global btnTileID
+	Global RightClickMonitor1
+	Global RightClickMonitor2
+	Global MonitorGroup
+	Global Monitor1
+	Global Monitor2
+	Global Monitor3
 	MouseGetPos,,,,EditControlHwnd,2
 	Loop, 6 {
 		If (EditControlHwnd == ahk_id btnLauncher%A_Index%ID) {
@@ -469,6 +479,25 @@ WM_RBUTTONDOWN()
 			GoSub, EditBoxCmdLauncher
 			Return
 		}
+	}
+	If (EditControlHwnd == ahk_id btnTileID) {
+		currmonitor := MonitorGroup
+		If (MonitorGroup != RightClickMonitor1) {
+			pcontrolID = % "Monitor" . RightClickMonitor1
+			controlID := %pcontrolID%
+			ControlSend, , {Space}, ahk_id %controlID%
+		} else {
+			pcontrolID = % "Monitor" . RightClickMonitor2
+			controlID := %pcontrolID%
+			ControlSend, , {Space}, ahk_id %controlID%
+		}
+		GoSub, RadioCheck
+		GoSub, Tile
+		MonitorGroup := currmonitor
+		pcontrolID = % "Monitor" . currmonitor
+		controlID := %pcontrolID%
+		ControlSend, , {Space}, ahk_id %controlID%
+		GoSub, RadioCheck
 	}
 }
 
