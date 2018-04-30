@@ -1150,20 +1150,22 @@ AboutBox:
 	AboutMessage2 = % "`r" . "Last modification date:`r" . A_ScriptName . ": " . FileTime
 	AboutMessage3 = % "`r" . "Script/exe path:`r" . A_ScriptFullPath
 	AboutMessage4 = % "`r" . "INI file in use: " . inifilename . "`r"
-	AboutMessage5 = % "`r" . "Win-Alt-C 	Bring ClusterPutty window to the top"
-	AboutMessage6 = Win-Alt-D 	Toggle the launcher sidebar (+ bring to top)
-	AboutMessage7 = Win-Alt-T	Tile Putty Windows
-	AboutMessage8 = Win-Alt-F	Bring Putty Windows to the top of the desktop
-	AboutMessage9 = Win-Alt-B	Push Putty Winows to the back of the desktop (hide them)
-	AboutMessage10 = Win-Alt-V	Paste current clipboard to all windows
-	AboutMessage11 = Win-Alt-L	Toggle 'Append CrLf' flag
-	AboutMessage12 = Win-Alt-O	Locate Putty Windows
+	AboutMessage5 = % "`r" . "Win-Alt-C 	 Bring ClusterPutty window to the top"
+	AboutMessage6 = Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
+	AboutMessage7 = Win-Alt-T	 Tile Putty Windows
+	AboutMessage8 = Win-Alt-F	 Bring Putty Windows to the top of the desktop
+	AboutMessage9 = Win-Alt-B	 Push Putty Winows to the back of the desktop (hide them)
+	AboutMessage10 = Win-Alt-V	 Paste current clipboard to all windows
+	AboutMessage11 = Win-Alt-L	 Toggle 'Append CrLf' flag
+	AboutMessage12 = Win-Alt-O	 Locate Putty Windows
+	AboutMessage13 = Win-Alt-S	 Toggle 'Single regex match' flag
+	AboutMessage14 = Win-Alt-1..5	 Toggle Enable 1..5 flag
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
 		%AboutMessage3%`r%AboutMessage4%
-		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%
 	)
 
 	Gui, 2:Font, cBlue
@@ -1171,10 +1173,10 @@ AboutBox:
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
 	Gui, 2:Add, Text, vAboutText, %AboutMessage%
-	Gui, 2:Add, Button, x210 y285 w40 h25 gbtnOk, Ok
+	Gui, 2:Add, Button, x210 y305 w40 h25 gbtnOk, Ok
 	xposabout := ScreenWidth / 2 - 230
-	yposabout := ScreenHeight / 2 - 160
-	Gui, 2:Show, x%xposabout% y%yposabout% h320 w460, About
+	yposabout := ScreenHeight / 2 - 170
+	Gui, 2:Show, x%xposabout% y%yposabout% h340 w460, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
@@ -2036,6 +2038,36 @@ Return
 ; Win+Alt+O
 #!o::
 	GoSub, Locate
+Return
+
+; Win+Alt+S
+#!s::
+	ControlSend, , {Space}, ahk_id %SingleMatchID%
+Return
+
+; Win+Alt+1
+#!1::
+	ControlSend, , {Space}, ahk_id %check1ID%
+Return
+
+; Win+Alt+2
+#!2::
+	ControlSend, , {Space}, ahk_id %check2ID%
+Return
+
+; Win+Alt+3
+#!3::
+	ControlSend, , {Space}, ahk_id %check3ID%
+Return
+
+; Win+Alt+4
+#!4::
+	ControlSend, , {Space}, ahk_id %check4ID%
+Return
+
+; Win+Alt+5
+#!5::
+	ControlSend, , {Space}, ahk_id %check5ID%
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4
