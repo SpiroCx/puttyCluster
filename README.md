@@ -39,7 +39,18 @@ Ahk2Exe.exe /in "puttyCluster.ahk" /out "puttyCluster.exe" /icon "puttyCluster.i
 ```
 And run the generated puttyCluster.exe
 
+5. Open the Launcher sidebar by clicking on the '>>' icon top left and setup application launchers (eg PuttyAgent, Putty itself for creating sessions, VcXsrv to display X window apps), Putty session launchers (mileage will vary depending your version of Putty, but if you use ExtraPutty, and setup the path to ExtraPutty in clusterPutty.ini, then right clicking on a blank Putty Session Launcher button will take you to the ExtraPutty sessions folder when you can pick a session for the button.  If you don't already have existing putty sessions to choose from, then run putty, set up some devices with sessions, then import them into puttyCluster.  The Putty Commands launchers can be used for commonly used commands.  Right click on one to edit it.
+
 ### Usage
+
+After launching the script ...
+6.  Set up multiple devices using the Putty Session launchers.  The 3 columns let you open multple sessions per device, to multiple devices, by pressing the Col button.
+
+7.  Use the Window Title regex filters to find and use some or all of your open Putty session windows.  "Locate" helps you find which ones are currently identified by the the filters.  Window position fileters are applied after the window title filter.  It lets you further filter windows based on their screen position (after the title matches are applied).  This is useful if, say, you have putty windows arranged in groups per device (eg 3 on your Linux server, and 3 on your embedded device) and you temporarily only want one window from each of these groups to respond.  Lets say for example you switch from a command for all windows (ls, pwd, tail log.txt), to a command you only want to run once on each box (apt update, apt install).  That's when you use the Found Windows filter.  There are 3 options.  "All" just goes ahead and selects all windows as determined by the 5 title matching boxes, "1-8 on/off toggle" lets you pick up to the first 8 windows individually, and the text box (init value FFFF) lets you use a bitfield to specify the box positions.  Lets say you wanted boxes 2, 4, 7 and 8, the you put CA in this text box. 
+
+8.  If you use multiple monitors, the Tile button supports right clicking to Tile on the other monitor (which can be set in puttyCluster.ini)
+
+Tips: Use the Locate button (or Win-Alt-O) to regualarly check which windows you are currently hitting with your filters, use prompt/title tagging (see notes below) to assist in creating groups of windows.
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
@@ -47,21 +58,22 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Regex's can be inverted.  !match
 * Screen size for  Tile/Cascade can be quick switched with selector
 * Paste Clipboard adds cr(lf)
-* The Found Windows Filters let you further filter windows based on their screen position (after the title matches are applied).  This is useful if, say, you have putty windows arranged in groups per device (eg 3 on your Linux server, and 3 on your embedded device) and you temporarily only want one window from each of these groups to respond.  Lets say for example you switch from a command for all windows (ls, pwd, tail log.txt), to a command you only want to run once on each box (apt update, apt install).  That's when you use the Found Windows filter.  There are 3 options.  "All" just goes ahead and selects all windows as determined by the 5 title matching boxes, "1-8 on/off toggle" lets you pick up to the first 8 windows individually, and the text box (init value FFFF) lets you use a bitfield to specify the box positions.  Lets say you wanted boxes 2, 4, 7 and 8, the you put CA in this text box. 
-* App shortcuts Alt-C (Paste Clipboard), Alt-L (toggle "add +CrLF" to clipboard paste), Alt-T (Tile), Alt+B/F (To Back/Front)
 * Optional command line parameter for optional alternate ini file. eg: puttyCluster <work.ini>
 * Right click on sidebar launchers to edit item
+* There are 5 areas that support multpile pages. Windows Title regex matches, Windows position (bitfield) matches, App launchers, Putty session launchers and Command launchers.  To create a new page, copy an existing ini file to a new name, then add the new ini file to the main app init file puttyCluster.ini in the relevant section. Then, clicking on the "next page" button in the section Title will scroll to the new ini file settings.
 
 ### Keyboard Shortcuts
 
-* Win-Alt-C 	Bring ClusterPutty window to the top
-* Win-Alt-D 	Toggle the launcher sidebar (+ bring to top)
-* Win-Alt-T		Tile Putty Windows
-* Win-Alt-F		Bring Putty Windows to the top of the desktop
-* Win-Alt-B		Push Putty Winows to the back of the desktop (hide them)
-* Win-Alt-V		Paste current clipboard to all windows
-* Win-Alt-L		Toggle 'Append CrLf' flag
-* Win-Alt-O		Locate Putty Windows (Bring to top, flash border)
+* Win-Alt-C 	 Bring ClusterPutty window to the top
+* Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
+* Win-Alt-T 	 Tile Putty Windows
+* Win-Alt-F 	 Bring Putty Windows to the top of the desktop
+* Win-Alt-B 	 Push Putty Winows to the back of the desktop (hide them)
+* Win-Alt-V 	 Paste current clipboard to all windows
+* Win-Alt-L 	 Toggle 'Append CrLf' flag
+* Win-Alt-O 	 Locate Putty Windows (Bring to top, flash border)
+* Win-Alt-S 	 Toggle 'Single regex match' flag
+* Win-Alt-1..5 	 Toggle Enable 1..5 flag
 
 #### A good Putty window title greatly assists in window filtering
 
@@ -108,7 +120,8 @@ IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\
 * Add sanity checking to the launchers.  The script throws and error for invalid paths/commands. Script still works ok (doesn't crash) but it's ugly.
 * Find space for the label "Select Monitor" above the monitor selection radio buttons
 * Make the hotkeys configurable
-* Add shortcuts for Always On Top, Single Filter toggle and the 5 title match expresssions
+* Add shortcut for Always On Top
+* Add a single overall tile match invert button, so you can find the windows you don't want then simply invert the result.
 
 ### license
 * free as in free beer and free as in free speech

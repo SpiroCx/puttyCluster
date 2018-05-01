@@ -2,7 +2,8 @@
 #NoTrayIcon
 SetWorkingDir %A_ScriptDir%
 
-Menu, Tray, Icon, puttyCluster.ico
+if FileExist("puttyCluster.ico")
+	Menu, Tray, Icon, puttyCluster.ico
 
 ; ***** icon source: https://commons.wikimedia.org/wiki/File:PuTTY_icon_128px.png
 ; ***** icon copyright message:
@@ -646,7 +647,7 @@ EditBoxAppLauncher:
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	editTitle := % "Edit " . EditControlName
 	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, %editTitle%
-	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so this Window can be on top
 	Gui, 3:+AlwaysOnTop
 	Gui, 3:-AlwaysOnTop
 Return
@@ -760,7 +761,7 @@ EditBoxPSLauncher:
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 4:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
-	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so this Window can be on top
 	Gui, 4:+AlwaysOnTop
 	Gui, 4:-AlwaysOnTop
 	if (ControlLabel == "")
@@ -871,7 +872,7 @@ EditBoxCmdLauncher:
 	xposEditBox := (ScreenWidth - editboxwidth ) / 2
 	yposEditBox := (ScreenHeight - editboxheight ) / 2
 	Gui, 5:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
-	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so this Window can be on top
 	Gui, 5:+AlwaysOnTop
 	Gui, 5:-AlwaysOnTop
 Return
@@ -1152,14 +1153,14 @@ AboutBox:
 	AboutMessage4 = % "`r" . "INI file in use: " . inifilename . "`r"
 	AboutMessage5 = % "`r" . "Win-Alt-C 	 Bring ClusterPutty window to the top"
 	AboutMessage6 = Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
-	AboutMessage7 = Win-Alt-T	 Tile Putty Windows
-	AboutMessage8 = Win-Alt-F	 Bring Putty Windows to the top of the desktop
-	AboutMessage9 = Win-Alt-B	 Push Putty Winows to the back of the desktop (hide them)
-	AboutMessage10 = Win-Alt-V	 Paste current clipboard to all windows
-	AboutMessage11 = Win-Alt-L	 Toggle 'Append CrLf' flag
-	AboutMessage12 = Win-Alt-O	 Locate Putty Windows
-	AboutMessage13 = Win-Alt-S	 Toggle 'Single regex match' flag
-	AboutMessage14 = Win-Alt-1..5	 Toggle Enable 1..5 flag
+	AboutMessage7 = Win-Alt-T 	 Tile Putty Windows
+	AboutMessage8 = Win-Alt-F 	 Bring Putty Windows to the top of the desktop
+	AboutMessage9 = Win-Alt-B 	 Push Putty Winows to the back of the desktop (hide them)
+	AboutMessage10 = Win-Alt-V 	 Paste current clipboard to all windows
+	AboutMessage11 = Win-Alt-L 	 Toggle 'Append CrLf' flag
+	AboutMessage12 = Win-Alt-O 	 Locate Putty Windows
+	AboutMessage13 = Win-Alt-S 	 Toggle 'Single regex match' flag
+	AboutMessage14 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
 	AboutMessage=
 	(
 		%AboutMessage1%
