@@ -35,6 +35,8 @@ global width
 global height
 global fwidth
 global fheight
+global miniheight := 25
+global miniwidth := 300
 global sidepanelwidth := 200
 global AlwaysOnTop
 global SidePanelOpen := 0
@@ -64,7 +66,7 @@ ypos := 1
 Gui, Add, button, x%xpos% y%ypos% gWindowTitleClick HwndbtnWindowTitleID w28 -default,  % currentTitleMatchini . "/" . maxTitleMatchini
 xpos += 30
 ypos += 9
-Gui, Add, Text, x%xpos% y%ypos%, Window title filter:                   En     Inv
+Gui, Add, Text, x%xpos% y%ypos% HwndtxtWindowTitleID, Window title filter:                   En     Inv
 
 ; ***** Title matching text boxes
 xpos := 10
@@ -82,7 +84,7 @@ Loop, 5 {
 	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck" . A_Index . "ID gtitleDoSingle vcheck" . A_Index
 	ypos += 27                               
 }
-check1_TT := "Enable title match regex"
+check1_TT := "Enable title match regex (Win-Alt-1..5)"
 
 ; ***** Invert checkboxes
 xpos += 30
@@ -99,10 +101,11 @@ ypos := 165
 Gui, Add, Text, x%xpos% y%ypos% HwndFoundCountID, Found 0 window(s)
 xpos += 170
 Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch", Single
-SingleMatch_TT := "Selecting any regex enable box disables the other regexs"
+SingleMatch_TT := "Selecting any regex enable box disables the other regexs (Win-Alt-S)"
 xpos := 120
 ypos -= 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, Locate
+Locate_TT := "Win-Alt-O"
 GoSub, LoadTitleMatches
 
 ; ***** Found filter radio buttons
@@ -192,22 +195,25 @@ ypos += 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 vInputBox HwndInputBoxID WantTab ReadOnly, 
 xpos += 83
 Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste Clipboard
-Paste_Clipboard_TT := "_clipboard_"
+Paste_Clipboard_TT := "_clipboard_ (Win-Alt-V)"
 xpos += 90
 ypos += 7
 Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfCheck" .  ( CrLfVal ? " Checked" : "" ),  +CrLf
+CrLfVal_TT := "Toggle add crlf to Paste Clipboard and Putty Commands (Win-Alt-L)"
 
 ; ***** Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
 ypos := yposcluster + 45
 Gui, Add, button, x%xpos% y%ypos% HwndbtnTileID gTile -default, Tile
-Tile_TT := "LClick: Tile Putty Windows,   RClick: Tile on other monitor (set R-Click monitors in puttyCluster.ini)"
+Tile_TT := "LClick: Tile Putty Windows,   RClick: Tile on other monitor (set R-Click monitors in puttyCluster.ini) (Win-Alt-T)"
 xpos += 30
 Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
 xpos += 55
 Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
+ToBack_TT := "Win-Alt-B"
 xpos += 52
 Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
+ToFront_TT := "Win-Alt-F"
 xpos += 52
 Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
@@ -288,8 +294,14 @@ Iniread, ypos, %inifilename%, Autosave, ypos, %ypos_default%
 xsidepanelbutton := fwidth - 20
 ysidepanelbutton := 0
 Gui, Add, button, x%xsidepanelbutton% y%ysidepanelbutton% gSidePanelToggle HwndbtnToggleSidebarID -default, >>
-GTGT_TT := "Show launcher sidedar"
-LTLT_TT := "Hide launcher sidedar"
+GTGT_TT := "Show launcher sidedar (Win-Alt-D)"
+LTLT_TT := "Hide launcher sidedar (Win-Alt-D)"
+
+; ***** minimode toggle button
+xminibutton := fwidth - 30
+yminibutton := 195
+Gui, Add, button, x%xminibutton% y%yminibutton% vMiniMode gMiniModeToggle HwndbtnMiniModeID -default, mini
+MiniMode_TT := "Enable Mini Mode (Win-Alt-I)"
 
 ; ***** Sidepanel about button
 xsidepanel := xsidepanelbutton + 175
@@ -313,7 +325,7 @@ ysidepanel := 20
 Gui, Add, button, x%xsidepanel% y%ysidepanel% gAppLaunchersClick HwndbtnAppLaunchersID w28 -default, % currentAppLauncher . "/" . maxAppLauncher
 xsidepanel += 30
 ysidepanel += 5
-Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
+Gui, Add, Text, x%xsidepanel% y%ysidepanel% HwndtxtAppLaunchersID, Application launchers:
 ysidepanel -= 10
 Index := 1
 Loop, 2 {
@@ -1153,20 +1165,21 @@ AboutBox:
 	AboutMessage4 = % "`r" . "INI file in use: " . inifilename . "`r"
 	AboutMessage5 = % "`r" . "Win-Alt-C 	 Bring ClusterPutty window to the top"
 	AboutMessage6 = Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
-	AboutMessage7 = Win-Alt-T 	 Tile Putty Windows
-	AboutMessage8 = Win-Alt-F 	 Bring Putty Windows to the top of the desktop
-	AboutMessage9 = Win-Alt-B 	 Push Putty Winows to the back of the desktop (hide them)
+	AboutMessage7 = Win-Alt-T 	 Tile Putty windows
+	AboutMessage8 = Win-Alt-F 	 Bring Putty windows to the top of the desktop
+	AboutMessage9 = Win-Alt-B 	 Push Putty windows to the back of the desktop (hide them)
 	AboutMessage10 = Win-Alt-V 	 Paste current clipboard to all windows
 	AboutMessage11 = Win-Alt-L 	 Toggle 'Append CrLf' flag
-	AboutMessage12 = Win-Alt-O 	 Locate Putty Windows
-	AboutMessage13 = Win-Alt-S 	 Toggle 'Single regex match' flag
+	AboutMessage12 = Win-Alt-O 	 Locate Putty windows
+	AboutMessage13 = Win-Alt-S 	 Toggle 'Single Regex Match' flag
 	AboutMessage14 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
+	AboutMessage15 = Win-Alt-I 	 Toggle Mini mode
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
 		%AboutMessage3%`r%AboutMessage4%
-		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%
 	)
 
 	Gui, 2:Font, cBlue
@@ -1174,10 +1187,10 @@ AboutBox:
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
 	Gui, 2:Add, Text, vAboutText, %AboutMessage%
-	Gui, 2:Add, Button, x210 y305 w40 h25 gbtnOk, Ok
+	Gui, 2:Add, Button, x210 y325 w40 h25 gbtnOk, Ok
 	xposabout := ScreenWidth / 2 - 230
-	yposabout := ScreenHeight / 2 - 170
-	Gui, 2:Show, x%xposabout% y%yposabout% h340 w460, About
+	yposabout := ScreenHeight / 2 - 180
+	Gui, 2:Show, x%xposabout% y%yposabout% h360 w460, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
@@ -1273,6 +1286,56 @@ btnCommand:
 	Cmd := %pCmd%
 	sendstrdata=% Cmd . (CrLfVal ? "`r" : "")
 	GoSub, SendString
+Return
+
+MiniModeToggle:
+	ControlGetText, ToggleSidebarTxt, , ahk_id %btnToggleSidebarID%
+	if ( ToggleSidebarTxt == "<<" )
+		GoSub, SidePanelToggle
+	ControlGetText, MiniModeTxt, , ahk_id %btnMiniModeID%
+	if ( MiniModeTxt == "mini" ) {
+		ControlSetText, , full, ahk_id %btnMiniModeID%
+		MiniMode_TT := "Disable Mini Mode"
+		WinGetPos, xpos, ypos
+		xposmini := xpos + fwidth - miniwidth
+		yposmini := ypos + fheight - miniheight
+		Gui, Show, h%miniheight% w%miniwidth%  x%xposmini% y%yposmini%
+		xminimodeminibutton := miniwidth - 30
+		GuiControl, Move, %btnMiniModeID%, x%xminimodeminibutton% y%0%
+		ywidth := miniwidth - 50
+		GuiControl, Move, %InputBoxID%, w%ywidth% y%5%
+		
+		Control, Hide, , , ahk_id %btnToggleSidebarID%
+		Control, Hide, , , ahk_id %btnWindowTitleID%
+		Control, Hide, , , ahk_id %txtWindowTitleID%
+		Control, Hide, , , ahk_id %edit1ID%
+		Control, Hide, , , ahk_id %check1ID%
+		Control, Hide, , , ahk_id %checkinv1ID%
+		Control, Hide, , , ahk_id %btnAppLaunchersID%
+		Control, Hide, , , ahk_id %txtAppLaunchersID%
+		Control, Hide, , , ahk_id %btnLauncher1ID%
+		ControlFocus, , ahk_id %InputBoxID%
+	} else {
+		WinGetPos, xpos, ypos
+		xposfull := xpos - fwidth + miniwidth
+		yposfull := ypos - fheight + miniheight
+		Gui, Show, h%fheight% w%fwidth%  x%xposfull% y%yposfull%
+		ControlSetText, , mini, ahk_id %btnMiniModeID%
+		MiniMode_TT := "Enable Mini Mode"
+		GuiControl, Move, %btnMiniModeID%, x%xminibutton% y%yminibutton%
+		yinput := yposcluster + 20
+		GuiControl, Move, %InputBoxID%, w80 y%yinput%
+		
+		Control, Show, , , ahk_id %btnToggleSidebarID%
+		Control, Show, , , ahk_id %btnWindowTitleID%
+		Control, Show, , , ahk_id %txtWindowTitleID%
+		Control, Show, , , ahk_id %edit1ID%
+		Control, Show, , , ahk_id %check1ID%
+		Control, Show, , , ahk_id %checkinv1ID%
+		Control, Show, , , ahk_id %btnAppLaunchersID%
+		Control, Show, , , ahk_id %txtAppLaunchersID%
+		Control, Show, , , ahk_id %btnLauncher1ID%
+	}
 Return
 
 SidePanelToggle:
@@ -1407,6 +1470,11 @@ GuiClose:
 	WinGetPos, xpos, ypos
 	if (SidePanelOpen == 1)
 		xpos += sidepanelwidth + 10
+	ControlGetText, MiniModeTxt, , ahk_id %btnMiniModeID%
+	if  ( MiniModeTxt == "full" ) {
+		xpos := xpos - fwidth + miniwidth
+		ypos := ypos -fheight + miniheight
+	}
 	ControlGetText, xsize1, , ahk_id %width1ID%
 	ControlGetText, ysize1, , ahk_id %height1ID%
 	ControlGetText, xsize2, , ahk_id %width2ID%
@@ -2069,6 +2137,12 @@ Return
 ; Win+Alt+5
 #!5::
 	ControlSend, , {Space}, ahk_id %check5ID%
+Return
+
+; Win+Alt+I
+#!i::
+	;GoSub, MiniModeToggle
+	ControlClick, , ahk_id %btnMiniModeID%
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4

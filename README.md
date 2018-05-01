@@ -50,7 +50,10 @@ After launching the script ...
 
 8.  If you use multiple monitors, the Tile button supports right clicking to Tile on the other monitor (which can be set in puttyCluster.ini)
 
-Tips: Use the Locate button (or Win-Alt-O) to regualarly check which windows you are currently hitting with your filters, use prompt/title tagging (see notes below) to assist in creating groups of windows.
+Tips: 
+* Use the Locate button (or Win-Alt-O) to regualarly check which windows you are currently hitting with your filters
+* Use prompt/title tagging (see notes below) to assist in creating groups of windows
+* Commit your Title/Position filters to memory and try the Mini mode (Win-Alt-I) to shrink the Gui down to almost just the input box.  The hotkeys for filter switching still work so you can still switch between groups
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
@@ -66,14 +69,15 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
 * Win-Alt-C 	 Bring ClusterPutty window to the top
 * Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
-* Win-Alt-T 	 Tile Putty Windows
-* Win-Alt-F 	 Bring Putty Windows to the top of the desktop
-* Win-Alt-B 	 Push Putty Winows to the back of the desktop (hide them)
+* Win-Alt-T 	 Tile Putty windows
+* Win-Alt-F 	 Bring Putty windows to the top of the desktop
+* Win-Alt-B 	 Push Putty windows to the back of the desktop (hide them)
 * Win-Alt-V 	 Paste current clipboard to all windows
 * Win-Alt-L 	 Toggle 'Append CrLf' flag
 * Win-Alt-O 	 Locate Putty Windows (Bring to top, flash border)
 * Win-Alt-S 	 Toggle 'Single regex match' flag
 * Win-Alt-1..5 	 Toggle Enable 1..5 flag
+* Win-Alt-I 	 Toggle Mini mode
 
 #### A good Putty window title greatly assists in window filtering
 
@@ -114,6 +118,8 @@ IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\
 ![Edit Launcher](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot5_edit_Launcher.png)
 ![Edit Session](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot6_edit_session.png)
 ![Edit Command](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot7_edit_command.png)
+![Demo Application](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot8_socket_test.png)
+![Mini Mode](https://raw.github.com/SpiroCx/puttyCluster/screenshots/screenshot9_mini_mode.png)
 
 ### ToDo
 
