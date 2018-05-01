@@ -54,6 +54,7 @@ Tips:
 * Use the Locate button (or Win-Alt-O) to regualarly check which windows you are currently hitting with your filters
 * Use prompt/title tagging (see notes below) to assist in creating groups of windows
 * Commit your Title/Position filters to memory and try the Mini mode (Win-Alt-I) to shrink the Gui down to almost just the input box.  The hotkeys for filter switching still work so you can still switch between groups
+* The Invert Match Flag labelled "!(..)" is probably more useful than the individual invert flags which are ignored when this flag is set.  It inverts the overall combination of the title matches.  This lets you use the title matches to find the windows you want to ignore, then set the invert flag to get the others.
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
@@ -93,7 +94,7 @@ IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\
 * Most of the script is useless if you don't run it as Administrator.  At least ToBack and ToFront don't get access to the windows without it.
 * I have used "SetWinDelay, -1" to make Tile/Cascade fast (which they are).  The AHK help file says not to do this though as the PostMessages may fail under heavy CPU load.  If there are any suspicions in regards to this, these lines should be switched to "SetWinDelay, 0" at least (if not "SetWinDelay, 10")
 *  There is only very partial (and experimental) support for SuperPutty and Xshell Beta 6.  In both cases, pretty much only the multi typing works and only the bitfield window selection filters work.  No title matching, locate, ToFront, ToBack.  In addition to this, for Superputty, only the visible tabs respond.  This Superputty limitation is a bit of a show stopper.  The Xshell support is kind of useable but not a lot better than Xshells own multi window input capabilities.
-* The inverted regex's are based on this expression: 
+* The individual inverted regex's are based on this expression: 
 ```
 ^((?!MATCH).)*$ 
 ```
@@ -109,6 +110,12 @@ then Tile them to another monitor, open a new set of putty windows, turn on the 
 ```
 IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\h: \w[B][$IP]\a\]\[\e[33m\]\u@\h:\[\e[m\]\[\e[31m\]\w\[\e[31m\]\[\e[36m\][B]$\[\e[m\] "
 ```
+The inverted match checkbox (labelled !(..)) generates this expression:
+```
+^((?!(MATCH1)|(MATCH2)|(MATCH3)|(MATCH4)|(MATCH5)).)*$ 
+```
+So the individual invert flags are ignored, in favour of combining all the title regex's and inverting the result
+
 
 ### Screenshots
 
@@ -127,7 +134,6 @@ IP=$(ifconfig | grep 120 | sed -n '1s/[^:]*:\([^ ]*\).*/\1/p'); PS1="\[\e]0;\u@\
 * Find space for the label "Select Monitor" above the monitor selection radio buttons
 * Make the hotkeys configurable
 * Add shortcut for Always On Top
-* Add a single overall tile match invert button, so you can find the windows you don't want then simply invert the result.
 
 ### license
 * free as in free beer and free as in free speech

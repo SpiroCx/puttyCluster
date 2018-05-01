@@ -95,13 +95,16 @@ Loop, 5 {
 }
 checkinv1_TT := "Invert regex"
 
-; ***** Found n windows and Locate Windows button
+; ***** Found n windows, Single Match Mode, Invert All Mode, Locate Windows buttons
 xpos := 10
 ypos := 165
 Gui, Add, Text, x%xpos% y%ypos% HwndFoundCountID, Found 0 window(s)
 xpos += 170
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch", Single
-SingleMatch_TT := "Selecting any regex enable box disables the other regexs (Win-Alt-S)"
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch", 1
+SingleMatch_TT := "Single Match Mode: Selecting any regex enable box disables the other regexs (Win-Alt-S)"
+xpos += 30
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndInvertMatchID vInvertMatch", !(..)
+InvertMatch_TT := "Invert Match Mode: Combine the individual Tile Match (*** IGNORE individual invert flags ***), then invert the result"
 xpos := 120
 ypos -= 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, Locate
@@ -1021,6 +1024,8 @@ LoadTitleMatches:
 	}
 	IniRead, SingleMatch, %inifilenametitlematch%, Options, SingleMatch, 0
 	Control, % (SingleMatch ? "check" : "uncheck"), , , ahk_id %SingleMatchID%
+	IniRead, InvertMatch, %inifilenametitlematch%, Options, InvertMatch, 0
+	Control, % (InvertMatch ? "check" : "uncheck"), , , ahk_id %InvertMatchID%
 Return
 
 LoadPositionMatches:
@@ -1521,6 +1526,8 @@ SaveTitleMatches:
 	}
 	ControlGet, SingleMatch, Checked, , , ahk_id %SingleMatchID%
 	IniWrite, %SingleMatch%, %inifilenametitlematch%, Options, SingleMatch
+	ControlGet, InvertMatch, Checked, , , ahk_id %InvertMatchID%
+	IniWrite, %InvertMatch%, %inifilenametitlematch%, Options, InvertMatch
 Return
 
 SavePositionMatches:
@@ -1921,21 +1928,40 @@ return
 Find:
   gui, Submit, nohide
   titletmp := ""
-  if( check1 && title1 != "" )
-	titletmp = % (checkinv1 ? "^((?!" : "(") . title1 . (checkinv1 ? ").)*$" : ")")
-  if( check2 && title2 != "" ) {
-	titletmp = % titletmp . (checkinv2 ? "|^((?!" : "|(") . title2 . (checkinv2 ? ").)*$" : ")")
+  if (InvertMatch == 1) {
+	  if( check1 && title1 != "" )
+		titletmp = % "(" . title1 . ")"
+	  if( check2 && title2 != "" ) {
+		titletmp = % titletmp . "|(" . title2 . ")"
+	  }
+	  if( check3 && title3 != "" ) {
+		titletmp = % titletmp . "|(" . title3 . ")"
+	  }
+	  if( check4 && title4 != "" ) {
+		titletmp = % titletmp . "|(" . title4 . ")"
+	  }
+	  if( check5 && title5 != "" ) {
+		titletmp = % titletmp . "|(" . title5 . ")"
+	  }
+	  titletmp := LTrim(titletmp, "|")
+	  title := % "^((?!" . titletmp . ").)*$"
+  } else {
+	  if( check1 && title1 != "" )
+		titletmp = % (checkinv1 ? "^((?!" : "(") . title1 . (checkinv1 ? ").)*$" : ")")
+	  if( check2 && title2 != "" ) {
+		titletmp = % titletmp . (checkinv2 ? "|^((?!" : "|(") . title2 . (checkinv2 ? ").)*$" : ")")
+	  }
+	  if( check3 && title3 != "" ) {
+		titletmp = % titletmp . (checkinv3 ? "|^((?!" : "|(") . title3 . (checkinv3 ? ").)*$" : ")")
+	  }
+	  if( check4 && title4 != "" ) {
+		titletmp = % titletmp . (checkinv4 ? "|^((?!" : "|(") . title4 . (checkinv4 ? ").)*$" : ")")
+	  }
+	  if( check5 && title5 != "" ) {
+		titletmp = % titletmp . (checkinv5 ? "|^((?!" : "|(") . title5 . (checkinv5 ? ").)*$" : ")")
+	  }
+	  title := LTrim(titletmp, "|")
   }
-  if( check3 && title3 != "" ) {
-	titletmp = % titletmp . (checkinv3 ? "|^((?!" : "|(") . title3 . (checkinv3 ? ").)*$" : ")")
-  }
-  if( check4 && title4 != "" ) {
-	titletmp = % titletmp . (checkinv4 ? "|^((?!" : "|(") . title4 . (checkinv4 ? ").)*$" : ")")
-  }
-  if( check5 && title5 != "" ) {
-	titletmp = % titletmp . (checkinv5 ? "|^((?!" : "|(") . title5 . (checkinv5 ? ").)*$" : ")")
-  }
-  title := LTrim(titletmp, "|")
   if( title != "")
   {
 	id_array_count := id_array._MaxIndex()
@@ -2065,7 +2091,7 @@ InsertionSort(ar)
 
 ; Win+Alt+C
 #!c::
-	;WinActivate, %windowname%
+	WinActivate, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	ControlFocus, Edit7,  %windowname%
@@ -2073,7 +2099,7 @@ Return
 
 ; Win+Alt+D
 #!d::
-	;WinActivate, %windowname%
+	WinActivate, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	GoSub, SidePanelToggle
