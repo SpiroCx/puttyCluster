@@ -2103,6 +2103,9 @@ Return
 	WinActivate, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
+	ControlGetText, MiniModeTxt, , ahk_id %btnMiniModeID%
+	if ( MiniModeTxt != "mini" )
+		ControlClick, , ahk_id %btnMiniModeID%
 	GoSub, SidePanelToggle
 Return
 
