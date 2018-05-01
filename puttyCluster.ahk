@@ -1179,12 +1179,13 @@ AboutBox:
 	AboutMessage13 = Win-Alt-S 	 Toggle 'Single Regex Match' flag
 	AboutMessage14 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
 	AboutMessage15 = Win-Alt-I 	 Toggle Mini mode
+	AboutMessage16 = Win-Alt-N 	 Toggle Invert Match flag
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
 		%AboutMessage3%`r%AboutMessage4%
-		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%`r%AboutMessage16%
 	)
 
 	Gui, 2:Font, cBlue
@@ -2169,6 +2170,11 @@ Return
 #!i::
 	;GoSub, MiniModeToggle
 	ControlClick, , ahk_id %btnMiniModeID%
+Return
+
+; Win+Alt+N
+#!n::
+	ControlClick, , ahk_id %InvertMatchID%
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4

@@ -79,6 +79,7 @@ In addition to original useage (https://github.com/mingbowan/puttyCluster):
 * Win-Alt-S 	 Toggle 'Single regex match' flag
 * Win-Alt-1..5 	 Toggle Enable 1..5 flag
 * Win-Alt-I 	 Toggle Mini mode
+* Win-Alt-N 	 Toggle Invert Match flag
 
 #### A good Putty window title greatly assists in window filtering
 
