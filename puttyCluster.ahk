@@ -64,7 +64,7 @@ InitIni := % "Ini" . currentTitleMatchini
 Iniread, inifilenametitlematch, %inifilename%, TitleMatches, %InitIni%, WindowTitleMatch1.ini
 xpos := 10
 ypos := 1
-Gui, Add, button, x%xpos% y%ypos% gWindowTitleClick HwndbtnWindowTitleID w28 -default,  % currentTitleMatchini . "/" . maxTitleMatchini
+Gui, Add, button, x%xpos% y%ypos% vbtnWindowTitle gWindowTitleClick HwndbtnWindowTitleID w28 -default,  % currentTitleMatchini . "/" . maxTitleMatchini
 xpos += 30
 ypos += 9
 Gui, Add, Text, x%xpos% y%ypos% HwndtxtWindowTitleID, Window title filter:                   En     Inv
@@ -126,7 +126,7 @@ InitIni := % "Ini" . currentPositionMatchini
 Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, %InitIni%, WindowPositionMatch1.ini
 xpos := 10
 ypos := 192
-Gui, Add, button, x%xpos% y%ypos% gWindowPositionClick HwndbtnWindowPositionID w28 -default,  % currentPositionMatchini . "/" . maxPositionMatchini
+Gui, Add, button, x%xpos% y%ypos% vbtnWindowPosition gWindowPositionClick HwndbtnWindowPositionID w28 -default,  % currentPositionMatchini . "/" . maxPositionMatchini
 xpos += 30
 ypos += 8
 Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Window position filter:
@@ -326,7 +326,7 @@ InitIni := % "Ini" . currentAppLauncher
 Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, %InitIni%, AppLaunchers1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel := 20
-Gui, Add, button, x%xsidepanel% y%ysidepanel% gAppLaunchersClick HwndbtnAppLaunchersID w28 -default, % currentAppLauncher . "/" . maxAppLauncher
+Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnAppLaunchers gAppLaunchersClick HwndbtnAppLaunchersID w28 -default, % currentAppLauncher . "/" . maxAppLauncher
 xsidepanel += 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel% HwndtxtAppLaunchersID, Application launchers:
@@ -358,7 +358,7 @@ InitIni := % "Ini" . currentPSLauncher
 Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %InitIni%, PuttySessions1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% gPSLaunchersClick HwndbtnPSLaunchersID w28 -default, % currentPSLauncher . "/" . maxPSLauncher
+Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnPSLaunchers gPSLaunchersClick HwndbtnPSLaunchersID w28 -default, % currentPSLauncher . "/" . maxPSLauncher
 xsidepanel := xsidepanel + 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty session launchers:
@@ -399,7 +399,7 @@ InitIni := % "Ini" . currentCmdLauncher
 Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %InitIni%, Commands1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% gCmdLaunchersClick HwndbtnCmdLaunchersID w28 -default, % currentCmdLauncher . "/" . maxCmdLauncher
+Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnCmdLaunchers gCmdLaunchersClick HwndbtnCmdLaunchersID w28 -default, % currentCmdLauncher . "/" . maxCmdLauncher
 xsidepanel := xsidepanel + 30
 ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty commands:
@@ -1027,6 +1027,7 @@ LoadTitleMatches:
 	Control, % (SingleMatch ? "check" : "uncheck"), , , ahk_id %SingleMatchID%
 	IniRead, InvertMatch, %inifilenametitlematch%, Options, InvertMatch, 0
 	Control, % (InvertMatch ? "check" : "uncheck"), , , ahk_id %InvertMatchID%
+	Iniread, btnWindowTitle_TT, %inifilenametitlematch%, Options, Tooltip, %inifilenametitlematch%
 Return
 
 LoadPositionMatches:
@@ -1059,6 +1060,7 @@ LoadPositionMatches:
 		idvar := %pidvar%
 		Control, % ((A_Index == matchtype) ? "check" : "uncheck" ), , , ahk_id %idvar%
 	}
+	Iniread, btnWindowPosition_TT, %inifilenamepositionmatch%, Options, Tooltip, %inifilenamepositionmatch%
 	enableGuiUpdates = 1
 Return
 
@@ -1081,6 +1083,7 @@ LoadLaunchers:
 		IniRead, %dirvar%, %inifilenameAppLaunchers%, %inisection%, Dir, C:\
 		ControlSetText, , %cmdlbl%, ahk_id %idvar%
 	}
+	Iniread, btnAppLaunchers_TT, %inifilenameAppLaunchers%, Options, Tooltip, %inifilenameAppLaunchers%
 Return
 
 LoadPSLaunchers:
@@ -1120,6 +1123,7 @@ LoadPSLaunchers:
 		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini3%, 0
 		ControlSetText, , %edtPutty%, ahk_id %countID3%
 	}
+	Iniread, btnPSLaunchers_TT, %inifilenamePSLaunchers%, Options, Tooltip, %inifilenamePSLaunchers%
 Return
 
 LoadCmdLaunchers:
@@ -1138,6 +1142,7 @@ LoadCmdLaunchers:
 		IniRead, cmdlbl, %inifilenameCmdLaunchers%, %inisection%, Label, % %cmdvar%
 		ControlSetText, , %cmdlbl%, ahk_id %idvar%
 	}
+	Iniread, btnCmdLaunchers_TT, %inifilenameCmdLaunchers%, Options, Tooltip, %inifilenameCmdLaunchers%
 Return
 
 EnableTimers:
