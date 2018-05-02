@@ -48,6 +48,7 @@ global sendstrdata
 global enableGuiUpdates := 1
 global MatchBits1
 global MatchBits2
+Global currentwindow := 0
 
 ; ***** Title Row
 Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
@@ -1180,12 +1181,14 @@ AboutBox:
 	AboutMessage14 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
 	AboutMessage15 = Win-Alt-I 	 Toggle Mini mode
 	AboutMessage16 = Win-Alt-N 	 Toggle Invert Match flag
+	AboutMessage17 = Win-Alt-Left 	 Focus previous Title/Position matched window
+	AboutMessage18 = Win-Alt-Right 	 Focus next Title/Position matched window
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
 		%AboutMessage3%`r%AboutMessage4%
-		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%`r%AboutMessage16%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%`r%AboutMessage16%`r%AboutMessage17%`r%AboutMessage18%
 	)
 
 	Gui, 2:Font, cBlue
@@ -1193,10 +1196,10 @@ AboutBox:
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
 	Gui, 2:Add, Text, vAboutText, %AboutMessage%
-	Gui, 2:Add, Button, x210 y325 w40 h25 gbtnOk, Ok
+	Gui, 2:Add, Button, x210 y365 w40 h25 gbtnOk, Ok
 	xposabout := ScreenWidth / 2 - 230
-	yposabout := ScreenHeight / 2 - 180
-	Gui, 2:Show, x%xposabout% y%yposabout% h360 w460, About
+	yposabout := ScreenHeight / 2 - 200
+	Gui, 2:Show, x%xposabout% y%yposabout% h400 w460, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
@@ -1957,6 +1960,145 @@ Locate:
 	ControlFocus, , ahk_id %InputBoxID%
 return 
 
+FocusNextWindow:  
+    Gosub, Find 
+	GoSub, DisableTimers
+
+	if ( FilterGroup == 1 ){
+		if (id_array_count > 0)
+		{
+			currentwindow += 1
+			if (currentwindow > id_array_count)
+				currentwindow := 1
+			this_id := id_array[currentwindow]
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinActivate, ahk_id %this_id%
+			WinSet, Transparent, 30, ahk_id %this_id%
+			Sleep, 50
+			WinSet, Transparent, %alpha%, ahk_id %this_id%
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := MatchBits1
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := MatchBits2
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		matchcount := 0
+		Loop, %id_array_count%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				matchcount += 1
+				if (matchcount > currentwindow) {
+					currentwindow += 1
+					this_id := id_array[A_Index]
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinActivate, ahk_id %this_id%
+					WinSet, Transparent, 30, ahk_id %this_id%
+					Sleep, 50
+					WinSet, Transparent, %alpha%, ahk_id %this_id%
+					return
+				}
+			}
+			titlematchbit *= 2
+		}
+		if (matchcount > 0) {
+			titlematchbit := 1
+			Loop, %id_array_count%
+			{
+				if ( ( titlematchbit & windowfilter ) > 0 ) {
+					currentwindow := 1
+					this_id := id_array[A_Index]
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinActivate, ahk_id %this_id%
+					WinSet, Transparent, 30, ahk_id %this_id%
+					Sleep, 50
+					WinSet, Transparent, %alpha%, ahk_id %this_id%
+					return
+				}
+				titlematchbit *= 2
+			}
+		}
+	}
+
+	GoSub, EnableTimers
+	ControlFocus, , ahk_id %InputBoxID%
+return 
+
+FocusPrevWindow:  
+    Gosub, Find 
+	GoSub, DisableTimers
+
+	if ( FilterGroup == 1 ){
+		if (id_array_count > 0)
+		{
+			currentwindow -= 1
+			if (currentwindow <= 0)
+				currentwindow := id_array_count
+			this_id := id_array[currentwindow]
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinActivate, ahk_id %this_id%
+			WinSet, Transparent, 30, ahk_id %this_id%
+			Sleep, 50
+			WinSet, Transparent, %alpha%, ahk_id %this_id%
+		}
+	}
+	else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := MatchBits1
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := MatchBits2
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		matchcount := 0
+		Loop, %id_array_count%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				matchcount += 1
+			}
+			titlematchbit *= 2
+		}
+		currentwindow -= 1
+		if (currentwindow <= 0)
+			currentwindow := matchcount
+		matchcount := 0
+		titlematchbit := 1
+		Loop, %id_array_count%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				matchcount += 1
+				if (matchcount == currentwindow) {
+					this_id := id_array[A_Index]
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinActivate, ahk_id %this_id%
+					WinSet, Transparent, 30, ahk_id %this_id%
+					Sleep, 50
+					WinSet, Transparent, %alpha%, ahk_id %this_id%
+					return
+				}
+			}
+			titlematchbit *= 2
+		}
+	}
+
+	GoSub, EnableTimers
+	ControlFocus, , ahk_id %InputBoxID%
+return 
+
 Find:
   gui, Submit, nohide
   titletmp := ""
@@ -2224,6 +2366,16 @@ Return
 ; Win+Alt+N
 #!n::
 	ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+Right
+#!Right::
+	GoSub, FocusNextWindow
+Return
+
+; Win+Alt+Left
+#!Left::
+	GoSub, FocusPrevWindow
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4
