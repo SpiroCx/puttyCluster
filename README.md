@@ -55,6 +55,7 @@ Tips:
 * Use prompt/title tagging (see notes below) to assist in creating groups of windows
 * Commit your Title/Position filters to memory and try the Mini mode (Win-Alt-I) to shrink the Gui down to almost just the input box.  The hotkeys for filter switching still work so you can still switch between groups
 * The Invert Match Flag labelled "!(..)" is probably more useful than the individual invert flags which are ignored when this flag is set.  It inverts the overall combination of the title matches.  This lets you use the title matches to find the windows you want to ignore, then set the invert flag to get the others.
+* With the titlebar removed from the Mini Mode, it's harder now to change the location of the Gui.  You need to use the keyboard. Alt, Space, Move, press any arrow key, then use the mouse.  To offset this invconvenience, the X Y coordinates of the mini mode are now stored/restored to/from the puttyCluster.ini file.  Al least this way you only have to do it occasionally.  With the Always On Top flag turned on, it's quote convenient to place the Mini Mode location somewhere over the Windows task bar
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
