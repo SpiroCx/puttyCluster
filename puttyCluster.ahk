@@ -35,8 +35,8 @@ global width
 global height
 global fwidth
 global fheight
-global miniheight := 25
-global miniwidth := 300
+global miniheight := 0
+global miniwidth := 50
 global sidepanelwidth := 200
 global AlwaysOnTop
 global SidePanelOpen := 0
@@ -1303,13 +1303,27 @@ MiniModeToggle:
 		ControlSetText, , full, ahk_id %btnMiniModeID%
 		MiniMode_TT := "Disable Mini Mode"
 		WinGetPos, xpos, ypos
-		xposmini := xpos + fwidth - miniwidth
-		yposmini := ypos + fheight - miniheight
+		xpospremini := xpos
+		ypospremini := ypos
+		Iniread, xposmini, %inifilename%, Autosave, xposmini, 65535
+		Iniread, yposmini, %inifilename%, Autosave, yposmini, 65535
+		if ((xposmini == 65535) || (yposmini == 65535)) {
+			xposmini := xpos + fwidth - miniwidth
+			yposmini := ypos + fheight - miniheight
+		}
 		Gui, Show, h%miniheight% w%miniwidth%  x%xposmini% y%yposmini%
 		xminimodeminibutton := miniwidth - 30
 		GuiControl, Move, %btnMiniModeID%, x%xminimodeminibutton% y%0%
 		ywidth := miniwidth - 50
-		GuiControl, Move, %InputBoxID%, w%ywidth% y%5%
+		GuiControl, Move, %InputBoxID%, w%ywidth% x0 y%5%
+		Gui, 1:Hide
+		Gui, 1:+ToolWindow
+		Control, Hide, , , ahk_id %btnMiniModeID%
+		Control, Hide, , , ahk_id %InputBoxID%
+		Gui, 1:Show
+		WinSet, Style, -0xC00000, %windowname%
+		Control, Show, , , ahk_id %btnMiniModeID%
+		Control, Show, , , ahk_id %InputBoxID%
 		
 		Control, Hide, , , ahk_id %btnToggleSidebarID%
 		Control, Hide, , , ahk_id %btnWindowTitleID%
@@ -1317,20 +1331,33 @@ MiniModeToggle:
 		Control, Hide, , , ahk_id %edit1ID%
 		Control, Hide, , , ahk_id %check1ID%
 		Control, Hide, , , ahk_id %checkinv1ID%
+		Control, Hide, , , ahk_id %edit2ID%
+		Control, Hide, , , ahk_id %check2ID%
+		Control, Hide, , , ahk_id %checkinv2ID%
 		Control, Hide, , , ahk_id %btnAppLaunchersID%
 		Control, Hide, , , ahk_id %txtAppLaunchersID%
 		Control, Hide, , , ahk_id %btnLauncher1ID%
 		ControlFocus, , ahk_id %InputBoxID%
 	} else {
 		WinGetPos, xpos, ypos
-		xposfull := xpos - fwidth + miniwidth
-		yposfull := ypos - fheight + miniheight
-		Gui, Show, h%fheight% w%fwidth%  x%xposfull% y%yposfull%
+		IniWrite, %xpos%, %inifilename%, Autosave, xposmini
+		IniWrite, %ypos%, %inifilename%, Autosave, yposmini
+		Gui, 1:Hide
+		Gui, 1:-ToolWindow
+		;;  2018-05-02 sc note. Don't delete double "Gui, Show".  Fow whatever reason, showing the titlebar
+		;; doesn't work unless I show the gui before WinSet, but fheight comes up short once I enable the 
+		;; titlebar.  The second hide/show basically recalculates the form height.  Note also with the
+		;; double show, I didn't need the +10 fudge on the width (restorewidth).  Again no idea why.
+		fwidthrestore := fwidth + 10
+		Gui, Show, h%fheight% w%fwidthrestore%  x%xpospremini% y%ypospremini%
+		WinSet, Style, +0xC00000, %windowname%
+		Gui, 1:Hide
+		Gui, Show, h%fheight% w%fwidth%  x%xpospremini% y%ypospremini%
 		ControlSetText, , mini, ahk_id %btnMiniModeID%
 		MiniMode_TT := "Enable Mini Mode"
 		GuiControl, Move, %btnMiniModeID%, x%xminibutton% y%yminibutton%
 		yinput := yposcluster + 20
-		GuiControl, Move, %InputBoxID%, w80 y%yinput%
+		GuiControl, Move, %InputBoxID%, w50 x10 y%yinput%
 		
 		Control, Show, , , ahk_id %btnToggleSidebarID%
 		Control, Show, , , ahk_id %btnWindowTitleID%
@@ -1338,6 +1365,9 @@ MiniModeToggle:
 		Control, Show, , , ahk_id %edit1ID%
 		Control, Show, , , ahk_id %check1ID%
 		Control, Show, , , ahk_id %checkinv1ID%
+		Control, Show, , , ahk_id %edit2ID%
+		Control, Show, , , ahk_id %check2ID%
+		Control, Show, , , ahk_id %checkinv2ID%
 		Control, Show, , , ahk_id %btnAppLaunchersID%
 		Control, Show, , , ahk_id %txtAppLaunchersID%
 		Control, Show, , , ahk_id %btnLauncher1ID%
@@ -1347,13 +1377,14 @@ Return
 SidePanelToggle:
 	ControlGetText, ToggleSidebarTxt, , ahk_id %btnToggleSidebarID%
 	WinGetPos, xpos, ypos, , ,%windowname%
+	fheightfudge := fheight - 10
 	if ( ToggleSidebarTxt == ">>" ) {
 		SidePanelOpen := 1
 		ControlSetText, , <<, ahk_id %btnToggleSidebarID%
 		widewidth := fwidth + sidepanelwidth
 		widexpos := xpos - sidepanelwidth - 10 ; 10 may be a fudge.  Wouldn't line up without it
 		gui +resize
-		Gui, Show, h%fheight% w%widewidth%  x%widexpos% y%ypos%
+		Gui, Show, h%fheightfudge% w%widewidth%  x%widexpos% y%ypos%
 		xbutton := widewidth - 10
 		GuiControl, Move, %btnToggleSidebarID%, x%xbutton%
 		gui -resize
@@ -1363,7 +1394,7 @@ SidePanelToggle:
 		gui +resize
 		narrowwidth := fwidth - 10 ; 2018-04-18 This may be a fudge.  The resize doesn't come back to the same width as the original Gui Show did
 		narrowxpos := xpos + sidepanelwidth + 10
-		Gui, Show, h%fheight% w%narrowwidth% x%narrowxpos% y%ypos%
+		Gui, Show, h%fheightfudge% w%narrowwidth% x%narrowxpos% y%ypos%
 		GuiControl, Move, %btnToggleSidebarID%, x%xsidepanelbutton%
 		gui -resize
 	}
@@ -2146,27 +2177,42 @@ Return
 
 ; Win+Alt+1
 #!1::
-	ControlSend, , {Space}, ahk_id %check1ID%
+	if (!check1)
+		ControlSend, , {Space}, ahk_id %check1ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
 Return
 
 ; Win+Alt+2
 #!2::
-	ControlSend, , {Space}, ahk_id %check2ID%
+	if (!check2)
+		ControlSend, , {Space}, ahk_id %check2ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
 Return
 
 ; Win+Alt+3
 #!3::
-	ControlSend, , {Space}, ahk_id %check3ID%
+	if (!check3)
+		ControlSend, , {Space}, ahk_id %check3ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
 Return
 
 ; Win+Alt+4
 #!4::
-	ControlSend, , {Space}, ahk_id %check4ID%
+	if (!check4)
+		ControlSend, , {Space}, ahk_id %check4ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
 Return
 
 ; Win+Alt+5
 #!5::
-	ControlSend, , {Space}, ahk_id %check5ID%
+	if (!check5)
+		ControlSend, , {Space}, ahk_id %check5ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
 Return
 
 ; Win+Alt+I
