@@ -1,9 +1,9 @@
 #SingleInstance force
 #NoTrayIcon
 SetWorkingDir %A_ScriptDir%
-;DetectHiddenWindows, On
 
-Menu, Tray, Icon, puttyCluster.ico
+if FileExist("puttyCluster.ico")
+	Menu, Tray, Icon, puttyCluster.ico
 
 ; ***** icon source: https://commons.wikimedia.org/wiki/File:PuTTY_icon_128px.png
 ; ***** icon copyright message:
@@ -17,23 +17,10 @@ Menu, Tray, Icon, puttyCluster.ico
 ;The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the Software or the use or other dealings in the Software.
 ;
 
+inifilename = puttyCluster.ini
+if (%0% > 0)
+	inifilename = %1%
 
-global bit11state := 0
-global bit12state := 0
-global bit13state := 0
-global bit14state := 0
-global bit15state := 0
-global bit16state := 0
-global bit17state := 0
-global bit18state := 0
-global bit21state := 0
-global bit22state := 0
-global bit23state := 0
-global bit24state := 0
-global bit25state := 0
-global bit26state := 0
-global bit27state := 0
-global bit28state := 0
 global windowname = "Mingbo's cluster Putty"
 SysGet, ScreenWidth, 0
 SysGet, ScreenHeight, 1
@@ -48,6 +35,8 @@ global width
 global height
 global fwidth
 global fheight
+global miniheight := 0
+global miniwidth := 50
 global sidepanelwidth := 200
 global AlwaysOnTop
 global SidePanelOpen := 0
@@ -56,180 +45,140 @@ global FoundWindowsFiltered3 := 22
 global FoundWindowsFiltered4 := 33
 global TimerPeriod := 1000
 global sendstrdata
+global enableGuiUpdates := 1
+global MatchBits1
+global MatchBits2
+global currentwindow := 0
+global titleMatchRegexp
+global positionMatchStr = ""
 
 ; ***** Title Row
-Gui, Add, Text,, Window Title RegEx:                       En     Inv
-;Gui, Add, Text, x250 y5, Enable
+Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
+nextini := currentTitleMatchini
+nextininame := % "Ini" . nextini
+while (nextininame != 0) {
+	maxTitleMatchini := nextini
+	nextini := nextini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, nextininame, %inifilename%, TitleMatches, %nextininame%, 0
+}
+InitIni := % "Ini" . currentTitleMatchini
+Iniread, inifilenametitlematch, %inifilename%, TitleMatches, %InitIni%, WindowTitleMatch1.ini
+xpos := 10
+ypos := 1
+Gui, Add, button, x%xpos% y%ypos% vbtnWindowTitle gWindowTitleClick HwndbtnWindowTitleID w28 -default,  % currentTitleMatchini . "/" . maxTitleMatchini
+xpos += 30
+ypos += 9
+Gui, Add, Text, x%xpos% y%ypos% HwndtxtWindowTitleID, Window title filter:                   En     Inv
 
 ; ***** Title matching text boxes
-IniRead, edit1, puttyCluster.ini, TitleMatch, Title1, .*
-IniRead, edit2, puttyCluster.ini, TitleMatch, Title2, %A_Space%
-IniRead, edit3, puttyCluster.ini, TitleMatch, Title3, %A_Space%
-IniRead, edit4, puttyCluster.ini, TitleMatch, Title4, %A_Space%
-IniRead, edit5, puttyCluster.ini, TitleMatch, Title5, %A_Space%
 xpos := 10
 ypos := 25
 ewidth := 160
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit1ID vtitle1 w%ewidth%, %edit1%
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit2ID vtitle2 w%ewidth%, %edit2%
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit3ID vtitle3 w%ewidth%, %edit3%
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit4ID vtitle4 w%ewidth%, %edit4%
-ypos += 27
-Gui, Add, Edit, x%xpos% y%ypos% Hwndedit5ID vtitle5 w%ewidth%, %edit5%
+Loop, 5 {
+	Gui, Add, Edit, x%xpos% y%ypos% Hwndedit%A_Index%ID vtitle%A_Index% w%ewidth%,
+	ypos += 27
+}
 
 ; ***** Enable checkboxes
-IniRead, check1, puttyCluster.ini, TitleMatchEnabled, TitleMatch1, 1
-IniRead, check2, puttyCluster.ini, TitleMatchEnabled, TitleMatch2, 0
-IniRead, check3, puttyCluster.ini, TitleMatchEnabled, TitleMatch3, 0
-IniRead, check4, puttyCluster.ini, TitleMatchEnabled, TitleMatch4, 0
-IniRead, check5, puttyCluster.ini, TitleMatchEnabled, TitleMatch5, 0
-IniRead, SingleMatch, puttyCluster.ini, Options, SingleMatch, 0
 xpos := 180
 ypos := 30
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck1ID gcheck1 vcheck1" . ( check1 ? " Checked" : "" )
-check1_TT := "Enable title match regex 1"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck2ID gcheck2 vcheck2" . ( check2 ? " Checked" : "" )
-check2_TT := "Enable title match regex 2"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck3ID gcheck3 vcheck3" . ( check3 ? " Checked" : "" )
-check3_TT := "Enable title match regex 3"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck4ID gcheck4 vcheck4" . ( check4 ? " Checked" : "" )
-check4_TT := "Enable title match regex 4"
-ypos += 27                               
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck5ID gcheck5 vcheck5" . ( check5 ? " Checked" : "" )
-check5_TT := "Enable title match regex 5"
+Loop, 5 {
+	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheck" . A_Index . "ID gtitleDoSingle vcheck" . A_Index
+	ypos += 27                               
+}
+check1_TT := "Enable title match regex (Win-Alt-1..5)"
 
 ; ***** Invert checkboxes
-IniRead, checkinv1, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv1, 0
-IniRead, checkinv2, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv2, 0
-IniRead, checkinv3, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv3, 0
-IniRead, checkinv4, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv4, 0
-IniRead, checkinv5, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv5, 0
 xpos += 30
 ypos := 30
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv1ID gcheckinv1 vcheckinv1" . ( checkinv1 ? " Checked" : "" )
-checkinv1_TT := "Invert regex 1 (NOT regex 1)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv2ID gcheckinv2 vcheckinv2" . ( checkinv2 ? " Checked" : "" )
-checkinv2_TT := "Invert regex 2 (NOT regex 2)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv3ID gcheckinv3 vcheckinv3" . ( checkinv3 ? " Checked" : "" )
-checkinv3_TT := "Invert regex 3 (NOT regex 3)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv4ID gcheckinv4 vcheckinv4" . ( checkinv4 ? " Checked" : "" )
-checkinv4_TT := "Invert regex 4 (NOT regex 4)"
-ypos += 27
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv5ID gcheckinv5 vcheckinv5" . ( checkinv5 ? " Checked" : "" )
-checkinv5_TT := "Invert regex 5 (NOT regex 5)"
+Loop, 5 {
+	Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " Hwndcheckinv" . A_Index . "ID gFocusInput vcheckinv" . A_Index
+	ypos += 27
+}
+checkinv1_TT := "Invert regex"
 
-; ***** Found n windows and Locate Windows button
+; ***** Found n windows, Single Match Mode, Invert All Mode, Locate Windows buttons
 xpos := 10
 ypos := 165
 Gui, Add, Text, x%xpos% y%ypos% HwndFoundCountID, Found 0 window(s)
 xpos += 170
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch" . ( SingleMatch ? " Checked" : "" ), Single
-SingleMatch_TT := "Selecting any regex enable box disables the other regexs"
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndSingleMatchID vSingleMatch", 1
+SingleMatch_TT := "Single Match Mode: Selecting any regex enable box disables the other regexs (Win-Alt-S)"
+xpos += 30
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndInvertMatchID vInvertMatch", !(..)
+InvertMatch_TT := "Invert Match Mode: Combine the individual Tile Match (*** IGNORE individual invert flags ***), then invert the result"
 xpos := 120
 ypos -= 5
 Gui, Add, button, x%xpos% y%ypos% gLocate -default, Locate
-
+Locate_TT := "Win-Alt-O"
+GoSub, LoadTitleMatches
 
 ; ***** Found filter radio buttons
-IniRead, matchbyte1type, puttyCluster.ini, MatchBits1, MatchByte1Type, 1
-IniRead, matchbyte1, puttyCluster.ini, MatchBits1, MatchByte1, FFFF
+Iniread, currentPositionMatchini, %inifilename%, PositionMatches, CurrentIni, 1
+nextini := currentPositionMatchini
+nextininame := % "Ini" . nextini
+while (nextininame != 0) {
+	maxPositionMatchini := nextini
+	nextini := nextini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, nextininame, %inifilename%, PositionMatches, %nextininame%, 0
+}
+InitIni := % "Ini" . currentPositionMatchini
+Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, %InitIni%, WindowPositionMatch1.ini
 xpos := 10
-ypos := 200
-Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Found windows filter (bitfield HEX eg FFFF):
-xpos += 20
+ypos := 192
+Gui, Add, button, x%xpos% y%ypos% vbtnWindowPosition gWindowPositionClick HwndbtnWindowPositionID w28 -default,  % currentPositionMatchini . "/" . maxPositionMatchini
+xpos += 30
+ypos += 8
+Gui, Add, Text,  x%xpos% y%ypos% vFoundFilterTitle, Window position filter:
+xpos -= 10
 ypos += 20
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " vFilterGroup" . ( (matchbyte1type == 1) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " w23" . " gFocusInput HwndFilterGroup1ID vFilterGroup Checked"
 FilterGroup_TT := "This section lets you filter windows based on the order in which they were found. Regex title matches are applied first, then these are applied"
 xpos += 0
 ypos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup2ID w23" . ( (matchbyte1type == 2) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup2ID w23"
 xpos += 90
 ypos -= 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup3ID w23" . ( (matchbyte1type == 3) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup3ID w23"
 xpos -= 90
 ypos += 60
-Gui, Add, Radio, % "x" . xpos . " y" . ypos . " HwndFilterGroup4ID w23" . ( (matchbyte1type == 4) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos . " gFocusInput HwndFilterGroup4ID w23"
 xpos += 23
 ypos -= 60
 Gui, Add, Text,  x%xpos% y%ypos%, All
 xpos += 90
 ypos -= 3
-Gui, Add, Edit,  x%xpos% y%ypos% vFindFilterTxt HwndFindFilterID gFindFilterClick w33, %matchbyte1%
+Gui, Add, Edit,  x%xpos% y%ypos% vFindFilterTxt HwndFindFilterID gFindFilterClick w33, FFFF
 xpos += 50
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup3InfoID vFilterGroup3InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 1
-IniRead, bit11state, puttyCluster.ini, MatchBits1, MatchBit11, 0
-IniRead, bit12state, puttyCluster.ini, MatchBits1, MatchBit12, 0
-IniRead, bit13state, puttyCluster.ini, MatchBits1, MatchBit13, 0
-IniRead, bit14state, puttyCluster.ini, MatchBits1, MatchBit14, 0
-IniRead, bit15state, puttyCluster.ini, MatchBits1, MatchBit15, 0
-IniRead, bit16state, puttyCluster.ini, MatchBits1, MatchBit16, 0
-IniRead, bit17state, puttyCluster.ini, MatchBits1, MatchBit17, 0
-IniRead, bit18state, puttyCluster.ini, MatchBits1, MatchBit18, 0
 xpos := 52
 ypos := 247
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit11ID gbit11toggle -default, % ( bit11state ? "1" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit12ID gbit12toggle -default, % ( bit12state ? "2" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit13ID gbit13toggle -default, % ( bit13state ? "3" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit14ID gbit14toggle -default, % ( bit14state ? "4" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit15ID gbit15toggle -default, % ( bit15state ? "5" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit16ID gbit16toggle -default, % ( bit16state ? "6" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit17ID gbit17toggle -default, % ( bit17state ? "7" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit18ID gbit18toggle -default, % ( bit18state ? "8" : "" )
-xpos += 30
+Loop, 8 {
+	Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit1%A_Index%ID gbit1toggle vbit1%A_Index%state -default
+	xpos += 16
+}
+xpos += 14
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup2InfoID vFilterGroup2InfoVal, % "(0/0)"
 
 ; ***** Found filter bit selection buttons 2
-IniRead, bit21state, puttyCluster.ini, MatchBits2, MatchBit21, 0
-IniRead, bit22state, puttyCluster.ini, MatchBits2, MatchBit22, 0
-IniRead, bit23state, puttyCluster.ini, MatchBits2, MatchBit23, 0
-IniRead, bit24state, puttyCluster.ini, MatchBits2, MatchBit24, 0
-IniRead, bit25state, puttyCluster.ini, MatchBits2, MatchBit25, 0
-IniRead, bit26state, puttyCluster.ini, MatchBits2, MatchBit26, 0
-IniRead, bit27state, puttyCluster.ini, MatchBits2, MatchBit27, 0
-IniRead, bit28state, puttyCluster.ini, MatchBits2, MatchBit28, 0
 xpos := 52
 ypos := 277
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit21ID gbit21toggle -default, % ( bit21state ? "1" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit22ID gbit22toggle -default, % ( bit22state ? "2" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit23ID gbit23toggle -default, % ( bit23state ? "3" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit24ID gbit24toggle -default, % ( bit24state ? "4" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit25ID gbit25toggle -default, % ( bit25state ? "5" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit26ID gbit26toggle -default, % ( bit26state ? "6" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit27ID gbit27toggle -default, % ( bit27state ? "7" : "" )
-xpos += 16                   
-Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit28ID gbit28toggle -default, % ( bit28state ? "8" : "" )
-xpos += 30
+Loop, 8 {
+	Gui, Add, Button, x%xpos% y%ypos% w14 HwndbtnBit2%A_Index%ID gbit2toggle vbit2%A_Index%state -default
+	xpos += 16
+}
+xpos += 14
 ypos += 5
 Gui, Add, Text,  x%xpos% y%ypos% w30 HwndFilterGroup4InfoID vFilterGroup4InfoVal, % "(0/0)"
+GoSub, LoadPositionMatches
 
 ; ***** Window transparency slider
-; yposslider := 190
 yposslider := 310
 xpos := 10
 ypos := yposslider
@@ -239,8 +188,8 @@ ypos += 18
 GUI, Add, Slider, x%xpos% y%ypos% Range100-255 w%swidth% gFind, 255
 
 ; ***** Cluster Input, Paste, CrLf checkbox, Always on top checkbox
-IniRead, OnTopVal, puttyCluster.ini, Options, AlwaysOnTop, 0
-IniRead, CrLfVal, puttyCluster.ini, Options, AddCrLf, 0
+IniRead, OnTopVal, %inifilename%, Options, AlwaysOnTop, 0
+IniRead, CrLfVal, %inifilename%, Options, AddCrLf, 0
 yposcluster := yposslider + 60
 xpos := 10
 ypos := yposcluster
@@ -251,27 +200,31 @@ xpos -= 113
 ypos += 20
 Gui, Add, Edit, x%xpos% y%ypos% w80 vInputBox HwndInputBoxID WantTab ReadOnly, 
 xpos += 83
-Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste &Clipboard
-Paste_Clipboard_TT := "_clipboard_"
+Gui, Add, button, x%xpos% y%ypos% gGoPaste -default, Paste Clipboard
+Paste_Clipboard_TT := "_clipboard_ (Win-Alt-V)"
 xpos += 90
 ypos += 7
-Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfCheck" .  ( CrLfVal ? " Checked" : "" ),  +Cr&Lf
+Gui, Add, Checkbox, % "x" . xpos . " y" . ypos . " HwndCrLfID vCrLfVal gCrLfCheck" .  ( CrLfVal ? " Checked" : "" ),  +CrLf
+CrLfVal_TT := "Toggle add crlf to Paste Clipboard and Putty Commands (Win-Alt-L)"
 
 ; ***** Window command buttons Tile, Cascade, ToFront etc
 xpos := 10
 ypos := yposcluster + 45
-Gui, Add, button, x%xpos% y%ypos% gTile -default, &Tile
+Gui, Add, button, x%xpos% y%ypos% HwndbtnTileID gTile -default, Tile
+Tile_TT := "LClick: Tile Putty Windows,   RClick: Tile on other monitor (set R-Click monitors in puttyCluster.ini) (Win-Alt-T)"
 xpos += 30
 Gui, Add, button, x%xpos% y%ypos% gCascade -default, Cascade
 xpos += 55
-Gui, Add, button, x%xpos% y%ypos% gToBack -default, To&Back
+Gui, Add, button, x%xpos% y%ypos% gToBack -default, ToBack
+ToBack_TT := "Win-Alt-B"
 xpos += 52
-Gui, Add, button, x%xpos% y%ypos% gToFront -default, To&Front
+Gui, Add, button, x%xpos% y%ypos% gToFront -default, ToFront
+ToFront_TT := "Win-Alt-F"
 xpos += 52
 Gui, Add, button, x%xpos% y%ypos% gCloseWin -default, Close
 
 ; ***** Window size radio buttons
-IniRead, winsize, puttyCluster.ini, WindowSize, Selected, 7
+IniRead, winsize, %inifilename%, WindowSize, Selected, 7
 xbase := 5
 ybase := yposcluster + 85
 
@@ -290,11 +243,11 @@ Gui, Add, Radio, % "x" . xpos . " y" . ypos1 . " w23" . " HwndRadioCheck6  gRadi
 Gui, Add, Radio, % "x" . xpos . " y" . ypos2 . " w23" . " HwndRadioCheck7  gRadioCheck" . ( (winsize == 7) ? " Checked" : "" )
 Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndRadioCheck8  gRadioCheck" . ( (winsize == 8) ? " Checked" : "" )
 
-; ***** Radio button text boxes
-IniRead, xsize1, puttyCluster.ini, XYSize, x1, 400
-IniRead, ysize1, puttyCluster.ini, XYSize, y1, 500
-IniRead, xsize2, puttyCluster.ini, XYSize, x2, 400
-IniRead, ysize2, puttyCluster.ini, XYSize, y2, 600
+; ***** Window size radio button text boxes
+IniRead, xsize1, %inifilename%, XYSize, x1, 400
+IniRead, ysize1, %inifilename%, XYSize, y1, 500
+IniRead, xsize2, %inifilename%, XYSize, x2, 400
+IniRead, ysize2, %inifilename%, XYSize, y2, 600
 xpos := xbase + 54
 Gui, Add, Text,  x%xpos% y%ypos1%, X
 Gui, Add, Text,  x%xpos% y%ypos2%, X
@@ -307,31 +260,31 @@ Gui, Add, Text,  x%xpos% y%ypos1%, 2x2
 Gui, Add, Text,  x%xpos% y%ypos2%, 2x3
 Gui, Add, Text,  x%xpos% y%ypos3%, 3x3
 
-; ***** Radio button edit boxes
+; ***** Window size radio button edit boxes
 xpos1 := xbase + 23
 xpos2 := xbase + 63
 ypos1 := ybase
 ypos2 := ybase + 27
 ypos3 := ybase + 54
-Gui, Add, Edit,  x%xpos1% y%ypos1% gwidthClick1 Hwndwidth1ID vwidth1 w30 Number, %xsize1%
-Gui, Add, Edit,  x%xpos2% y%ypos1% gheightClick1 Hwndheight1ID vheight1 w30 Number, %ysize1%
-Gui, Add, Edit,  x%xpos1% y%ypos2% gwidthClick2 Hwndwidth2ID vwidth2 w30 Number, %xsize2%
-Gui, Add, Edit,  x%xpos2% y%ypos2% gHeightClick2 Hwndheight2ID vheight2 w30 Number, %ysize2%
+Gui, Add, Edit,  x%xpos1% y%ypos1% gwhFocusRadioButton Hwndwidth1ID vwidth1 w30 Number, %xsize1%
+Gui, Add, Edit,  x%xpos2% y%ypos1% gwhFocusRadioButton Hwndheight1ID vheight1 w30 Number, %ysize1%
+Gui, Add, Edit,  x%xpos1% y%ypos2% gwhFocusRadioButton Hwndwidth2ID vwidth2 w30 Number, %xsize2%
+Gui, Add, Edit,  x%xpos2% y%ypos2% gwhFocusRadioButton Hwndheight2ID vheight2 w30 Number, %ysize2%
 
 ; ***** Monitor selector
-IniRead, monitorsel, puttyCluster.ini, Options, MonitorSelect, 1
-IniRead, edtMonitor3, puttyCluster.ini, Options, Monitor3, 3
+IniRead, monitorsel, %inifilename%, Options, MonitorSelect, 1
+IniRead, edtMonitor3, %inifilename%, Options, Monitor3, 3
+IniRead, RightClickMonitor1, %inifilename%, Options, RightClickMonitor1, 1
+IniRead, RightClickMonitor2, %inifilename%, Options, RightClickMonitor2, 1
 xpos := xbase
 ypos3 += 5
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor1 vMonitorGroup" . ( (monitorsel == 1) ? " Checked" : "" ), 1
 MonitorGroup_TT := "Use monitor 1"
 xpos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor2" . ( (monitorsel == 2) ? " Checked" : "" ), 2
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor2" . ( (monitorsel == 2) ? " Checked" : "" ), 2
 xpos += 30
-Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " HwndMonitor3" . ( (monitorsel == 3) ? " Checked" : "" )
+Gui, Add, Radio, % "x" . xpos . " y" . ypos3 . " w23" . " gFocusInput HwndMonitor3" . ( (monitorsel == 3) ? " Checked" : "" )
 xpos += 23
-;ypos3 -= 3
-;Gui, Add, Edit,  x%xpos% y%ypos3% gedtMonitorClick3 HwndedtMonitor3ID vedtMonitor3 w20 h20 Number, %edtMonitor3%
 Gui, Add, Text,  x%xpos% y%ypos3% w24 h16, %edtMonitor3%
 Gui, Add, UpDown, gedtMonitorClick3 vedtMonitor3 HwndedtMonitor3ID Range1-8, %edtMonitor3%
 edtMonitor3_TT := "Enter a monitor number here.  Default 3"
@@ -340,304 +293,138 @@ fheight := yposcluster + 165
 fwidth := 250
 xpos_default := (ScreenWidth / 2) - (fwidth / 2)
 ypos_default := (ScreenHeight / 2) - (fheight / 2)
-Iniread, xpos, puttyCluster.ini, Autosave, xpos, %xpos_default%
-Iniread, ypos, puttyCluster.ini, Autosave, ypos, %ypos_default%
+Iniread, xpos, %inifilename%, Autosave, xpos, %xpos_default%
+Iniread, ypos, %inifilename%, Autosave, ypos, %ypos_default%
 
 ; ***** Sidepanel toggle button
 xsidepanelbutton := fwidth - 20
 ysidepanelbutton := 0
 Gui, Add, button, x%xsidepanelbutton% y%ysidepanelbutton% gSidePanelToggle HwndbtnToggleSidebarID -default, >>
-GTGT_TT := "Show launcher sidedar"
-LTLT_TT := "Hide launcher sidedar"
+GTGT_TT := "Show launcher sidedar (Win-Alt-D)"
+LTLT_TT := "Hide launcher sidedar (Win-Alt-D)"
+
+; ***** minimode toggle button
+xminibutton := fwidth - 30
+yminibutton := 195
+Gui, Add, button, x%xminibutton% y%yminibutton% vMiniMode gMiniModeToggle HwndbtnMiniModeID -default, mini
+MiniMode_TT := "Enable Mini Mode (Win-Alt-I)"
 
 ; ***** Sidepanel about button
-xsidepanel := xsidepanelbutton + 172
+xsidepanel := xsidepanelbutton + 175
 ysidepanel := 6
 Gui, Add, text, x%xsidepanel% y%ysidepanel% gAboutBox, About
 
 ; ***** Sidepanel application launchers
+Iniread, currentAppLauncher, %inifilename%, ApplicationLaunchers, CurrentLauncher, 1
+nextLauncher := currentApplauncher
+nextini := % "Ini" . nextLauncher
+while (nextini != 0) {
+	maxAppLauncher := nextLauncher
+	nextLauncher := nextLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, nextini, %inifilename%, ApplicationLaunchers, %nextini%, 0
+}
+InitIni := % "Ini" . currentAppLauncher
+Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, %InitIni%, AppLaunchers1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel := 20
-Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Application launchers:
-ysidepanel += 20
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher1 gbtnLauncher1 HwndbtnLauncher1ID -default, Launcher1
-IniRead, Launcher1label, puttyCluster.ini, Launcher1, Label, NoINI
-IniRead, btnLauncher1_TT, puttyCluster.ini, Launcher1, Tooltip,Configure launcher by editing puttyCluster.ini file
-IniRead, launcher1command, puttyCluster.ini, Launcher1, Command, notepad.exe
-IniRead, launcher1dir, puttyCluster.ini, Launcher1, Dir, C:\
-ControlSetText, , %Launcher1label%, ahk_id %btnLauncher1ID%
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher2 gbtnLauncher2 HwndbtnLauncher2ID -default, Launcher2
-IniRead, Launcher2label, puttyCluster.ini, Launcher2, Label, NoINI
-IniRead, btnLauncher2_TT, puttyCluster.ini, Launcher2, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher2command, puttyCluster.ini, Launcher2, Command, notepad.exe
-IniRead, Launcher2dir, puttyCluster.ini, Launcher2, Dir, C:\
-ControlSetText, , %Launcher2label%, ahk_id %btnLauncher2ID%
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher3 gbtnLauncher3 HwndbtnLauncher3ID -default, Launcher3
-IniRead, Launcher3label, puttyCluster.ini, Launcher3, Label, NoINI
-IniRead, btnLauncher3_TT, puttyCluster.ini, Launcher3, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher3command, puttyCluster.ini, Launcher3, Command, notepad.exe
-IniRead, Launcher3dir, puttyCluster.ini, Launcher3, Dir, C:\
-ControlSetText, , %Launcher3label%, ahk_id %btnLauncher3ID%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher4 gbtnLauncher4 HwndbtnLauncher4ID -default, Launcher4
-IniRead, Launcher4label, puttyCluster.ini, Launcher4, Label, NoINI
-IniRead, btnLauncher4_TT, puttyCluster.ini, Launcher4, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher4command, puttyCluster.ini, Launcher4, Command, notepad.exe
-IniRead, Launcher4dir, puttyCluster.ini, Launcher4, Dir, C:\
-ControlSetText, , %Launcher4label%, ahk_id %btnLauncher4ID%
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher5 gbtnLauncher5 HwndbtnLauncher5ID -default, Launcher5
-IniRead, Launcher5label, puttyCluster.ini, Launcher5, Label, NoINI
-IniRead, btnLauncher5_TT, puttyCluster.ini, Launcher5, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher5command, puttyCluster.ini, Launcher5, Command, notepad.exe
-IniRead, Launcher5dir, puttyCluster.ini, Launcher5, Dir, C:\
-ControlSetText, , %Launcher5label%, ahk_id %btnLauncher5ID%
-xsidepanel += 65
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher6 gbtnLauncher6 HwndbtnLauncher6ID -default, Launcher6
-IniRead, Launcher6label, puttyCluster.ini, Launcher6, Label, NoINI
-IniRead, btnLauncher6_TT, puttyCluster.ini, Launcher6, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, Launcher6command, puttyCluster.ini, Launcher6, Command, notepad.exe
-IniRead, Launcher6dir, puttyCluster.ini, Launcher6, Dir, C:\
-ControlSetText, , %Launcher6label%, ahk_id %btnLauncher6ID%
+Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnAppLaunchers gAppLaunchersClick HwndbtnAppLaunchersID w28 -default, % currentAppLauncher . "/" . maxAppLauncher
+xsidepanel += 30
+ysidepanel += 5
+Gui, Add, Text, x%xsidepanel% y%ysidepanel% HwndtxtAppLaunchersID, Application launchers:
+ysidepanel -= 10
+Index := 1
+Loop, 2 {
+	row := A_Index
+	xsidepanel := xsidepanelbutton + 30
+	ysidepanel += 30
+	Loop, 3 {
+		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnLauncher%Index% gbtnLauncher HwndbtnLauncher%Index%ID -default, Launcher%Index%
+		xsidepanel += 65
+		Index += 1
+	}
+}
+GoSub, LoadLaunchers
 
 ; ***** Sidepanel putty session launchers
+Iniread, currentPSLauncher, %inifilename%, PuttySessionLaunchers, CurrentLauncher, 1
+nextLauncher := currentPSlauncher
+nextini := % "Ini" . nextLauncher
+while (nextini != 0) {
+	maxPSLauncher := nextLauncher
+	nextLauncher := nextLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, nextini, %inifilename%, PuttySessionLaunchers, %nextini%, 0
+}
+InitIni := % "Ini" . currentPSLauncher
+Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %InitIni%, PuttySessions1.ini
 xsidepanel := xsidepanelbutton + 30
-ysidepanel += 40
+ysidepanel += 30
+Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnPSLaunchers gPSLaunchersClick HwndbtnPSLaunchersID w28 -default, % currentPSLauncher . "/" . maxPSLauncher
+xsidepanel := xsidepanel + 30
+ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty session launchers:
-ysidepanel += 20
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty1 gbtnPutty1 HwndbtnPutty1ID -default, Putty1
-IniRead, btnputty1label, puttyCluster.ini, PuttySession1, Label, NoINI
-IniRead, btnPutty1_TT, puttyCluster.ini, PuttySession1, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty1command, puttyCluster.ini, PuttySession1, Command, ubuntu-r210-8_av
-IniRead, btnputty1dir, puttyCluster.ini, PuttySession1, Dir, C:\
-ControlSetText, , %btnputty1label%, ahk_id %btnPutty1ID%
-xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession1, Putty11Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty11 HwndedtPutty11ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty11UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession1, Putty12Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty12 HwndedtPutty12ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty12UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession1, Putty13Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty13 HwndedtPutty13ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty13UpDown Range0-10, %edtPutty%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty2 gbtnPutty2 HwndbtnPutty2ID -default, Putty2
-IniRead, btnputty2label, puttyCluster.ini, PuttySession2, Label, NoINI
-IniRead, btnPutty2_TT, puttyCluster.ini, PuttySession2, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty2command, puttyCluster.ini, PuttySession2, Command, ubuntu-r210-8_av
-IniRead, btnputty2dir, puttyCluster.ini, PuttySession2, Dir, C:\
-ControlSetText, , %btnputty2label%, ahk_id %btnPutty2ID%
-xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession2, Putty21Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty21 HwndedtPutty21ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty21UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession2, Putty22Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty22 HwndedtPutty22ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty22UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession2, Putty23Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty23 HwndedtPutty23ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty23UpDown Range0-10, %edtPutty%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty3 gbtnPutty3 HwndbtnPutty3ID -default, Putty3
-IniRead, btnputty3label, puttyCluster.ini, PuttySession3, Label, NoINI
-IniRead, btnPutty3_TT, puttyCluster.ini, PuttySession3, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty3command, puttyCluster.ini, PuttySession3, Command, ubuntu-r210-8_av
-IniRead, btnputty3dir, puttyCluster.ini, PuttySession3, Dir, C:\
-ControlSetText, , %btnputty3label%, ahk_id %btnPutty3ID%
-xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession3, Putty31Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty31 HwndedtPutty31ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty31UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession3, Putty32Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty32 HwndedtPutty32ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty32UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession3, Putty33Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty33 HwndedtPutty33ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty33UpDown Range0-10, %edtPutty%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty4 gbtnPutty4 HwndbtnPutty4ID -default, Putty4
-IniRead, btnputty4label, puttyCluster.ini, PuttySession4, Label, NoINI
-IniRead, btnPutty4_TT, puttyCluster.ini, PuttySession4, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty4command, puttyCluster.ini, PuttySession4, Command, ubuntu-r210-8_av
-IniRead, btnputty4dir, puttyCluster.ini, PuttySession4, Dir, C:\
-ControlSetText, , %btnputty4label%, ahk_id %btnPutty4ID%
-xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession4, Putty41Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty41 HwndedtPutty41ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty41UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession4, Putty42Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty42 HwndedtPutty42ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty42UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession4, Putty43Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty43 HwndedtPutty43ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty43UpDown Range0-10, %edtPutty%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty5 gbtnPutty5 HwndbtnPutty5ID -default, Putty5
-IniRead, btnputty5label, puttyCluster.ini, PuttySession5, Label, NoINI
-IniRead, btnPutty5_TT, puttyCluster.ini, PuttySession5, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty5command, puttyCluster.ini, PuttySession5, Command, ubuntu-r210-8_av
-IniRead, btnputty5dir, puttyCluster.ini, PuttySession5, Dir, C:\
-ControlSetText, , %btnputty5label%, ahk_id %btnPutty5ID%
-xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession5, Putty51Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty51 HwndedtPutty51ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty51UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession5, Putty52Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty52 HwndedtPutty52ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty52UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession5, Putty53Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty53 HwndedtPutty53ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty53UpDown Range0-10, %edtPutty%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty6 gbtnPutty6 HwndbtnPutty6ID -default, Putty6
-IniRead, btnputty6label, puttyCluster.ini, PuttySession6, Label, NoINI
-IniRead, btnPutty6_TT, puttyCluster.ini, PuttySession6, Tooltip, Configure launcher by editing puttyCluster.ini file
-IniRead, btnputty6command, puttyCluster.ini, PuttySession6, Command, ubuntu-r210-8_av
-IniRead, btnputty6dir, puttyCluster.ini, PuttySession6, Dir, C:\
-ControlSetText, , %btnputty6label%, ahk_id %btnPutty6ID%
-xsidepanel += 67
-IniRead, edtPutty, puttyCluster.ini, PuttySession6, Putty61Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty61 HwndedtPutty61ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty61UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession6, Putty62Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty62 HwndedtPutty62ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty62UpDown Range0-10, %edtPutty%
-xsidepanel += 40
-IniRead, edtPutty, puttyCluster.ini, PuttySession6, Putty63Count, 0
-Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty63 HwndedtPutty63ID w37
-Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty63UpDown Range0-10, %edtPutty%
+ysidepanel -= 10
+Loop, 6 {
+	row := A_Index
+	xsidepanel := xsidepanelbutton + 30
+	ysidepanel += 30
+	Gui, Add, button, x%xsidepanel% y%ysidepanel% w65 vbtnPutty%row% gbtnPutty HwndbtnPutty%row%ID -default, Putty%row%
+	xsidepanel += 67
+	Loop, 3 {
+		Gui, Add, Edit, x%xsidepanel% y%ysidepanel% vedtPutty%row%%A_Index% HwndedtPutty%row%%A_Index%ID w37
+		Gui, Add, UpDown, x%xsidepanel% y%ysidepanel% vPutty%row%%A_Index%UpDown Range0-10, 0
+		xsidepanel += 40
+	}
+}
+
 xsidepanel := xsidepanelbutton + 97
 ysidepanel += 30
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol1 gbtnCol1 HwndbtnCol1ID -default, Col
+Loop, 3 {
+	Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol%A_Index% gbtnCol HwndbtnCol%A_Index%ID -default, Col
+	xsidepanel += 40
+}
 btnCol1_TT := "Launch the 1st column of sessions"
-xsidepanel += 40
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol2 gbtnCol2 HwndbtnCol2ID -default, Col
-btnCol2_TT := "Launch the 2nd column of sessions"
-xsidepanel += 40
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w30 vbtnCol3 gbtnCol3 HwndbtnCol3ID -default, Col
-btnCol3_TT := "Launch the 3rd column of sessions"
+GoSub, LoadPSLaunchers
 
 ; ***** Sidepanel Putty commands
+Iniread, currentCmdLauncher, %inifilename%, CommandLaunchers, CurrentLauncher, 1
+nextLauncher := currentCmdlauncher
+nextini := % "Ini" . nextLauncher
+while (nextini != 0) {
+	maxCmdLauncher := nextLauncher
+	nextLauncher := nextLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, nextini, %inifilename%, CommandLaunchers, %nextini%, 0
+}
+InitIni := % "Ini" . currentCmdLauncher
+Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %InitIni%, Commands1.ini
 xsidepanel := xsidepanelbutton + 30
-ysidepanel += 40
+ysidepanel += 30
+;yautofocus := ysidepanel + 10
+Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnCmdLaunchers gCmdLaunchersClick HwndbtnCmdLaunchersID w28 -default, % currentCmdLauncher . "/" . maxCmdLauncher
+xsidepanel := xsidepanel + 30
+ysidepanel += 5
 Gui, Add, Text, x%xsidepanel% y%ysidepanel%, Putty commands:
-ysidepanel += 25
-IniRead, command01, puttyCluster.ini, PuttyCommands, Command01, Cmd1
-IniRead, btnCommand1_TT, puttyCluster.ini, PuttyCommands, Command01Tooltip, %command01%
-IniRead, cmdlbl01, puttyCluster.ini, PuttyCommands, Command01label, %command01%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand1 gbtnCommand1 HwndbtnCommand1ID -default, %cmdlbl01%
-xsidepanel += 65
-IniRead, command02, puttyCluster.ini, PuttyCommands, Command02, Cmd2
-IniRead, btnCommand2_TT, puttyCluster.ini, PuttyCommands, Command02Tooltip, %command02%
-IniRead, cmdlbl02, puttyCluster.ini, PuttyCommands, Command02label, %command02%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand2 gbtnCommand2 HwndbtnCommand2ID -default, %cmdlbl02%
-xsidepanel += 65
-IniRead, command03, puttyCluster.ini, PuttyCommands, Command03, Cmd3
-IniRead, btnCommand3_TT, puttyCluster.ini, PuttyCommands, Command03Tooltip, %command03%
-IniRead, cmdlbl03, puttyCluster.ini, PuttyCommands, Command03label, %command03%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand3 gbtnCommand3 HwndbtnCommand3ID -default, %cmdlbl03%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-IniRead, command04, puttyCluster.ini, PuttyCommands, Command04, Cmd4
-IniRead, btnCommand4_TT, puttyCluster.ini, PuttyCommands, Command04Tooltip, %command04%
-IniRead, cmdlbl04, puttyCluster.ini, PuttyCommands, Command04label, %command04%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand4 gbtnCommand4 HwndbtnCommand4ID -default, %cmdlbl04%
-xsidepanel += 65
-IniRead, command05, puttyCluster.ini, PuttyCommands, Command05, Cmd5
-IniRead, btnCommand5_TT, puttyCluster.ini, PuttyCommands, Command05Tooltip, %command05%
-IniRead, cmdlbl05, puttyCluster.ini, PuttyCommands, Command05label, %command05%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand5 gbtnCommand5 HwndbtnCommand5ID -default, %cmdlbl05%
-xsidepanel += 65
-IniRead, command06, puttyCluster.ini, PuttyCommands, Command06, Cmd6
-IniRead, btnCommand6_TT, puttyCluster.ini, PuttyCommands, Command06Tooltip, %command06%
-IniRead, cmdlbl06, puttyCluster.ini, PuttyCommands, Command06label, %command06%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand6 gbtnCommand6 HwndbtnCommand6ID -default, %cmdlbl06%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-IniRead, command07, puttyCluster.ini, PuttyCommands, Command07, Cmd7
-IniRead, btnCommand7_TT, puttyCluster.ini, PuttyCommands, Command07Tooltip, %command07%
-IniRead, cmdlbl07, puttyCluster.ini, PuttyCommands, Command07label, %command07%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand7 gbtnCommand7 HwndbtnCommand7ID -default, %cmdlbl07%
-xsidepanel += 65
-IniRead, command08, puttyCluster.ini, PuttyCommands, Command08, Cmd8
-IniRead, btnCommand8_TT, puttyCluster.ini, PuttyCommands, Command08Tooltip, %command08%
-IniRead, cmdlbl08, puttyCluster.ini, PuttyCommands, Command08label, %command08%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand8 gbtnCommand8 HwndbtnCommand8ID -default, %cmdlbl08%
-xsidepanel += 65
-IniRead, command09, puttyCluster.ini, PuttyCommands, Command09, Cmd9
-IniRead, btnCommand9_TT, puttyCluster.ini, PuttyCommands, Command09Tooltip, %command09%
-IniRead, cmdlbl09, puttyCluster.ini, PuttyCommands, Command09label, %command09%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand9 gbtnCommand9 HwndbtnCommand9ID -default, %cmdlbl09%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-IniRead, command10, puttyCluster.ini, PuttyCommands, Command10, Cmd10
-IniRead, btnCommand10_TT, puttyCluster.ini, PuttyCommands, Command10Tooltip, %command10%
-IniRead, cmdlbl10, puttyCluster.ini, PuttyCommands, Command10label, %command10%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand10 gbtnCommand10 HwndbtnCommand10ID -default, %cmdlbl10%
-xsidepanel += 65
-IniRead, command11, puttyCluster.ini, PuttyCommands, Command11, Cmd11
-IniRead, btnCommand11_TT, puttyCluster.ini, PuttyCommands, Command11Tooltip, %command11%
-IniRead, cmdlbl11, puttyCluster.ini, PuttyCommands, Command11label, %command11%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand11 gbtnCommand11 HwndbtnCommand11ID -default, %cmdlbl11%
-xsidepanel += 65
-IniRead, command12, puttyCluster.ini, PuttyCommands, Command12, Cmd12
-IniRead, btnCommand12_TT, puttyCluster.ini, PuttyCommands, Command12Tooltip, %command12%
-IniRead, cmdlbl12, puttyCluster.ini, PuttyCommands, Command12label, %command12%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand12 gbtnCommand12 HwndbtnCommand12ID -default, %cmdlbl12%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-IniRead, command13, puttyCluster.ini, PuttyCommands, Command13, Cmd13
-IniRead, btnCommand13_TT, puttyCluster.ini, PuttyCommands, Command13Tooltip, %command13%
-IniRead, cmdlbl13, puttyCluster.ini, PuttyCommands, Command13label, %command13%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand13 gbtnCommand13 HwndbtnCommand13ID -default, %cmdlbl13%
-xsidepanel += 65
-IniRead, command14, puttyCluster.ini, PuttyCommands, Command14, Cmd14
-IniRead, btnCommand14_TT, puttyCluster.ini, PuttyCommands, Command14Tooltip, %command14%
-IniRead, cmdlbl14, puttyCluster.ini, PuttyCommands, Command14label, %command14%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand14 gbtnCommand14 HwndbtnCommand14ID -default, %cmdlbl14%
-xsidepanel += 65
-IniRead, command15, puttyCluster.ini, PuttyCommands, Command15, Cmd15
-IniRead, btnCommand15_TT, puttyCluster.ini, PuttyCommands, Command15Tooltip, %command15%
-IniRead, cmdlbl15, puttyCluster.ini, PuttyCommands, Command15label, %command15%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand15 gbtnCommand15 HwndbtnCommand15ID -default, %cmdlbl15%
-xsidepanel := xsidepanelbutton + 30
-ysidepanel += 25
-IniRead, command16, puttyCluster.ini, PuttyCommands, Command16, Cmd16
-IniRead, btnCommand16_TT, puttyCluster.ini, PuttyCommands, Command16Tooltip, %command16%
-IniRead, cmdlbl16, puttyCluster.ini, PuttyCommands, Command16label, %command16%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand16 gbtnCommand16 HwndbtnCommand16ID -default, %cmdlbl16%
-xsidepanel += 65
-IniRead, command17, puttyCluster.ini, PuttyCommands, Command17, Cmd17
-IniRead, btnCommand17_TT, puttyCluster.ini, PuttyCommands, Command17Tooltip, %command17%
-IniRead, cmdlbl17, puttyCluster.ini, PuttyCommands, Command17label, %command17%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand17 gbtnCommand17 HwndbtnCommand17ID -default, %cmdlbl17%
-xsidepanel += 65
-IniRead, command18, puttyCluster.ini, PuttyCommands, Command18, Cmd18
-IniRead, btnCommand18_TT, puttyCluster.ini, PuttyCommands, Command18Tooltip, %command18%
-IniRead, cmdlbl18, puttyCluster.ini, PuttyCommands, Command18label, %command18%
-Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand18 gbtnCommand18 HwndbtnCommand18ID -default, %cmdlbl18%
+Index := 1
+Loop, 6 {
+	xsidepanel := xsidepanelbutton + 30
+	ysidepanel += 25
+	Loop, 3 {
+		Gui, Add, button, x%xsidepanel% y%ysidepanel% w64 vbtnCommand%Index% gbtnCommand HwndbtnCommand%Index%ID -default, Cmd%Index%
+		xsidepanel += 65
+		Index += 1
+	}
+}
+GoSub, LoadCmdLaunchers
 
-;GoSub, MonitorTest
+; Autofocus checkbox
+Iniread, autofocusflag, %inifilenameCmdLaunchers%, Options, AutoFocus, 0
+xautofocus := xsidepanelbutton + 95
+yautofocus := ysidepanel + 25
+Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  AutoFocus
+AutoFocusVal_TT := "Autofocus - Clicking on command button activates puttyCluster and sends to all Putty windows even when puttyCluster is not the active window"
+
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
 ControlFocus, , ahk_id %InputBoxID%
@@ -649,6 +436,7 @@ onMessage(0x104,"key")  ; alt key down
 onMessage(0x105,"key")  ; alt key down
 OnMessage(0x200, "WM_MOUSEMOVE")
 OnMessage(0x53, "WM_HELP")
+OnMessage(0x204, "WM_RBUTTONDOWN")
 
 GoSub, RadioCheck
 GoSub, OnTopCheck
@@ -656,6 +444,90 @@ GoSub, OnTopCheck
 SetTimer, Find , %TimerPeriod%
 SetTitleMatchMode, RegEx 
 #WinActivateForce
+
+WM_RBUTTONDOWN()
+{
+	Global btnLauncher1ID
+	Global btnLauncher2ID
+	Global btnLauncher3ID
+	Global btnLauncher4ID
+	Global btnLauncher5ID
+	Global btnLauncher6ID
+	Global btnPutty1ID
+	Global btnPutty2ID
+	Global btnPutty3ID
+	Global btnPutty4ID
+	Global btnPutty5ID
+	Global btnPutty6ID
+	Global btnCommand1ID
+	Global btnCommand2ID
+	Global btnCommand3ID
+	Global btnCommand4ID
+	Global btnCommand5ID
+	Global btnCommand6ID
+	Global btnCommand7ID
+	Global btnCommand8ID
+	Global btnCommand9ID
+	Global btnCommand10ID
+	Global btnCommand11ID
+	Global btnCommand12ID
+	Global btnCommand13ID
+	Global btnCommand14ID
+	Global btnCommand15ID
+	Global btnCommand16ID
+	Global btnCommand17ID
+	Global btnCommand18ID
+	Global EditControlName
+	Global btnTileID
+	Global RightClickMonitor1
+	Global RightClickMonitor2
+	Global MonitorGroup
+	Global Monitor1
+	Global Monitor2
+	Global Monitor3
+	MouseGetPos,,,,EditControlHwnd,2
+	Loop, 6 {
+		If (EditControlHwnd == ahk_id btnLauncher%A_Index%ID) {
+			EditControlName = % "Launcher " . A_Index
+			GoSub, DisableTimers
+			GoSub, EditBoxAppLauncher
+			Return
+		}
+		If (EditControlHwnd == ahk_id btnPutty%A_Index%ID) {
+			EditControlName = % "Putty Session " . A_Index
+			GoSub, DisableTimers
+			GoSub, EditBoxPSLauncher
+			Return
+		}
+	}
+	Loop, 18 {
+		If (EditControlHwnd == ahk_id btnCommand%A_Index%ID) {
+			EditControlName = % "Putty Command " . A_Index
+			GoSub, DisableTimers
+			GoSub, EditBoxCmdLauncher
+			Return
+		}
+	}
+	If (EditControlHwnd == ahk_id btnTileID) {
+		currmonitor := MonitorGroup
+		If (MonitorGroup != RightClickMonitor1) {
+			pcontrolID = % "Monitor" . RightClickMonitor1
+			controlID := %pcontrolID%
+			ControlSend, , {Space}, ahk_id %controlID%
+		} else {
+			pcontrolID = % "Monitor" . RightClickMonitor2
+			controlID := %pcontrolID%
+			ControlSend, , {Space}, ahk_id %controlID%
+		}
+		GoSub, RadioCheck
+		GoSub, Tile
+		MonitorGroup := currmonitor
+		pcontrolID = % "Monitor" . currmonitor
+		controlID := %pcontrolID%
+		ControlSend, , {Space}, ahk_id %controlID%
+		GoSub, RadioCheck
+	}
+}
 
 WM_HELP()
 {
@@ -677,10 +549,10 @@ WM_MOUSEMOVE()
 	DisplayToolTip:
 		SetTimer, DisplayToolTip, Off
 		CurrControlTT := CurrControl . "_TT"
-		StringReplace, CurrControlTT, CurrControlTT, <<, LTLT
-		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT
-		StringReplace, CurrControlTT, CurrControlTT, &,
-		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _
+		StringReplace, CurrControlTT, CurrControlTT, <<, LTLT, ,A
+		StringReplace, CurrControlTT, CurrControlTT, >>, GTGT, ,A
+		StringReplace, CurrControlTT, CurrControlTT, %A_Space%, _, ,A
+		CurrControlTT := RegExReplace(CurrControlTT, "[^a-zA-Z0-9_]+")
 		If (CurrControlTT == "Paste_Clipboard_TT") {
 			currentclip=%clipboard%
 			StringLen, currlen, currentclip
@@ -713,22 +585,8 @@ key(wParam, lParam, msg, hwnd)
 	global id_array_count
 	global FilterGroup
 	global FindFilterTxt
-	global bit11state
-	global bit12state
-	global bit13state
-	global bit14state
-	global bit15state
-	global bit16state
-	global bit17state
-	global bit18state
-	global bit21state
-	global bit22state
-	global bit23state
-	global bit24state
-	global bit25state
-	global bit26state
-	global bit27state
-	global bit28state
+	global MatchBits1
+	global MatchBits2
 
 	if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
@@ -739,9 +597,9 @@ key(wParam, lParam, msg, hwnd)
 	}
 	else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -764,15 +622,546 @@ key(wParam, lParam, msg, hwnd)
 return 
 
 ; ******************************************************************************************
+EditBoxAppLauncher:
+	editboxwidth := 800
+	editboxheight := 180
+	Gui, 3:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 3:+AlwaysOnTop
+		Gui, 3:-AlwaysOnTop
+		Return
+	}
+	StringReplace, inisection, EditControlName, %A_Space%, , ,A
+	Iniread, ControlLabel, %inifilenameAppLaunchers%, %inisection%, Label, Label
+	xedt := 5
+	yedt := 20
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Label:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 90 . " r1 HwndedtControlLabelID", %ControlLabel%
+	Gui, 3:Add, Button, % "x" . (xedt + editboxwidth - 90) . " y" . (yedt - 1) . "w30 g3LaunchSelectClick v3LaunchSelect", ...
+	3LaunchSelect_TT := "Select an existing file for the launcher"
 
-;MonitorTest:
-;	SysGet, Mon1, Monitor, 1
-;	MsgBox, Left: %Mon1Left% -- Top: %Mon1Top% -- Right: %Mon1Right% -- Bottom %Mon1Bottom%.
-;	SysGet, Mon2, Monitor, 2
-;	MsgBox, Left: %Mon2Left% -- Top: %Mon2Top% -- Right: %Mon2Right% -- Bottom %Mon2Bottom%.
-;	SysGet, Mon3, Monitor, 3
-;	MsgBox, Left: %Mon3Left% -- Top: %Mon3Top% -- Right: %Mon3Right% -- Bottom %Mon3Bottom%.
-;Return
+	Iniread, ControlTT, %inifilenameAppLaunchers%, %inisection%, Tooltip, Tooltip
+	xedt := 5
+	yedt += 35
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Tooltip:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
+
+	Iniread, ControlCmd, %inifilenameAppLaunchers%, %inisection%, Command, Command
+	xedt := 5
+	yedt += 35
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Iniread, ControlDir, %inifilenameAppLaunchers%, %inisection%, Dir, Directory
+	xedt := 5
+	yedt += 35
+	Gui, 3:Add, Text, x%xedt% y%yedt%, Directory:
+	xedt += 55
+	yedt -= 3
+	Gui, 3:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
+	
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnSave", Save
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnCancel", Cancel
+	Gui, 3:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g3btnClear", Clear
+	xposEditBox := (ScreenWidth - editboxwidth ) / 2
+	yposEditBox := (ScreenHeight - editboxheight ) / 2
+	editTitle := % "Edit " . EditControlName
+	Gui, 3:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, %editTitle%
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so this Window can be on top
+	Gui, 3:+AlwaysOnTop
+	Gui, 3:-AlwaysOnTop
+Return
+ 3btnClear:
+ 		ControlSetText, , , ahk_id %edtControlLabelID%
+ 		ControlSetText, , , ahk_id %edtControlTTID%
+ 		ControlSetText, , , ahk_id %edtControlCmdID%
+ 		ControlSetText, , , ahk_id %edtControlDirID%
+ Return
+ 3btnSave:
+ 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+ 	IniWrite, %newlabel%, %inifilenameAppLaunchers%, %inisection%, Label
+ 	ControlGetText, newTT, , ahk_id %edtControlTTID%
+ 	IniWrite, %newTT%, %inifilenameAppLaunchers%, %inisection%, Tooltip
+ 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+ 	IniWrite, %newCmd%, %inifilenameAppLaunchers%, %inisection%, Command
+ 	ControlGetText, newDir, , ahk_id %edtControlDirID%
+ 	IniWrite, %newDir%, %inifilenameAppLaunchers%, %inisection%, Dir
+ 	GoSub, LoadLaunchers
+ 3btnCancel:
+ 3GuiClose:
+ 3GuiEscape:
+ 	Gui, 3:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+	GoSub, EnableTimers
+ Return
+ 3LaunchSelectClick:
+ 	Iniread, tooltipprefix, %inifilename%, ApplicationLaunchers, DefaultTooltipPrefix, Run:
+ 	Iniread, clipregex1search, %inifilename%, ApplicationLaunchers, LabelClipRegex1search, _[^_]+$
+ 	Iniread, clipregex1replace, %inifilename%, ApplicationLaunchers, LabelClipRegex1replace,
+ 	Iniread, clipregex2search, %inifilename%, ApplicationLaunchers, LabelClipRegex2search, ^ccimx6
+ 	Iniread, clipregex2replace, %inifilename%, ApplicationLaunchers, LabelClipRegex2replace,
+ 	Iniread, clipregex3search, %inifilename%, ApplicationLaunchers, LabelClipRegex3search, %A_Space%
+ 	Iniread, clipregex3replace, %inifilename%, ApplicationLaunchers, LabelClipRegex3replace,
+ 	Iniread, clipregex4search, %inifilename%, ApplicationLaunchers, LabelClipRegex4search, [-_]+
+ 	Iniread, clipregex4replace, %inifilename%, ApplicationLaunchers, LabelClipRegex4replace,
+ 	Iniread, clipregex5search, %inifilename%, ApplicationLaunchers, LabelClipRegex5search, _.*$
+ 	Iniread, clipregex5replace, %inifilename%, ApplicationLaunchers, LabelClipRegex5replace,
+ 	FileSelectFile, selectedfilename, 1
+ 	if (selectedfilename != "") {
+ 		SplitPath, selectedfilename, selectedfile, selecteddir
+ 		newlabel := selectedfile
+ 		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
+ 		; This is particular for how I name my putty sessions
+ 		StringUpper, newlabel, newlabel, T
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
+ 		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
+ 		ControlSetText, , % tooltipprefix . " " . selectedfile, ahk_id %edtControlTTID%
+ 		ControlSetText, , %selectedfilename%, ahk_id %edtControlCmdID%
+ 		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
+ 	}
+ Return
+
+EditBoxPSLauncher:
+	editboxwidth := 800
+	editboxheight := 180
+	Gui, 4:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 4:+AlwaysOnTop
+		Gui, 4:-AlwaysOnTop
+		Return
+	}
+	StringReplace, inisection, EditControlName, %A_Space%, , ,A
+	Iniread, ControlLabel, %inifilenamePSLaunchers%, %inisection%, Label, Label
+	xedt := 5
+	yedt := 20
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Label:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 90 . " r1 HwndedtControlLabelID", %ControlLabel%
+	Gui, 4:Add, Button, % "x" . (xedt + editboxwidth - 90) . " y" . (yedt - 1) . "w30 g4LaunchSelectClick v4LaunchSelect", ...
+	4LaunchSelect_TT := "Select an existing session from the Putty sessions folder"
+
+	Iniread, ControlTT, %inifilenamePSLaunchers%, %inisection%, Tooltip, Tooltip
+	xedt := 5
+	yedt += 35
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Tooltip:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
+
+	Iniread, ControlCmd, %inifilenamePSLaunchers%, %inisection%, Command, Command
+	xedt := 5
+	yedt += 35
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Iniread, ControlDir, %inifilenamePSLaunchers%, %inisection%, Dir, Directory
+	xedt := 5
+	yedt += 35
+	Gui, 4:Add, Text, x%xedt% y%yedt%, Directory:
+	xedt += 55
+	yedt -= 3
+	Gui, 4:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlDirID", %ControlDir%
+	
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g4btnSave", Save
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g4btnCancel", Cancel
+	Gui, 4:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g4btnClear", Clear
+	xposEditBox := (ScreenWidth - editboxwidth ) / 2
+	yposEditBox := (ScreenHeight - editboxheight ) / 2
+	Gui, 4:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so this Window can be on top
+	Gui, 4:+AlwaysOnTop
+	Gui, 4:-AlwaysOnTop
+	if (ControlLabel == "")
+		GoSub, 4LaunchSelectClick
+Return
+ 4btnClear:
+ 		ControlSetText, , , ahk_id %edtControlLabelID%
+ 		ControlSetText, , , ahk_id %edtControlTTID%
+ 		ControlSetText, , , ahk_id %edtControlCmdID%
+ 		ControlSetText, , , ahk_id %edtControlDirID%
+ Return
+ 4btnSave:
+ 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+ 	IniWrite, %newlabel%, %inifilenamePSLaunchers%, %inisection%, Label
+ 	ControlGetText, newTT, , ahk_id %edtControlTTID%
+ 	IniWrite, %newTT%, %inifilenamePSLaunchers%, %inisection%, Tooltip
+ 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+ 	IniWrite, %newCmd%, %inifilenamePSLaunchers%, %inisection%, Command
+ 	ControlGetText, newDir, , ahk_id %edtControlDirID%
+ 	IniWrite, %newDir%, %inifilenamePSLaunchers%, %inisection%, Dir
+ 	GoSub, LoadPSLaunchers
+ 4btnCancel:
+ 4GuiClose:
+ 4GuiEscape:
+ 	Gui, 4:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+	GoSub, EnableTimers
+ Return
+ 4LaunchSelectClick:
+ 	Iniread, tooltipprefix, %inifilename%, PuttySessionLaunchers, DefaultTooltipPrefix, Launch putty session:
+ 	Iniread, commandprefix, %inifilename%, PuttySessionLaunchers, DefaultPuttyCommandPrefix, C:\_Portable\_Putty\_ExtraPuTTY\putty.exe -load
+ 	Iniread, puttydir, %inifilename%, PuttySessionLaunchers, DefaultPuttyDir, C:\_Portable\_Putty\_ExtraPuTTY\
+ 	Iniread, sessiondir, %inifilename%, PuttySessionLaunchers, DefaultPuttySessionDir, C:\_Portable\_Putty\_ExtraPuTTY\Sessions
+ 	Iniread, clipregex1search, %inifilename%, PuttySessionLaunchers, LabelClipRegex1search, _[^_]+$
+ 	Iniread, clipregex1replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex1replace,
+ 	Iniread, clipregex2search, %inifilename%, PuttySessionLaunchers, LabelClipRegex2search, ^ccimx6
+ 	Iniread, clipregex2replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex2replace,
+ 	Iniread, clipregex3search, %inifilename%, PuttySessionLaunchers, LabelClipRegex3search, %A_Space%
+ 	Iniread, clipregex3replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex3replace,
+ 	Iniread, clipregex4search, %inifilename%, PuttySessionLaunchers, LabelClipRegex4search, [-_]+
+ 	Iniread, clipregex4replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex4replace,
+ 	Iniread, clipregex5search, %inifilename%, PuttySessionLaunchers, LabelClipRegex5search, _.*$
+ 	Iniread, clipregex5replace, %inifilename%, PuttySessionLaunchers, LabelClipRegex5replace,
+ 	FileSelectFile, selectedsession, 1, %sessiondir%
+ 	if (selectedsession != "") {
+ 		SplitPath, selectedsession, selectedsession, selecteddir
+ 		newlabel := selectedsession
+ 		; if the filename is too long (for the button to display), take a guess as to how to shorten it. 
+ 		; This is particular for how I name my putty sessions
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex1search, clipregex1replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex2search, clipregex2replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex3search, clipregex3replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex4search, clipregex4replace)
+ 		if (StrLen(newlabel) > 9)
+ 			newlabel := RegExReplace(newlabel, clipregex5search, clipregex5replace)
+ 		if (StrLen(newlabel) > 10)
+ 			StringLower, newlabel, newlabel
+ 		ControlSetText, , %newlabel%, ahk_id %edtControlLabelID%
+ 		ControlSetText, , % tooltipprefix . " " . selectedsession, ahk_id %edtControlTTID%
+ 		ControlSetText, , % commandprefix . " """ . selectedsession . """", ahk_id %edtControlCmdID%
+ 		ControlSetText, , %selecteddir%, ahk_id %edtControlDirID%
+ 	}
+ Return
+
+EditBoxCmdLauncher:
+	editboxwidth := 800
+	editboxheight := 180
+	Gui, 5:+LastFoundExist
+	IfWinExist
+	{
+		Gui, 5:+AlwaysOnTop
+		Gui, 5:-AlwaysOnTop
+		Return
+	}
+	StringReplace, inisection, EditControlName, %A_Space%, , ,A
+
+	Iniread, ControlCmd, %inifilenameCmdLaunchers%, %inisection%, Command, Command
+	xedt := 5
+	yedt := 20
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Command:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlCmdID", %ControlCmd%
+
+	Iniread, ControlLabel, %inifilenameCmdLaunchers%, %inisection%, Label, %ControlCmd%
+	xedt := 5
+	yedt += 35
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Label:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlLabelID", %ControlLabel%
+
+	Iniread, ControlTT, %inifilenameCmdLaunchers%, %inisection%, Tooltip, %ControlCmd%
+	xedt := 5
+	yedt += 35
+	Gui, 5:Add, Text, x%xedt% y%yedt%, Tooltip:
+	xedt += 55
+	yedt -= 3
+	Gui, 5:Add, Edit, % "x" . xedt . " y" . yedt . " w" . editboxwidth - 70 . " r1 HwndedtControlTTID", %ControlTT%
+
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnSave", Save
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnCancel", Cancel
+	Gui, 5:Add, Button, % "x" . (editboxwidth /2) + 60 - 20 . " y" . (editboxheight - 30) . " w40 h25 g5btnClear", Clear
+	xposEditBox := (ScreenWidth - editboxwidth ) / 2
+	yposEditBox := (ScreenHeight - editboxheight ) / 2
+	Gui, 5:Show, x%xposEditBox% y%yposEditBox% h%editboxheight% w%editboxwidth%, Edit %EditControlName%
+	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so this Window can be on top
+	Gui, 5:+AlwaysOnTop
+	Gui, 5:-AlwaysOnTop
+Return
+ 5btnClear:
+ 		ControlSetText, , , ahk_id %edtControlLabelID%
+ 		ControlSetText, , , ahk_id %edtControlTTID%
+ 		ControlSetText, , , ahk_id %edtControlCmdID%
+ Return
+ 5btnSave:
+ 	ControlGetText, newlabel, , ahk_id %edtControlLabelID%
+ 	IniWrite, %newlabel%, %inifilenameCmdLaunchers%, %inisection%, Label
+ 	ControlGetText, newTT, , ahk_id %edtControlTTID%
+ 	IniWrite, %newTT%, %inifilenameCmdLaunchers%, %inisection%, Tooltip
+ 	ControlGetText, newCmd, , ahk_id %edtControlCmdID%
+ 	IniWrite, %newCmd%, %inifilenameCmdLaunchers%, %inisection%, Command
+ 	GoSub, LoadCmdLaunchers
+ 5btnCancel:
+ 5GuiClose:
+ 5GuiEscape:
+ 	Gui, 5:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+	GoSub, EnableTimers
+ Return
+
+WindowTitleClick:
+	gui, submit, nohide
+	GoSub, SaveTitleMatches
+	nextini := currentTitleMatchini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, newini, %inifilename%, TitleMatches, %nextininame%, 0
+	if (newini == 0) {
+		currentTitleMatchini := 1
+		Iniread, inifilenametitlematch, %inifilename%, TitleMatches, Ini1, WindowTitleMatch1.ini
+		ControlSetText, , % currentTitleMatchini . "/" . maxTitleMatchini, ahk_id %btnWindowTitleID% 
+	} else {
+		currentTitleMatchini := nextini
+		Iniread, inifilenametitlematch, %inifilename%, TitleMatches, %nextininame%, WindowTitleMatch1.ini
+		ControlSetText, , % currentTitleMatchini . "/" . maxTitleMatchini, ahk_id %btnWindowTitleID% 
+	}
+	GoSub, LoadTitleMatches
+Return
+
+WindowPositionClick:
+	gui, submit, nohide
+	GoSub, SavePositionMatches
+	nextini := currentPositionMatchini + 1
+	nextininame := % "Ini" . nextini
+	Iniread, newini, %inifilename%, PositionMatches, %nextininame%, 0
+	if (newini == 0) {
+		currentPositionMatchini := 1
+		Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, Ini1, WindowPositionMatch1.ini
+		ControlSetText, , % currentPositionMatchini . "/" . maxPositionMatchini, ahk_id %btnWindowPositionID% 
+	} else {
+		currentPositionMatchini := nextini
+		Iniread, inifilenamepositionmatch, %inifilename%, PositionMatches, %nextininame%, WindowPositionMatch1.ini
+		ControlSetText, , % currentPositionMatchini . "/" . maxPositionMatchini, ahk_id %btnWindowPositionID% 
+	}
+	GoSub, LoadPositionMatches
+Return
+
+AppLaunchersClick:
+	gui, submit, nohide
+	nextLauncher := currentAppLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, newini, %inifilename%, ApplicationLaunchers, %nextini%, 0
+	if (newini == 0) {
+		currentApplauncher := 1
+		Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, Ini1, AppLaunchers1.ini
+		ControlSetText, , % currentApplauncher . "/" . maxAppLauncher, ahk_id %btnAppLaunchersID% 
+	} else {
+		currentApplauncher := nextLauncher
+		Iniread, inifilenameAppLaunchers, %inifilename%, ApplicationLaunchers, %nextini%, AppLaunchers1.ini
+		ControlSetText, , % currentAppLauncher . "/" . maxAppLauncher, ahk_id %btnAppLaunchersID% 
+	}
+	GoSub, LoadLaunchers
+Return
+
+AutoFocusCheck:
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	IniWrite, %autofocusflag%, %inifilenameCmdLaunchers%, Options, AutoFocus
+	if (autofocusflag == 1)
+		currentwindow := 0
+Return
+
+PSLaunchersClick:
+	gui, submit, nohide
+	GoSub, SavePSCounts
+	nextLauncher := currentPSLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, newini, %inifilename%, PuttySessionLaunchers, %nextini%, 0
+	if (newini == 0) {
+		currentPSlauncher := 1
+		Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, Ini1, PuttySessions1.ini
+		ControlSetText, , % currentPSlauncher . "/" . maxPSLauncher, ahk_id %btnPSLaunchersID% 
+	} else {
+		currentPSlauncher := nextLauncher
+		Iniread, inifilenamePSLaunchers, %inifilename%, PuttySessionLaunchers, %nextini%, PuttySessions1.ini
+		ControlSetText, , % currentPSlauncher . "/" . maxPSLauncher, ahk_id %btnPSLaunchersID% 
+	}
+	GoSub, LoadPSLaunchers
+Return
+
+CmdLaunchersClick:
+	nextLauncher := currentCmdLauncher + 1
+	nextini := % "Ini" . nextLauncher
+	Iniread, newini, %inifilename%, CommandLaunchers, %nextini%, 0
+	if (newini == 0) {
+		currentCmdlauncher := 1
+		Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, Ini1, Commands1.ini
+		ControlSetText, , % currentCmdlauncher . "/" . maxCmdLauncher, ahk_id %btnCmdLaunchersID% 
+	} else {
+		currentCmdlauncher := nextLauncher
+		Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %nextini%, Commands1.ini
+		ControlSetText, , % currentCmdlauncher . "/" . maxCmdLauncher, ahk_id %btnCmdLaunchersID% 
+	}
+	GoSub, LoadCmdLaunchers
+Return
+
+LoadTitleMatches:
+	Loop, 5 {
+		ptmvar = Title%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenametitlematch%, TitleMatch, %tmvar%, .*
+		pidvar = edit%A_Index%ID
+		idvar := %pidvar%
+		ControlSetText, , %tmval%, ahk_id %idvar%
+		
+		ptmvar = TitleMatch%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, 0
+		pidvar = check%A_Index%ID
+		idvar := %pidvar%
+		Control, % (tmval ? "check" : "uncheck"), , , ahk_id %idvar%
+		
+		ptmvar = TitleMatchInv%A_Index%
+		tmvar = %ptmvar%
+		IniRead, tmval, %inifilenametitlematch%, TitleMatchEnabled, %tmvar%, 0
+		pidvar = checkinv%A_Index%ID
+		idvar := %pidvar%
+		Control, % (tmval ? "check" : "uncheck"), , , ahk_id %idvar%
+	}
+	IniRead, SingleMatch, %inifilenametitlematch%, Options, SingleMatch, 0
+	Control, % (SingleMatch ? "check" : "uncheck"), , , ahk_id %SingleMatchID%
+	IniRead, InvertMatch, %inifilenametitlematch%, Options, InvertMatch, 0
+	Control, % (InvertMatch ? "check" : "uncheck"), , , ahk_id %InvertMatchID%
+	Iniread, btnWindowTitle_TT, %inifilenametitlematch%, Options, Tooltip, %inifilenametitlematch%
+Return
+
+LoadPositionMatches:
+	enableGuiUpdates = 0
+	IniRead, MatchBits1, %inifilenamepositionmatch%, Options, MatchBits1, 0
+	bit := 1
+	Loop, 8 {
+		btnid := "btnBit1" . A_Index . "ID"
+		biten := bit & MatchBits1
+		GuiControl,, % %btnid% , % ( (biten > 0) ? A_Index : "" )
+		bit *= 2
+	}
+	bit := 1
+	IniRead, MatchBits2, %inifilenamepositionmatch%, Options, MatchBits2, 0
+	Loop, 8 {
+		btnid := "btnBit2" . A_Index . "ID"
+		biten := bit & MatchBits2
+		GuiControl,, % %btnid% , % ( (biten > 0) ? A_Index : "" )
+		bit *= 2
+	}
+	enableGuiUpdates = 1
+	GoSub, UpdateFoundWindowsFilteredGui
+	IniRead, matchbyte, %inifilenamepositionmatch%, Options, MatchByte, FFFF
+	enableGuiUpdates = 0
+	ControlSetText, , %matchbyte%, ahk_id %FindFilterID%
+
+	IniRead, matchtype, %inifilenamepositionmatch%, Options, MatchType, 1
+	Loop, 4 {
+		pidvar = FilterGroup%A_Index%ID
+		idvar := %pidvar%
+		Control, % ((A_Index == matchtype) ? "check" : "uncheck" ), , , ahk_id %idvar%
+	}
+	Iniread, btnWindowPosition_TT, %inifilenamepositionmatch%, Options, Tooltip, %inifilenamepositionmatch%
+	enableGuiUpdates = 1
+Return
+
+LoadLaunchers:
+	Loop, 6 {
+		inisection = Launcher%A_Index%
+		pcmdvar = launcher%A_Index%command
+		pttvar = btnLauncher%A_Index%_TT
+		pidvar = btnLauncher%A_Index%ID
+		pdirvar = launcher%A_Index%dir
+		
+		cmdvar = %pcmdvar%
+		ttvar = %pttvar%
+		idvar := %pidvar%
+		dirvar = %pdirvar%
+	
+		IniRead, %cmdvar%, %inifilenameAppLaunchers%, %inisection%, Command, notepad.exe
+		IniRead, %ttvar%, %inifilenameAppLaunchers%, %inisection%, Tooltip,Configure launcher by editing %inifilenameAppLaunchers% file
+		IniRead, cmdlbl, %inifilenameAppLaunchers%, %inisection%, Label, NoINI
+		IniRead, %dirvar%, %inifilenameAppLaunchers%, %inisection%, Dir, C:\
+		ControlSetText, , %cmdlbl%, ahk_id %idvar%
+	}
+	Iniread, btnAppLaunchers_TT, %inifilenameAppLaunchers%, Options, Tooltip, %inifilenameAppLaunchers%
+Return
+
+LoadPSLaunchers:
+	Loop, 6 {
+		inisection = PuttySession%A_Index%
+		pcmdvar = btnputty%A_Index%command
+		pttvar = btnPutty%A_Index%_TT
+		pidvar = btnPutty%A_Index%ID
+		pcountini1 = Putty%A_Index%1Count
+		pcountini2 = Putty%A_Index%2Count
+		pcountini3 = Putty%A_Index%3Count
+		pcountID1 = edtPutty%A_Index%1ID
+		pcountID2 = edtPutty%A_Index%2ID
+		pcountID3 = edtPutty%A_Index%3ID
+		pdirvar = btnputty%A_Index%dir
+		
+		cmdvar = %pcmdvar%
+		ttvar = %pttvar%
+		idvar := %pidvar%
+		countini1 = %pcountini1%
+		countini2 = %pcountini2%
+		countini3 = %pcountini3%
+		countID1 := %pcountID1%
+		countID2 := %pcountID2%
+		countID3 := %pcountID3%
+		dirvar = %pdirvar%
+
+		IniRead, %cmdvar%, %inifilenamePSLaunchers%, %inisection%, Command, Default
+		IniRead, %ttvar%, %inifilenamePSLaunchers%, %inisection%, Tooltip, Configure launcher by editing %inifilenamePSLaunchers% file
+		IniRead, cmdlbl, %inifilenamePSLaunchers%, %inisection%, Label, NoINI
+		IniRead, %dirvar%, %inifilenamePSLaunchers%, %inisection%, Dir, C:\
+		ControlSetText, , %cmdlbl%, ahk_id %idvar%
+		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini1%, 0
+		ControlSetText, , %edtPutty%, ahk_id %countID1%
+		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini2%, 0
+		ControlSetText, , %edtPutty%, ahk_id %countID2%
+		IniRead, edtPutty, %inifilenamePSLaunchers%, %inisection%, %countini3%, 0
+		ControlSetText, , %edtPutty%, ahk_id %countID3%
+	}
+	Iniread, btnPSLaunchers_TT, %inifilenamePSLaunchers%, Options, Tooltip, %inifilenamePSLaunchers%
+Return
+
+LoadCmdLaunchers:
+	Loop, 18 {
+		inisection = PuttyCommand%A_Index%
+		pcmdvar = command%A_Index%
+		pttvar = btnCommand%A_Index%_TT
+		pidvar = btnCommand%A_Index%ID
+		
+		cmdvar = %pcmdvar%
+		ttvar = %pttvar%
+		idvar := %pidvar%
+
+		IniRead, %cmdvar%, %inifilenameCmdLaunchers%, %inisection%, Command, Cmd
+		IniRead, %ttvar%, %inifilenameCmdLaunchers%, %inisection%, Tooltip, % %cmdvar%
+		IniRead, cmdlbl, %inifilenameCmdLaunchers%, %inisection%, Label, % %cmdvar%
+		ControlSetText, , %cmdlbl%, ahk_id %idvar%
+	}
+	Iniread, btnCmdLaunchers_TT, %inifilenameCmdLaunchers%, Options, Tooltip, %inifilenameCmdLaunchers%
+Return
 
 EnableTimers:
 	OnMessage(0x200, "WM_MOUSEMOVE")
@@ -795,380 +1184,233 @@ AboutBox:
 		Return
 	}
 	homepage = https://github.com/SpiroCx/puttyCluster
-	MajorVersion = 1.0
+	MajorVersion = 1.0rc
 	AboutMessage1 = % "Version: " . MajorVersion
 	FileGetTime, FileTime, %A_ScriptFullPath%
 	FormatTime, FileTime, %FileTime%
 	; Include the scriptname also to remind us which is running for when both exe and ahk are in the folder
 	AboutMessage2 = % "`r" . "Last modification date:`r" . A_ScriptName . ": " . FileTime
+	AboutMessage3 = % "`r" . "Script/exe path:`r" . A_ScriptFullPath
+	AboutMessage4 = % "`r" . "INI file in use: " . inifilename . "`r"
+	AboutMessage5 = % "`r" . "Win-Alt-C 	 Bring ClusterPutty window to the top"
+	AboutMessage6 = Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
+	AboutMessage7 = Win-Alt-T 	 Tile Putty windows
+	AboutMessage8 = Win-Alt-F 	 Bring Putty windows to the top of the desktop
+	AboutMessage9 = Win-Alt-B 	 Push Putty windows to the back of the desktop (hide them)
+	AboutMessage10 = Win-Alt-V 	 Paste current clipboard to all windows
+	AboutMessage11 = Win-Alt-L 	 Toggle 'Append CrLf' flag
+	AboutMessage12 = Win-Alt-O 	 Locate Putty windows
+	AboutMessage13 = Win-Alt-S 	 Toggle 'Single Regex Match' flag
+	AboutMessage14 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
+	AboutMessage15 = Win-Alt-I 	 Toggle Mini mode
+	AboutMessage16 = Win-Alt-N 	 Toggle Invert Match flag
+	AboutMessage17 = Win-Alt-Left 	 Focus previous Title/Position matched window
+	AboutMessage18 = Win-Alt-Right 	 Focus next Title/Position matched window
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
+		%AboutMessage3%`r%AboutMessage4%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%`r%AboutMessage16%`r%AboutMessage17%`r%AboutMessage18%
 	)
 
 	Gui, 2:Font, cBlue
 	Gui, 2:Add, Text, vAboutLink gGotoSite, %homepage%
 	AboutLink_TT := "Launch link in defaut browser"
 	Gui, 2:Font, cBlack
-	Gui, 2:Add, Text, , %AboutMessage%
-	Gui, 2:Add, Button, x120 y100 w40 h25 gbtnOk, Ok
-	xposabout := ScreenWidth / 2 - 120
-	yposabout := ScreenHeight / 2 - 70
-	Gui, 2:Show, x%xposabout% y%yposabout% h140 w280, About
+	Gui, 2:Add, Text, vAboutText, %AboutMessage%
+	Gui, 2:Add, Button, x210 y365 w40 h25 gbtnOk, Ok
+	xposabout := ScreenWidth / 2 - 230
+	yposabout := ScreenHeight / 2 - 200
+	Gui, 2:Show, x%xposabout% y%yposabout% h400 w460, About
 	Gui, 1:-AlwaysOnTop	; temporarily remove OnTopFlag so About box can be on top
 	Gui, 2:+AlwaysOnTop
 	Gui, 2:-AlwaysOnTop
 Return
-btnOk:
-2GuiClose:
-	Gui, 2:Destroy
-	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
-Return
-GotoSite:
-	Run, %homepage%
-Return
+ btnOk:
+ 2GuiClose:
+ 	Gui, 2:Destroy
+ 	GoSub, OnTopCheck	; restore user selected setting for AlwaysOnTop
+ Return
+ GotoSite:
+ 	Run, %homepage%
+ Return
 
 edtMonitorClick3:
 	ControlSend, , {Space}, ahk_id %Monitor3%
 Return
 
-widthClick1:
-	ControlSend, , {Space}, ahk_id %RadioCheck1%
-	ControlFocus, , ahk_id %width1ID%
-Return
-heightClick1:
-	ControlSend, , {Space}, ahk_id %RadioCheck1%
-	ControlFocus, , ahk_id %height1ID%
-Return
-widthClick2:
-	ControlSend, , {Space}, ahk_id %RadioCheck2%
-	ControlFocus, , ahk_id %width2ID%
-Return
-heightClick2:
-	ControlSend, , {Space}, ahk_id %RadioCheck2%
-	ControlFocus, , ahk_id %height2ID%
+whFocusRadioButton:
+	FoundPos := RegExMatch(A_GuiControl, "[12]")
+	pcontrolID = % "RadioCheck" . SubStr(A_GuiControl, FoundPos, 1)
+	contrlID := %pcontrolID%
+	pfocuslID = % A_GuiControl . "ID"
+	focusID := %pfocuslID%
+	ControlSend, , {Space}, ahk_id %contrlID%
+	ControlFocus, , ahk_id %focusID%
 Return
 
-check1:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check1 == 1)) {
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
+titleDoSingle:
+	gui, submit, nohide	
+	if (SingleMatch != 1)
+		Return
+	Index := SubStr(A_GuiControl, 6, 1)
+	controlVal := check%Index%
+	if (controlVal != 1)
+		Return
+	Loop, 5 {
+		If (Index == A_Index)
+			Continue
+		controlVal := check%A_Index%
+		If (controlVal == 1) {
+			pControlID = check%A_Index%ID
+			ControlID := %pControlID%
+			ControlSend, , {Space}, ahk_id %ControlID%
+		}
 	}
 	ControlFocus, , ahk_id %InputBoxID%
 Return
 
-check2:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check2 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
+FocusInput:
 	ControlFocus, , ahk_id %InputBoxID%
 Return
 
-check3:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check3 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
-	ControlFocus, , ahk_id %InputBoxID%
+btnLauncher:
+	Index := SubStr(A_GuiControl, 12, 1)
+	pCmd := "launcher" . Index . "command"
+	Cmd := %pCmd%
+	pDir := "launcher" . Index . "dir"
+	Dir := %pDir%
+	Run, %Cmd%, %Dir%
 Return
 
-check4:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check4 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check5 == 1)
-			ControlSend, , {Space}, ahk_id %Check5ID%
-	}
-	ControlFocus, , ahk_id %InputBoxID%
+btnPutty:
+	Index := SubStr(A_GuiControl, 9, 1)
+	pCmd := "btnputty" . Index . "command"
+	Cmd := %pCmd%
+	pDir := "btnputty" . Index . "dir"
+	Dir := %pDir%
+	Run, %Cmd%, %Dir%
 Return
 
-check5:
-	gui, submit, nohide
-	if ((SingleMatch == 1) && (Check5 == 1)) {
-		if (check1 == 1)
-			ControlSend, , {Space}, ahk_id %Check1ID%
-		if (check2 == 1)
-			ControlSend, , {Space}, ahk_id %Check2ID%
-		if (check3 == 1)
-			ControlSend, , {Space}, ahk_id %Check3ID%
-		if (check4 == 1)
-			ControlSend, , {Space}, ahk_id %Check4ID%
+btnCol:
+	col := SubStr(A_GuiControl, 7, 1)
+	Loop, 6 {
+		row := A_Index
+		pControlID = edtPutty%A_Index%%col%ID
+		ControlID := %pControlID%
+		ControlGetText, loopn, , ahk_id %ControlID%
+		Loop, %loopn% {
+			pCmd := "btnputty" . row . "command"
+			Cmd := %pCmd%
+			pDir := "btnputty" . row . "dir"
+			Dir := %pDir%
+			Run, %Cmd%, %Dir%
+		}
 	}
-	ControlFocus, , ahk_id %InputBoxID%
 Return
 
-checkinv1:
-checkinv2:
-checkinv3:
-checkinv4:
-checkinv5:
-	ControlFocus, , ahk_id %InputBoxID%
+btnCommand:
+	pCmd := "command" . SubStr(A_GuiControl, 11, 1)
+	pCmd2 := RegExMatch(A_GuiControl, "[\d]+", 12)
+	If (pCmd2 > 0)
+		pCmd .= SubStr(A_GuiControl, 12, 1)
+	Cmd := %pCmd%
+	sendstrdata=% Cmd . (CrLfVal ? "`r" : "")
+	GoSub, SendString
 Return
 
-btnLauncher1:
-	Run, %launcher1command%, %launcher1dir%
-Return
-btnLauncher2:
-	Run, %launcher2command%, %launcher2dir%
-Return
-btnLauncher3:
-	Run, %launcher3command%, %launcher3dir%
-Return
-btnLauncher4:
-	Run, %launcher4command%, %launcher4dir%
-Return
-btnLauncher5:
-	Run, %launcher5command%, %launcher5dir%
-Return
-btnLauncher6:
-	Run, %launcher6command%, %launcher6dir%
-Return
-
-btnPutty1:
-	Run, %btnputty1command%, %btnputty1dir%
-Return
-btnPutty2:
-	Run, %btnputty2command%, %btnputty2dir%
-Return
-btnPutty3:
-	Run, %btnputty3command%, %btnputty3dir%
-Return
-btnPutty4:
-	Run, %btnputty4command%, %btnputty4dir%
-Return
-btnPutty5:
-	Run, %btnputty5command%, %btnputty5dir%
-Return
-btnPutty6:
-	Run, %btnputty6command%, %btnputty6dir%
-Return
-
-btnCol1:
-	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
-	Loop, %edtPutty11%
-		GoSub, btnPutty1
-	ControlGetText, edtPutty21, , ahk_id %edtPutty21ID%
-	Loop, %edtPutty21%
-		GoSub, btnPutty2
-	ControlGetText, edtPutty31, , ahk_id %edtPutty31ID%
-	Loop, %edtPutty31%
-		GoSub, btnPutty3
-	ControlGetText, edtPutty41, , ahk_id %edtPutty41ID%
-	Loop, %edtPutty41%
-		GoSub, btnPutty4
-	ControlGetText, edtPutty51, , ahk_id %edtPutty51ID%
-	Loop, %edtPutty51%
-		GoSub, btnPutty5
-	ControlGetText, edtPutty61, , ahk_id %edtPutty61ID%
-	Loop, %edtPutty61%
-		GoSub, btnPutty6
-Return
-btnCol2:
-	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
-	Loop, %edtPutty12%
-		GoSub, btnPutty1
-	ControlGetText, edtPutty22, , ahk_id %edtPutty22ID%
-	Loop, %edtPutty22%
-		GoSub, btnPutty2
-	ControlGetText, edtPutty32, , ahk_id %edtPutty32ID%
-	Loop, %edtPutty32%
-		GoSub, btnPutty3
-	ControlGetText, edtPutty42, , ahk_id %edtPutty42ID%
-	Loop, %edtPutty42%
-		GoSub, btnPutty4
-	ControlGetText, edtPutty52, , ahk_id %edtPutty52ID%
-	Loop, %edtPutty52%
-		GoSub, btnPutty5
-	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
-	Loop, %edtPutty62%
-		GoSub, btnPutty6
-Return
-btnCol3:
-	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
-	Loop, %edtPutty13%
-		GoSub, btnPutty1
-	ControlGetText, edtPutty23, , ahk_id %edtPutty23ID%
-	Loop, %edtPutty23%
-		GoSub, btnPutty2
-	ControlGetText, edtPutty33, , ahk_id %edtPutty33ID%
-	Loop, %edtPutty33%
-		GoSub, btnPutty3
-	ControlGetText, edtPutty43, , ahk_id %edtPutty43ID%
-	Loop, %edtPutty43%
-		GoSub, btnPutty4
-	ControlGetText, edtPutty53, , ahk_id %edtPutty53ID%
-	Loop, %edtPutty53%
-		GoSub, btnPutty5
-	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
-	Loop, %edtPutty63%
-		GoSub, btnPutty6
-Return
-
-btnCommand1:
-	sendstrdata=%command01%
-	if (CrLfVal) {
-		sendstrdata=%command01%`r
+MiniModeToggle:
+	ControlGetText, ToggleSidebarTxt, , ahk_id %btnToggleSidebarID%
+	if ( ToggleSidebarTxt == "<<" )
+		GoSub, SidePanelToggle
+	ControlGetText, MiniModeTxt, , ahk_id %btnMiniModeID%
+	if ( MiniModeTxt == "mini" ) {
+		ControlSetText, , full, ahk_id %btnMiniModeID%
+		MiniMode_TT := "Disable Mini Mode"
+		WinGetPos, xpos, ypos
+		xpospremini := xpos
+		ypospremini := ypos
+		Iniread, xposmini, %inifilename%, Autosave, xposmini, 65535
+		Iniread, yposmini, %inifilename%, Autosave, yposmini, 65535
+		if ((xposmini == 65535) || (yposmini == 65535)) {
+			xposmini := xpos + fwidth - miniwidth
+			yposmini := ypos + fheight - miniheight
+		}
+		Gui, Show, h%miniheight% w%miniwidth%  x%xposmini% y%yposmini%
+		xminimodeminibutton := miniwidth - 25
+		GuiControl, Move, %btnMiniModeID%, x%xminimodeminibutton% y%0%
+		ywidth := miniwidth - 25
+		GuiControl, Move, %InputBoxID%, w%ywidth% x0 y%5%
+		Gui, 1:Hide
+		Gui, 1:+ToolWindow
+		Control, Hide, , , ahk_id %btnMiniModeID%
+		Control, Hide, , , ahk_id %InputBoxID%
+		Gui, 1:Show
+		WinSet, Style, -0xC00000, %windowname%
+		Control, Show, , , ahk_id %btnMiniModeID%
+		Control, Show, , , ahk_id %InputBoxID%
+		
+		Control, Hide, , , ahk_id %btnToggleSidebarID%
+		Control, Hide, , , ahk_id %btnWindowTitleID%
+		Control, Hide, , , ahk_id %txtWindowTitleID%
+		Control, Hide, , , ahk_id %edit1ID%
+		Control, Hide, , , ahk_id %check1ID%
+		Control, Hide, , , ahk_id %checkinv1ID%
+		Control, Hide, , , ahk_id %edit2ID%
+		Control, Hide, , , ahk_id %check2ID%
+		Control, Hide, , , ahk_id %checkinv2ID%
+		Control, Hide, , , ahk_id %btnAppLaunchersID%
+		Control, Hide, , , ahk_id %txtAppLaunchersID%
+		Control, Hide, , , ahk_id %btnLauncher1ID%
+		ControlFocus, , ahk_id %InputBoxID%
+	} else {
+		WinGetPos, xpos, ypos
+		IniWrite, %xpos%, %inifilename%, Autosave, xposmini
+		IniWrite, %ypos%, %inifilename%, Autosave, yposmini
+		Gui, 1:Hide
+		Gui, 1:-ToolWindow
+		;;  2018-05-02 sc note. Don't delete double "Gui, Show".  Fow whatever reason, showing the titlebar
+		;; doesn't work unless I show the gui before WinSet, but fheight comes up short once I enable the 
+		;; titlebar.  The second hide/show basically recalculates the form height.  Note also with the
+		;; double show, I didn't need the +10 fudge on the width (restorewidth).  Again no idea why.
+		fwidthrestore := fwidth + 10
+		Gui, Show, h%fheight% w%fwidthrestore%  x%xpospremini% y%ypospremini%
+		WinSet, Style, +0xC00000, %windowname%
+		Gui, 1:Hide
+		Gui, Show, h%fheight% w%fwidth%  x%xpospremini% y%ypospremini%
+		ControlSetText, , mini, ahk_id %btnMiniModeID%
+		MiniMode_TT := "Enable Mini Mode"
+		GuiControl, Move, %btnMiniModeID%, x%xminibutton% y%yminibutton%
+		yinput := yposcluster + 20
+		GuiControl, Move, %InputBoxID%, w50 x10 y%yinput%
+		
+		Control, Show, , , ahk_id %btnToggleSidebarID%
+		Control, Show, , , ahk_id %btnWindowTitleID%
+		Control, Show, , , ahk_id %txtWindowTitleID%
+		Control, Show, , , ahk_id %edit1ID%
+		Control, Show, , , ahk_id %check1ID%
+		Control, Show, , , ahk_id %checkinv1ID%
+		Control, Show, , , ahk_id %edit2ID%
+		Control, Show, , , ahk_id %check2ID%
+		Control, Show, , , ahk_id %checkinv2ID%
+		Control, Show, , , ahk_id %btnAppLaunchersID%
+		Control, Show, , , ahk_id %txtAppLaunchersID%
+		Control, Show, , , ahk_id %btnLauncher1ID%
 	}
-	GoSub, SendString
-Return
-btnCommand2:
-	sendstrdata=%command02%
-	if (CrLfVal) {
-		sendstrdata=%command02%`r
-	}
-	GoSub, SendString
-Return
-btnCommand3:
-	sendstrdata=%command03%
-	if (CrLfVal) {
-		sendstrdata=%command03%`r
-	}
-	GoSub, SendString
-Return
-btnCommand4:
-	sendstrdata=%command04%
-	if (CrLfVal) {
-		sendstrdata=%command04%`r
-	}
-	GoSub, SendString
-Return
-btnCommand5:
-	sendstrdata=%command05%
-	if (CrLfVal) {
-		sendstrdata=%command05%`r
-	}
-	GoSub, SendString
-Return
-btnCommand6:
-	sendstrdata=%command06%
-	if (CrLfVal) {
-		sendstrdata=%command06%`r
-	}
-	GoSub, SendString
-Return
-btnCommand7:
-	sendstrdata=%command07%
-	if (CrLfVal) {
-		sendstrdata=%command07%`r
-	}
-	GoSub, SendString
-Return
-btnCommand8:
-	sendstrdata=%command08%
-	if (CrLfVal) {
-		sendstrdata=%command08%`r
-	}
-	GoSub, SendString
-Return
-btnCommand9:
-	sendstrdata=%command09%
-	if (CrLfVal) {
-		sendstrdata=%command09%`r
-	}
-	GoSub, SendString
-Return
-btnCommand10:
-	sendstrdata=%command10%
-	if (CrLfVal) {
-		sendstrdata=%command10%`r
-	}
-	GoSub, SendString
-Return
-btnCommand11:
-	sendstrdata=%command11%
-	if (CrLfVal) {
-		sendstrdata=%command11%`r
-	}
-	GoSub, SendString
-Return
-btnCommand12:
-	sendstrdata=%command12%
-	if (CrLfVal) {
-		sendstrdata=%command12%`r
-	}
-	GoSub, SendString
-Return
-btnCommand13:
-	sendstrdata=%command13%
-	if (CrLfVal) {
-		sendstrdata=%command13%`r
-	}
-	GoSub, SendString
-Return
-btnCommand14:
-	sendstrdata=%command14%
-	if (CrLfVal) {
-		sendstrdata=%command14%`r
-	}
-	GoSub, SendString
-Return
-btnCommand15:
-	sendstrdata=%command15%
-	if (CrLfVal) {
-		sendstrdata=%command15%`r
-	}
-	GoSub, SendString
-Return
-btnCommand16:
-	sendstrdata=%command16%
-	if (CrLfVal) {
-		sendstrdata=%command16%`r
-	}
-	GoSub, SendString
-Return
-btnCommand17:
-	sendstrdata=%command17%
-	if (CrLfVal) {
-		sendstrdata=%command17%`r
-	}
-	GoSub, SendString
-Return
-btnCommand18:
-	sendstrdata=%command18%
-	if (CrLfVal) {
-		sendstrdata=%command18%`r
-	}
-	GoSub, SendString
 Return
 
 SidePanelToggle:
 	ControlGetText, ToggleSidebarTxt, , ahk_id %btnToggleSidebarID%
 	WinGetPos, xpos, ypos, , ,%windowname%
+	fheightfudge := fheight - 10
 	if ( ToggleSidebarTxt == ">>" ) {
 		SidePanelOpen := 1
 		ControlSetText, , <<, ahk_id %btnToggleSidebarID%
 		widewidth := fwidth + sidepanelwidth
 		widexpos := xpos - sidepanelwidth - 10 ; 10 may be a fudge.  Wouldn't line up without it
 		gui +resize
-		Gui, Show, h%fheight% w%widewidth%  x%widexpos% y%ypos%
+		Gui, Show, h%fheightfudge% w%widewidth%  x%widexpos% y%ypos%
 		xbutton := widewidth - 10
 		GuiControl, Move, %btnToggleSidebarID%, x%xbutton%
 		gui -resize
@@ -1178,7 +1420,7 @@ SidePanelToggle:
 		gui +resize
 		narrowwidth := fwidth - 10 ; 2018-04-18 This may be a fudge.  The resize doesn't come back to the same width as the original Gui Show did
 		narrowxpos := xpos + sidepanelwidth + 10
-		Gui, Show, h%fheight% w%narrowwidth% x%narrowxpos% y%ypos%
+		Gui, Show, h%fheightfudge% w%narrowwidth% x%narrowxpos% y%ypos%
 		GuiControl, Move, %btnToggleSidebarID%, x%xsidepanelbutton%
 		gui -resize
 	}
@@ -1186,11 +1428,7 @@ Return
 
 OnTopCheck:
 	gui, submit, nohide
-	if ( OnTopVal == 1) {
-		WinSet, AlwaysOnTop, on, %windowname%
-	} else {
-		WinSet, AlwaysOnTop, off, %windowname%
-	}
+	WinSet, AlwaysOnTop, % (OnTopVal ? "on" : "off"), %windowname%
 Return
 
 CrLfCheck:
@@ -1199,121 +1437,37 @@ CrLfCheck:
 Return
 
 FindFilterClick:
-	ControlSend, , {Space}, ahk_id %FilterGroup3ID%
-	ControlFocus, , ahk_id %FindFilterID%
-	GoSub, UpdateFoundWindowsFilteredGui
+	If (enableGuiUpdates == 1) {
+		ControlSend, , {Space}, ahk_id %FilterGroup3ID%
+		ControlFocus, , ahk_id %FindFilterID%
+		GoSub, UpdateFoundWindowsFilteredGui
+	}
 Return
 
-bit11toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit11state := !bit11state
-	GuiControl,, %btnBit11ID%, % ( (bit11state) ? "1" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
+bit1toggle:
+	Index := SubStr(A_GuiControl, 5, 1)
+	mask := 2**(Index-1)
+	Matchbits1 ^= mask
+	test := Matchbits1 & mask
+	btnid := "btnBit1" . Index . "ID"
+	GuiControl,, % %btnid% , % ((test > 0) ? Index : "" )
+	If (enableGuiUpdates == 1) {
+		ControlSend, , {Space}, ahk_id %FilterGroup2ID%
+		GoSub, UpdateFoundWindowsFilteredGui
+	}
 Return
 
-bit12toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit12state := !bit12state
-	GuiControl,, %btnBit12ID%, % ( (bit12state) ? "2" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit13toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit13state := !bit13state
-	GuiControl,, %btnBit13ID%, % ( (bit13state) ? "3" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit14toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit14state := !bit14state
-	GuiControl,, %btnBit14ID%, % ( (bit14state) ? "4" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit15toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit15state := !bit15state
-	GuiControl,, %btnBit15ID%, % ( (bit15state) ? "5" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit16toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit16state := !bit16state
-	GuiControl,, %btnBit16ID%, % ( (bit16state) ? "6" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit17toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit17state := !bit17state
-	GuiControl,, %btnBit17ID%, % ( (bit17state) ? "7" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit18toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup2ID%
-	bit18state := !bit18state
-	GuiControl,, %btnBit18ID%, % ( (bit18state) ? "8" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit21toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit21state := !bit21state
-	GuiControl,, %btnBit21ID%, % ( (bit21state) ? "1" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit22toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit22state := !bit22state
-	GuiControl,, %btnBit22ID%, % ( (bit22state) ? "2" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit23toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit23state := !bit23state
-	GuiControl,, %btnBit23ID%, % ( (bit23state) ? "3" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit24toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit24state := !bit24state
-	GuiControl,, %btnBit24ID%, % ( (bit24state) ? "4" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit25toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit25state := !bit25state
-	GuiControl,, %btnBit25ID%, % ( (bit25state) ? "5" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit26toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit26state := !bit26state
-	GuiControl,, %btnBit26ID%, % ( (bit26state) ? "6" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit27toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit27state := !bit27state
-	GuiControl,, %btnBit27ID%, % ( (bit27state) ? "7" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
-Return
-
-bit28toggle:
-	ControlSend, , {Space}, ahk_id %FilterGroup4ID%
-	bit28state := !bit28state
-	GuiControl,, %btnBit28ID%, % ( (bit28state) ? "8" : "" )
-	GoSub, UpdateFoundWindowsFilteredGui
+bit2toggle:
+	Index := SubStr(A_GuiControl, 5, 1)
+	mask := 2**(Index-1)
+	Matchbits2 ^= mask
+	test := Matchbits2 & mask
+	btnid := "btnBit2" . Index . "ID"
+	GuiControl,, % %btnid% , % ((test > 0) ? Index : "" )
+	If (enableGuiUpdates == 1) {
+		ControlSend, , {Space}, ahk_id %FilterGroup4ID%
+		GoSub, UpdateFoundWindowsFilteredGui
+	}
 Return
 
 SetScreenWidthHeight:
@@ -1345,26 +1499,32 @@ else if (RadioGroup = 2) {
 else if (RadioGroup = 3) {
 	width := ScreenWidth
 	height := ScreenHeight
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 4) {
 	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 5) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 6) {
 	width := ScreenWidth / 2 - wmargin
 	height := ScreenHeight / 2
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 7) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 2
+	ControlFocus, , ahk_id %InputBoxID%
 }
 else if (RadioGroup = 8) {
 	width := ScreenWidth / 3 - wmargin
 	height := ScreenHeight / 3
+	ControlFocus, , ahk_id %InputBoxID%
 }
 Return
 
@@ -1373,134 +1533,104 @@ GuiClose:
 	WinGetPos, xpos, ypos
 	if (SidePanelOpen == 1)
 		xpos += sidepanelwidth + 10
-	ControlGetText, edit1, , ahk_id %edit1ID%
-	ControlGetText, edit2, , ahk_id %edit2ID%
-	ControlGetText, edit3, , ahk_id %edit3ID%
-	ControlGetText, edit4, , ahk_id %edit4ID%
-	ControlGetText, edit5, , ahk_id %edit5ID%
-	ControlGet, enable1, Checked, , , ahk_id %check1ID%
-	ControlGet, enable2, Checked, , , ahk_id %check2ID%
-	ControlGet, enable3, Checked, , , ahk_id %check3ID%
-	ControlGet, enable4, Checked, , , ahk_id %check4ID%
-	ControlGet, enable5, Checked, , , ahk_id %check5ID%
-	ControlGet, enableinv1, Checked, , , ahk_id %checkinv1ID%
-	ControlGet, enableinv2, Checked, , , ahk_id %checkinv2ID%
-	ControlGet, enableinv3, Checked, , , ahk_id %checkinv3ID%
-	ControlGet, enableinv4, Checked, , , ahk_id %checkinv4ID%
-	ControlGet, enableinv5, Checked, , , ahk_id %checkinv5ID%
+	ControlGetText, MiniModeTxt, , ahk_id %btnMiniModeID%
+	if  ( MiniModeTxt == "full" ) {
+		xpos := xpos - fwidth + miniwidth
+		ypos := ypos -fheight + miniheight
+	}
 	ControlGetText, xsize1, , ahk_id %width1ID%
 	ControlGetText, ysize1, , ahk_id %height1ID%
 	ControlGetText, xsize2, , ahk_id %width2ID%
 	ControlGetText, ysize2, , ahk_id %height2ID%
-	ControlGetText, edit6, , ahk_id %FindFilterID%
 	ControlGet, AlwaysOnTop, Checked, , , ahk_id %OnTopID%
 	ControlGet, AddCrLf, Checked, , , ahk_id %CrLfID%
-	ControlGet, SingleMatch, Checked, , , ahk_id %SingleMatchID%
-	ControlGetText, edtPutty11, , ahk_id %edtPutty11ID%
-	ControlGetText, edtPutty12, , ahk_id %edtPutty12ID%
-	ControlGetText, edtPutty13, , ahk_id %edtPutty13ID%
-	ControlGetText, edtPutty21, , ahk_id %edtPutty21ID%
-	ControlGetText, edtPutty22, , ahk_id %edtPutty22ID%
-	ControlGetText, edtPutty23, , ahk_id %edtPutty23ID%
-	ControlGetText, edtPutty31, , ahk_id %edtPutty31ID%
-	ControlGetText, edtPutty32, , ahk_id %edtPutty32ID%
-	ControlGetText, edtPutty33, , ahk_id %edtPutty33ID%
-	ControlGetText, edtPutty41, , ahk_id %edtPutty41ID%
-	ControlGetText, edtPutty42, , ahk_id %edtPutty42ID%
-	ControlGetText, edtPutty43, , ahk_id %edtPutty43ID%
-	ControlGetText, edtPutty51, , ahk_id %edtPutty51ID%
-	ControlGetText, edtPutty52, , ahk_id %edtPutty52ID%
-	ControlGetText, edtPutty53, , ahk_id %edtPutty53ID%
-	ControlGetText, edtPutty61, , ahk_id %edtPutty61ID%
-	ControlGetText, edtPutty62, , ahk_id %edtPutty62ID%
-	ControlGetText, edtPutty63, , ahk_id %edtPutty63ID%
 	
-	IniWrite, %xpos%, puttyCluster.ini, Autosave, xpos
-	IniWrite, %ypos%, puttyCluster.ini, Autosave, ypos
-	IniWrite, %edit1%, puttyCluster.ini, TitleMatch, Title1
-	IniWrite, %edit2%, puttyCluster.ini, TitleMatch, Title2
-	IniWrite, %edit3%, puttyCluster.ini, TitleMatch, Title3
-	IniWrite, %edit4%, puttyCluster.ini, TitleMatch, Title4
-	IniWrite, %edit5%, puttyCluster.ini, TitleMatch, Title5
-	IniWrite, %enable1%, puttyCluster.ini, TitleMatchEnabled, TitleMatch1
-	IniWrite, %enable2%, puttyCluster.ini, TitleMatchEnabled, TitleMatch2
-	IniWrite, %enable3%, puttyCluster.ini, TitleMatchEnabled, TitleMatch3
-	IniWrite, %enable4%, puttyCluster.ini, TitleMatchEnabled, TitleMatch4
-	IniWrite, %enable5%, puttyCluster.ini, TitleMatchEnabled, TitleMatch5
-	IniWrite, %enableinv1%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv1
-	IniWrite, %enableinv2%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv2
-	IniWrite, %enableinv3%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv3
-	IniWrite, %enableinv4%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv4
-	IniWrite, %enableinv5%, puttyCluster.ini, TitleMatchEnabled, TitleMatchInv5
-	IniWrite, %RadioGroup%, puttyCluster.ini, WindowSize, Selected
-	IniWrite, %xsize1%, puttyCluster.ini, XYSize, x1
-	IniWrite, %ysize1%, puttyCluster.ini, XYSize, y1
-	IniWrite, %xsize2%, puttyCluster.ini, XYSize, x2
-	IniWrite, %ysize2%, puttyCluster.ini, XYSize, y2
-	IniWrite, %bit11state%, puttyCluster.ini, MatchBits1, MatchBit11
-	IniWrite, %bit12state%, puttyCluster.ini, MatchBits1, MatchBit12
-	IniWrite, %bit13state%, puttyCluster.ini, MatchBits1, MatchBit13
-	IniWrite, %bit14state%, puttyCluster.ini, MatchBits1, MatchBit14
-	IniWrite, %bit15state%, puttyCluster.ini, MatchBits1, MatchBit15
-	IniWrite, %bit16state%, puttyCluster.ini, MatchBits1, MatchBit16
-	IniWrite, %bit17state%, puttyCluster.ini, MatchBits1, MatchBit17
-	IniWrite, %bit18state%, puttyCluster.ini, MatchBits1, MatchBit18
-	IniWrite, %bit21state%, puttyCluster.ini, MatchBits2, MatchBit21
-	IniWrite, %bit22state%, puttyCluster.ini, MatchBits2, MatchBit22
-	IniWrite, %bit23state%, puttyCluster.ini, MatchBits2, MatchBit23
-	IniWrite, %bit24state%, puttyCluster.ini, MatchBits2, MatchBit24
-	IniWrite, %bit25state%, puttyCluster.ini, MatchBits2, MatchBit25
-	IniWrite, %bit26state%, puttyCluster.ini, MatchBits2, MatchBit26
-	IniWrite, %bit27state%, puttyCluster.ini, MatchBits2, MatchBit27
-	IniWrite, %bit28state%, puttyCluster.ini, MatchBits2, MatchBit28
-	IniWrite, %edit6%, puttyCluster.ini, MatchBits1, MatchByte1
-	IniWrite, %FilterGroup%, puttyCluster.ini, MatchBits1, MatchByte1Type
-	IniWrite, %AlwaysOnTop%, puttyCluster.ini, Options, AlwaysOnTop
-	IniWrite, %AddCrLf%, puttyCluster.ini, Options, AddCrLf
-	IniWrite, %MonitorGroup%, puttyCluster.ini, Options, MonitorSelect
-	IniWrite, %edtMonitor3%, puttyCluster.ini, Options, Monitor3
-	IniWrite, %SingleMatch%, puttyCluster.ini, Options, SingleMatch
-	IniWrite, %edtPutty11%, puttyCluster.ini, PuttySession1, Putty11Count
-	IniWrite, %edtPutty12%, puttyCluster.ini, PuttySession1, Putty12Count
-	IniWrite, %edtPutty13%, puttyCluster.ini, PuttySession1, Putty13Count
-	IniWrite, %edtPutty21%, puttyCluster.ini, PuttySession2, Putty21Count
-	IniWrite, %edtPutty22%, puttyCluster.ini, PuttySession2, Putty22Count
-	IniWrite, %edtPutty23%, puttyCluster.ini, PuttySession2, Putty23Count
-	IniWrite, %edtPutty31%, puttyCluster.ini, PuttySession3, Putty31Count
-	IniWrite, %edtPutty32%, puttyCluster.ini, PuttySession3, Putty32Count
-	IniWrite, %edtPutty33%, puttyCluster.ini, PuttySession3, Putty33Count
-	IniWrite, %edtPutty41%, puttyCluster.ini, PuttySession4, Putty41Count
-	IniWrite, %edtPutty42%, puttyCluster.ini, PuttySession4, Putty42Count
-	IniWrite, %edtPutty43%, puttyCluster.ini, PuttySession4, Putty43Count
-	IniWrite, %edtPutty51%, puttyCluster.ini, PuttySession5, Putty51Count
-	IniWrite, %edtPutty52%, puttyCluster.ini, PuttySession5, Putty52Count
-	IniWrite, %edtPutty53%, puttyCluster.ini, PuttySession5, Putty53Count
-	IniWrite, %edtPutty61%, puttyCluster.ini, PuttySession6, Putty61Count
-	IniWrite, %edtPutty62%, puttyCluster.ini, PuttySession6, Putty62Count
-	IniWrite, %edtPutty63%, puttyCluster.ini, PuttySession6, Putty63Count
+	IniWrite, %xpos%, %inifilename%, Autosave, xpos
+	IniWrite, %ypos%, %inifilename%, Autosave, ypos
+	IniWrite, %RadioGroup%, %inifilename%, WindowSize, Selected
+	IniWrite, %xsize1%, %inifilename%, XYSize, x1
+	IniWrite, %ysize1%, %inifilename%, XYSize, y1
+	IniWrite, %xsize2%, %inifilename%, XYSize, x2
+	IniWrite, %ysize2%, %inifilename%, XYSize, y2
+	IniWrite, %AlwaysOnTop%, %inifilename%, Options, AlwaysOnTop
+	IniWrite, %AddCrLf%, %inifilename%, Options, AddCrLf
+	IniWrite, %MonitorGroup%, %inifilename%, Options, MonitorSelect
+	IniWrite, %edtMonitor3%, %inifilename%, Options, Monitor3
+	IniWrite, %currentTitleMatchini%, %inifilename%, TitleMatches, CurrentIni
+	IniWrite, %currentPositionMatchini%, %inifilename%, PositionMatches, CurrentIni
+	IniWrite, %currentApplauncher%, %inifilename%, ApplicationLaunchers, CurrentLauncher
+	IniWrite, %currentPSlauncher%, %inifilename%, PuttySessionLaunchers, CurrentLauncher
+	IniWrite, %currentCmdlauncher%, %inifilename%, CommandLaunchers, CurrentLauncher
 	
+	GoSub, SaveTitleMatches
+	GoSub, SavePositionMatches
+	GoSub, SavePSCounts
 ExitApp
 
+SaveTitleMatches:
+	Loop, 5 {
+		pControlID = edit%A_Index%ID
+		ControlID := %pControlID%
+		ControlGetText, saveval, , ahk_id %ControlID%
+		IniWrite, %saveval%, %inifilenametitlematch%, TitleMatch, % "Title" . A_Index
+		pControlID = check%A_Index%ID
+		ControlID := %pControlID%
+		ControlGet, saveval, Checked, , , ahk_id %ControlID%
+		IniWrite, %saveval%, %inifilenametitlematch%, TitleMatchEnabled, % "TitleMatch" . A_Index
+		pControlID = checkinv%A_Index%ID
+		ControlID := %pControlID%
+		ControlGet, saveval, Checked, , , ahk_id %ControlID%
+		IniWrite, %saveval%, %inifilenametitlematch%, TitleMatchEnabled, % "TitleMatchInv" . A_Index
+	}
+	ControlGet, SingleMatch, Checked, , , ahk_id %SingleMatchID%
+	IniWrite, %SingleMatch%, %inifilenametitlematch%, Options, SingleMatch
+	ControlGet, InvertMatch, Checked, , , ahk_id %InvertMatchID%
+	IniWrite, %InvertMatch%, %inifilenametitlematch%, Options, InvertMatch
+Return
+
+SavePositionMatches:
+	ControlGetText, edit6, , ahk_id %FindFilterID%
+
+	IniWrite, %MatchBits1%, %inifilenamepositionmatch%, Options, MatchBits1
+	IniWrite, %MatchBits2%, %inifilenamepositionmatch%, Options, MatchBits2
+	IniWrite, %edit6%, %inifilenamepositionmatch%, Options, MatchByte
+	IniWrite, %FilterGroup%, %inifilenamepositionmatch%, Options, MatchType
+Return
+
+SavePSCounts:
+	Loop, 6 {
+		row := A_Index
+		Loop, 3 {
+			pControlID = edtPutty%row%%A_Index%ID
+			ControlID := %pControlID%
+			ControlGetText, saveval, , ahk_id %ControlID%
+			IniWrite, %saveval%, %inifilenamePSLaunchers%, % "PuttySession" . row, % "Putty" . row . A_Index . "Count"
+		}
+	}
+Return
+
 UpdateFoundWindowsFilteredGui:
-	windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
 	titlematchbit := 1
 	matchcount := 0
+	filt2str = 
 	Loop, %id_array_count%
 	{
-		if ( ( titlematchbit & windowfilter ) > 0 ) {
+		if ( ( titlematchbit & MatchBits1 ) > 0 ) {
 			matchcount += 1
+			filt2str .= A_Index
 		}
 		titlematchbit *= 2
 	}
 	FoundWindowsFiltered2 := matchcount
 
-	windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
 	titlematchbit := 1
 	matchcount := 0
+	filt4str =
 	Loop, %id_array_count%
 	{
-		if ( ( titlematchbit & windowfilter ) > 0 ) {
+		if ( ( titlematchbit & MatchBits2 ) > 0 ) {
 			matchcount += 1
+			filt4str .= A_Index
 		}
 		titlematchbit *= 2
 	}
@@ -1523,6 +1653,17 @@ UpdateFoundWindowsFilteredGui:
 	GuiControl, , %FilterGroup2InfoID%,  % "(" FoundWindowsFiltered2 "/" id_array_count ")"
 	GuiControl, , %FilterGroup3InfoID%,  % "(" FoundWindowsFiltered3 "/" id_array_count ")"
 	GuiControl, , %FilterGroup4InfoID%,  % "(" FoundWindowsFiltered4 "/" id_array_count ")"
+	
+	if ( FilterGroup == 1 ){
+		positionMatchStr = % "All " . id_array_count " window(s)"
+	} else if ( FilterGroup == 2 ){
+		positionMatchStr = % "Pattern: " . filt2str . "`rMatches: " FoundWindowsFiltered2 "/" id_array_count
+	} else if ( FilterGroup == 3 ){
+		positionMatchStr = % "Pattern: 0x" . FindFilterTxt . "`rMatches" FoundWindowsFiltered3 "/" id_array_count
+	} else if ( FilterGroup == 4 ){
+		positionMatchStr = % "Pattern: " . filt4str . "`rMatches:" FoundWindowsFiltered4 "/" id_array_count
+	}
+	InputBox_TT = %titleMatchRegexp%`r%positionMatchStr%
 Return
 
 Tile:
@@ -1538,6 +1679,8 @@ Tile:
 	    {
 			this_id := id_array[A_Index]
 			;WinActivate, ahk_id %this_id_tile%,				
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			WinMove, ahk_id %this_id%,, x,y,width,height
 			x:=x+width
 			if( (x+width) >= MonRight){
@@ -1545,12 +1688,11 @@ Tile:
 				y:=y+height
 			}
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1562,6 +1704,8 @@ Tile:
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
 				;WinActivate, ahk_id %this_id_tile%,				
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 				WinMove, ahk_id %this_id%,, x,y,width,height
 				x:=x+width
 				if( (x+width) >= MonRight){
@@ -1588,12 +1732,11 @@ ToFront:
 			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1627,12 +1770,11 @@ ToBack:
 			;WinMinimize, ahk_id %this_id_toback%,			
 			WinSet, Bottom, , ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1667,12 +1809,11 @@ CloseWin:
 			this_id := id_array[A_Index]
 			WinClose, ahk_id %this_id%,
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1709,12 +1850,11 @@ Cascade:
 			x:=x+xstep
 			y:=y+ystep
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1776,18 +1916,21 @@ SendString:
 Return
 
 SendString_LeaveTimers:
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
 			PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1813,18 +1956,19 @@ Locate:
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			WinSet, Transparent, 30, ahk_id %this_id%
 			Sleep, 200
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
 			; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
 			; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1835,6 +1979,8 @@ Locate:
 		{
 			if ( ( titlematchbit & windowfilter ) > 0 ) {
 				this_id := id_array[A_Index]
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+				WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 				WinSet, Transparent, 30, ahk_id %this_id%
 				Sleep, 200
 				WinSet, Transparent, %alpha%, ahk_id %this_id%
@@ -1849,25 +1995,181 @@ Locate:
 	ControlFocus, , ahk_id %InputBoxID%
 return 
 
+FocusNextWindow:  
+    Gosub, Find 
+	GoSub, DisableTimers
+
+	if ( FilterGroup == 1 ){
+		if (id_array_count > 0)
+		{
+			currentwindow += 1
+			if (currentwindow > id_array_count)
+				currentwindow := 1
+			this_id := id_array[currentwindow]
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinActivate, ahk_id %this_id%
+			WinSet, Transparent, 30, ahk_id %this_id%
+			Sleep, 50
+			WinSet, Transparent, %alpha%, ahk_id %this_id%
+		}
+	} else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := MatchBits1
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := MatchBits2
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		matchcount := 0
+		Loop, %id_array_count%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				matchcount += 1
+				if (matchcount > currentwindow) {
+					currentwindow += 1
+					this_id := id_array[A_Index]
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinActivate, ahk_id %this_id%
+					WinSet, Transparent, 30, ahk_id %this_id%
+					Sleep, 50
+					WinSet, Transparent, %alpha%, ahk_id %this_id%
+					return
+				}
+			}
+			titlematchbit *= 2
+		}
+		if (matchcount > 0) {
+			titlematchbit := 1
+			Loop, %id_array_count%
+			{
+				if ( ( titlematchbit & windowfilter ) > 0 ) {
+					currentwindow := 1
+					this_id := id_array[A_Index]
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinActivate, ahk_id %this_id%
+					WinSet, Transparent, 30, ahk_id %this_id%
+					Sleep, 50
+					WinSet, Transparent, %alpha%, ahk_id %this_id%
+					return
+				}
+				titlematchbit *= 2
+			}
+		}
+	}
+
+	GoSub, EnableTimers
+	ControlFocus, , ahk_id %InputBoxID%
+return 
+
+FocusPrevWindow:  
+    Gosub, Find 
+	GoSub, DisableTimers
+
+	if ( FilterGroup == 1 ){
+		if (id_array_count > 0)
+		{
+			currentwindow -= 1
+			if (currentwindow <= 0)
+				currentwindow := id_array_count
+			this_id := id_array[currentwindow]
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+			WinActivate, ahk_id %this_id%
+			WinSet, Transparent, 30, ahk_id %this_id%
+			Sleep, 50
+			WinSet, Transparent, %alpha%, ahk_id %this_id%
+		}
+	} else {
+		if ( FilterGroup == 2 ) {
+			windowfilter := MatchBits1
+		} else if ( FilterGroup == 4 ) {
+			windowfilter := MatchBits2
+		} else {
+			VarSetCapacity(windowfilter, 66, 0)
+			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
+			, DllCall("msvcrt.dll\_i64tow", "Int64", val, "Str", windowfilter, "UInt", 10, "CDECL")
+		}
+		titlematchbit := 1
+		matchcount := 0
+		Loop, %id_array_count%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				matchcount += 1
+			}
+			titlematchbit *= 2
+		}
+		currentwindow -= 1
+		if (currentwindow <= 0)
+			currentwindow := matchcount
+		matchcount := 0
+		titlematchbit := 1
+		Loop, %id_array_count%
+		{
+			if ( ( titlematchbit & windowfilter ) > 0 ) {
+				matchcount += 1
+				if (matchcount == currentwindow) {
+					this_id := id_array[A_Index]
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+					WinActivate, ahk_id %this_id%
+					WinSet, Transparent, 30, ahk_id %this_id%
+					Sleep, 50
+					WinSet, Transparent, %alpha%, ahk_id %this_id%
+					return
+				}
+			}
+			titlematchbit *= 2
+		}
+	}
+
+	GoSub, EnableTimers
+	ControlFocus, , ahk_id %InputBoxID%
+return 
+
 Find:
   gui, Submit, nohide
   titletmp := ""
-  if( check1 && title1 != "" )
-	titletmp = % (checkinv1 ? "^((?!" : "(") . title1 . (checkinv1 ? ").)*$" : ")")
-  if( check2 && title2 != "" ) {
-	titletmp = % titletmp . (checkinv2 ? "|^((?!" : "|(") . title2 . (checkinv2 ? ").)*$" : ")")
+  if (InvertMatch == 1) {
+	  if( check1 && title1 != "" )
+		titletmp = % "(" . title1 . ")"
+	  if( check2 && title2 != "" ) {
+		titletmp = % titletmp . "|(" . title2 . ")"
+	  }
+	  if( check3 && title3 != "" ) {
+		titletmp = % titletmp . "|(" . title3 . ")"
+	  }
+	  if( check4 && title4 != "" ) {
+		titletmp = % titletmp . "|(" . title4 . ")"
+	  }
+	  if( check5 && title5 != "" ) {
+		titletmp = % titletmp . "|(" . title5 . ")"
+	  }
+	  titletmp := LTrim(titletmp, "|")
+	  titleMatchRegexp := % "^((?!" . titletmp . ").)*$"
+  } else {
+	  if( check1 && title1 != "" )
+		titletmp = % (checkinv1 ? "^((?!" : "(") . title1 . (checkinv1 ? ").)*$" : ")")
+	  if( check2 && title2 != "" ) {
+		titletmp = % titletmp . (checkinv2 ? "|^((?!" : "|(") . title2 . (checkinv2 ? ").)*$" : ")")
+	  }
+	  if( check3 && title3 != "" ) {
+		titletmp = % titletmp . (checkinv3 ? "|^((?!" : "|(") . title3 . (checkinv3 ? ").)*$" : ")")
+	  }
+	  if( check4 && title4 != "" ) {
+		titletmp = % titletmp . (checkinv4 ? "|^((?!" : "|(") . title4 . (checkinv4 ? ").)*$" : ")")
+	  }
+	  if( check5 && title5 != "" ) {
+		titletmp = % titletmp . (checkinv5 ? "|^((?!" : "|(") . title5 . (checkinv5 ? ").)*$" : ")")
+	  }
+	  titleMatchRegexp := LTrim(titletmp, "|")
   }
-  if( check3 && title3 != "" ) {
-	titletmp = % titletmp . (checkinv3 ? "|^((?!" : "|(") . title3 . (checkinv3 ? ").)*$" : ")")
-  }
-  if( check4 && title4 != "" ) {
-	titletmp = % titletmp . (checkinv4 ? "|^((?!" : "|(") . title4 . (checkinv4 ? ").)*$" : ")")
-  }
-  if( check5 && title5 != "" ) {
-	titletmp = % titletmp . (checkinv5 ? "|^((?!" : "|(") . title5 . (checkinv5 ? ").)*$" : ")")
-  }
-  title := LTrim(titletmp, "|")
-  if( title != "")
+  if( titleMatchRegexp != "")
   {
 	id_array_count := id_array._MaxIndex()
 	if (id_array_count > 0)
@@ -1879,7 +2181,7 @@ Find:
 	{
 		this_id_find := puttyids%A_Index%
 		WinGetTitle, thistitle, ahk_id  %this_id_find%
-		if (RegExMatch(thistitle, title) > 0) {
+		if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 			id_array.Push(this_id_find)
 		}
 	}
@@ -1889,7 +2191,7 @@ Find:
 	{
 		this_id_find := kittyids%A_Index%
 		WinGetTitle, thistitle, ahk_id  %this_id_find%
-		if (RegExMatch(thistitle, title) > 0) {
+		if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 			id_array.Push(this_id_find)
 		}
 	}
@@ -1904,7 +2206,7 @@ Find:
 			if ( RegExMatch(A_LoopField, "PuTTY\d+") > 0) {
 			ControlGet, ControlID, Hwnd,, %A_LoopField%, ahk_id %this_id_find%
 				WinGetTitle, thistitle, ahk_id  %ControlID%
-				if (RegExMatch(thistitle, title) > 0) {
+				if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 					id_array.Push(ControlID)
 				}
 			}
@@ -1920,7 +2222,7 @@ Find:
 			if ( RegExMatch(A_LoopField, "AfxFrameOrView\d+") > 0) {
 			ControlGet, ControlID, Hwnd,, %A_LoopField%, ahk_id %this_id_find%
 				WinGetTitle, thistitle, ahk_id  %ControlID%
-				if (RegExMatch(thistitle, title) > 0) {
+				if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 					id_array.Push(ControlID)
 				}
 			}
@@ -1942,14 +2244,13 @@ Find:
 
      GuiControl, , %FoundCountID%,  % "Found " id_array_count " window(s)"
 	 GoSub, UpdateFoundWindowsFilteredGui
-  }
-  else
-  {
+  } else {
 	id_array_count := 0
 	GuiControl, , %FoundCountID%,   Found 0 window(s)
 	GoSub, UpdateFoundWindowsFilteredGui
   }
 
+	
 
 Alpha:
   GuiControlGet, alpha, ,msctls_trackbar321
@@ -1960,12 +2261,11 @@ Alpha:
 			this_id := id_array[A_Index]
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
-			windowfilter := bit11state + bit12state * 2 + bit13state * 4 + bit14state * 8 + bit15state * 16 + bit16state * 32 + bit17state * 64 + bit18state * 128
+			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
-			windowfilter := bit21state + bit22state * 2 + bit23state * 4 + bit24state * 8 + bit25state * 16 + bit26state * 32 + bit27state * 64 + bit28state * 128
+			windowfilter := MatchBits2
 		} else {
 			VarSetCapacity(windowfilter, 66, 0)
 			, val := DllCall("msvcrt.dll\_wcstoui64", "Str", FindFilterTxt, "UInt", 0, "UInt", 16, "CDECL Int64")
@@ -1996,14 +2296,126 @@ InsertionSort(ar)
 
 ; Win+Alt+C
 #!c::
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if (autofocusflag == 0)
+		ControlSend, , {Space}, ahk_id %AutoFocusID%
 	WinActivate, %windowname%
-	ControlFocus, Edit7,  %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
+	ControlFocus, , ahk_id %InputBoxID%
 Return
 
 ; Win+Alt+D
 #!d::
 	WinActivate, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
+	WinSet, AlwaysOnTop, Toggle, %windowname%
+	ControlGetText, MiniModeTxt, , ahk_id %btnMiniModeID%
+	if ( MiniModeTxt != "mini" )
+		ControlClick, , ahk_id %btnMiniModeID%
 	GoSub, SidePanelToggle
+Return
+
+; Win+Alt+T
+#!t::
+	GoSub, Tile
+Return
+
+; Win+Alt+F
+#!f::
+	GoSub, ToFront
+Return
+
+; Win+Alt+B
+#!b::
+	GoSub, ToBack
+Return
+
+; Win+Alt+V
+#!v::
+	GoSub, GoPaste
+Return
+
+; Win+Alt+R
+#!l::
+	ControlSend, , {Space}, ahk_id %CrLfID%
+Return
+
+; Win+Alt+O
+#!o::
+	GoSub, Locate
+Return
+
+; Win+Alt+S
+#!s::
+	ControlSend, , {Space}, ahk_id %SingleMatchID%
+Return
+
+; Win+Alt+1
+#!1::
+	if (!check1)
+		ControlSend, , {Space}, ahk_id %check1ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+2
+#!2::
+	if (!check2)
+		ControlSend, , {Space}, ahk_id %check2ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+3
+#!3::
+	if (!check3)
+		ControlSend, , {Space}, ahk_id %check3ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+4
+#!4::
+	if (!check4)
+		ControlSend, , {Space}, ahk_id %check4ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+5
+#!5::
+	if (!check5)
+		ControlSend, , {Space}, ahk_id %check5ID%
+	else
+		ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+I
+#!i::
+	;GoSub, MiniModeToggle
+	ControlClick, , ahk_id %btnMiniModeID%
+Return
+
+; Win+Alt+N
+#!n::
+	ControlClick, , ahk_id %InvertMatchID%
+Return
+
+; Win+Alt+Right
+#!Right::
+	GoSub, FocusNextWindow
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if (autofocusflag == 1)
+		ControlSend, , {Space}, ahk_id %AutoFocusID%
+Return
+
+; Win+Alt+Left
+#!Left::
+	GoSub, FocusPrevWindow
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if (autofocusflag == 1)
+		ControlSend, , {Space}, ahk_id %AutoFocusID%
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4
