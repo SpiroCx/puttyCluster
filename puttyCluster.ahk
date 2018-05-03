@@ -2296,10 +2296,13 @@ InsertionSort(ar)
 
 ; Win+Alt+C
 #!c::
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if (autofocusflag == 0)
+		ControlSend, , {Space}, ahk_id %AutoFocusID%
 	WinActivate, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
-	ControlFocus, InputBox,  %windowname%
+	ControlFocus, , ahk_id %InputBoxID%
 Return
 
 ; Win+Alt+D
