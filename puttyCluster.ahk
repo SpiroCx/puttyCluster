@@ -48,7 +48,7 @@ global sendstrdata
 global enableGuiUpdates := 1
 global MatchBits1
 global MatchBits2
-Global currentwindow := 0
+global currentwindow := 0
 
 ; ***** Title Row
 Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
@@ -399,6 +399,7 @@ InitIni := % "Ini" . currentCmdLauncher
 Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %InitIni%, Commands1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
+;yautofocus := ysidepanel + 10
 Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnCmdLaunchers gCmdLaunchersClick HwndbtnCmdLaunchersID w28 -default, % currentCmdLauncher . "/" . maxCmdLauncher
 xsidepanel := xsidepanel + 30
 ysidepanel += 5
@@ -414,6 +415,14 @@ Loop, 6 {
 	}
 }
 GoSub, LoadCmdLaunchers
+
+; Autofocus checkbox
+Iniread, autofocusflag, %inifilenameCmdLaunchers%, Options, AutoFocus, 0
+xautofocus := xsidepanelbutton + 95
+yautofocus := ysidepanel + 25
+Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  AutoFocus
+AutoFocusVal_TT := "Autofocus - Clicking on command button activates puttyCluster and sends to all Putty windows even when puttyCluster is not the active window"
+
 
 Gui, Show, h%fheight% w%fwidth% x%xpos% y%ypos%, %windowname%
 ControlFocus, , ahk_id %InputBoxID%
@@ -964,6 +973,13 @@ AppLaunchersClick:
 		ControlSetText, , % currentAppLauncher . "/" . maxAppLauncher, ahk_id %btnAppLaunchersID% 
 	}
 	GoSub, LoadLaunchers
+Return
+
+AutoFocusCheck:
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	IniWrite, %autofocusflag%, %inifilenameCmdLaunchers%, Options, AutoFocus
+	if (autofocusflag == 1)
+		currentwindow := 0
 Return
 
 PSLaunchersClick:
@@ -1655,8 +1671,7 @@ Tile:
 				y:=y+height
 			}
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1700,8 +1715,7 @@ ToFront:
 			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 			WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1739,8 +1753,7 @@ ToBack:
 			;WinMinimize, ahk_id %this_id_toback%,			
 			WinSet, Bottom, , ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1779,8 +1792,7 @@ CloseWin:
 			this_id := id_array[A_Index]
 			WinClose, ahk_id %this_id%,
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1821,8 +1833,7 @@ Cascade:
 			x:=x+xstep
 			y:=y+ystep
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1888,14 +1899,17 @@ SendString:
 Return
 
 SendString_LeaveTimers:
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
 			PostMessage, 0x102, % Asc(sendstrdata), 1, ,ahk_id %this_id%,
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1933,8 +1947,7 @@ Locate:
 			; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
 			; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -1983,8 +1996,7 @@ FocusNextWindow:
 			Sleep, 50
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -2056,8 +2068,7 @@ FocusPrevWindow:
 			Sleep, 50
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -2216,9 +2227,7 @@ Find:
 
      GuiControl, , %FoundCountID%,  % "Found " id_array_count " window(s)"
 	 GoSub, UpdateFoundWindowsFilteredGui
-  }
-  else
-  {
+  } else {
 	id_array_count := 0
 	GuiControl, , %FoundCountID%,   Found 0 window(s)
 	GoSub, UpdateFoundWindowsFilteredGui
@@ -2234,8 +2243,7 @@ Alpha:
 			this_id := id_array[A_Index]
 			WinSet, Transparent, %alpha%, ahk_id %this_id%
 		}
-	}
-	else {
+	} else {
 		if ( FilterGroup == 2 ) {
 			windowfilter := MatchBits1
 		} else if ( FilterGroup == 4 ) {
@@ -2273,7 +2281,7 @@ InsertionSort(ar)
 	WinActivate, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
-	ControlFocus, Edit7,  %windowname%
+	ControlFocus, InputBox,  %windowname%
 Return
 
 ; Win+Alt+D
@@ -2376,11 +2384,17 @@ Return
 ; Win+Alt+Right
 #!Right::
 	GoSub, FocusNextWindow
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if (autofocusflag == 1)
+		ControlSend, , {Space}, ahk_id %AutoFocusID%
 Return
 
 ; Win+Alt+Left
 #!Left::
 	GoSub, FocusPrevWindow
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if (autofocusflag == 1)
+		ControlSend, , {Space}, ahk_id %AutoFocusID%
 Return
 
 ;; https://jacksautohotkeyblog.wordpress.com/2016/02/28/autohotkey-groupadd-command-reduces-script-code-beginning-hotkeys-part-4

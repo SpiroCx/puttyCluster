@@ -56,7 +56,8 @@ Tips:
 * Commit your Title/Position filters to memory and try the Mini mode (Win-Alt-I) to shrink the Gui down to almost just the input box.  The hotkeys for filter switching still work so you can still switch between groups
 * The Invert Match Flag labelled "!(..)" is probably more useful than the individual invert flags which are ignored when this flag is set.  It inverts the overall combination of the title matches.  This lets you use the title matches to find the windows you want to ignore, then set the invert flag to get the others.
 * With the titlebar removed from the Mini Mode, it's harder now to change the location of the Gui.  You need to use the keyboard. Alt, Space, Move, press any arrow key, then use the mouse.  To offset this invconvenience, the X Y coordinates of the mini mode are now stored/restored to/from the puttyCluster.ini file.  Al least this way you only have to do it occasionally.  With the Always On Top flag turned on, it's quote convenient to place the Mini Mode location somewhere over the Windows task bar
-* Win-Alt-Left/Right keys let you work in Putty windows individually but cycle through them subject to Title/Position match filters.  So if say you have lots of Putty windows open, you can create a subset of them using Title/Position matches, then use these keys to quickly switch between the windows of your subset.  (You could also use the Invert Match flag to send all the other Putty windows to the back to get them out of your way)
+* Win-Alt-Left/Right keys let you work in Putty windows individually but cycle through them subject to Title/Position match filters.  So if say you have lots of Putty windows open, you can create a subset of them using Title/Position matches, then use these keys to quickly switch between the windows of your subset.  (You could also use the Invert Match flag to send all the other Putty windows to the back to get them out of your way). 
+* The AutoFocus flag determines whether the Putty Command (sent when one of the Putty Command send buttons is pressed) goes to all matching putty windows or only a single putty window.  It can be enabled/disabled not only by clicking but also Win-Alt->Left/Right keys used to activate a single Putty window, also disables Autofocus.  It can only be re-enabled by clicking it.  Note that Win-Alt->Left/Right is the only way of enabling it.  Clicking on a Putty window with the mouse does not set the internal variable holding the 'currentwindow'.  Recommend using Win-Alit-L/R to switch between Putty windows instead of the mouse if you are interested sending Putty Commands to single windows.
 
 In addition to original useage (https://github.com/mingbowan/puttyCluster):
 
@@ -118,7 +119,7 @@ The inverted match checkbox (labelled !(..)) generates this expression:
 ^((?!(MATCH1)|(MATCH2)|(MATCH3)|(MATCH4)|(MATCH5)).)*$ 
 ```
 So the individual invert flags are ignored, in favour of combining all the title regex's and inverting the result
-
+* The AutoFocus flag which affects which putty windows the Putty Command buttons send to uses an internal flag ("currentWindow") which is set only by Win-Alt-L/R hotkeys.  It is not set by clicking on the Putty window using the mouse.  I played around with some code in the MOUSEMOVE event to try and catch the Putty window being clicked on but no joy so far.
 
 ### Screenshots
 
