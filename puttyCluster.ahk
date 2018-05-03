@@ -49,6 +49,8 @@ global enableGuiUpdates := 1
 global MatchBits1
 global MatchBits2
 global currentwindow := 0
+global titleMatchRegexp
+global positionMatchStr = ""
 
 ; ***** Title Row
 Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
@@ -1336,9 +1338,9 @@ MiniModeToggle:
 			yposmini := ypos + fheight - miniheight
 		}
 		Gui, Show, h%miniheight% w%miniwidth%  x%xposmini% y%yposmini%
-		xminimodeminibutton := miniwidth - 30
+		xminimodeminibutton := miniwidth - 25
 		GuiControl, Move, %btnMiniModeID%, x%xminimodeminibutton% y%0%
-		ywidth := miniwidth - 50
+		ywidth := miniwidth - 25
 		GuiControl, Move, %InputBoxID%, w%ywidth% x0 y%5%
 		Gui, 1:Hide
 		Gui, 1:+ToolWindow
@@ -1610,10 +1612,12 @@ Return
 UpdateFoundWindowsFilteredGui:
 	titlematchbit := 1
 	matchcount := 0
+	filt2str = 
 	Loop, %id_array_count%
 	{
 		if ( ( titlematchbit & MatchBits1 ) > 0 ) {
 			matchcount += 1
+			filt2str .= A_Index
 		}
 		titlematchbit *= 2
 	}
@@ -1621,10 +1625,12 @@ UpdateFoundWindowsFilteredGui:
 
 	titlematchbit := 1
 	matchcount := 0
+	filt4str =
 	Loop, %id_array_count%
 	{
 		if ( ( titlematchbit & MatchBits2 ) > 0 ) {
 			matchcount += 1
+			filt4str .= A_Index
 		}
 		titlematchbit *= 2
 	}
@@ -1647,6 +1653,17 @@ UpdateFoundWindowsFilteredGui:
 	GuiControl, , %FilterGroup2InfoID%,  % "(" FoundWindowsFiltered2 "/" id_array_count ")"
 	GuiControl, , %FilterGroup3InfoID%,  % "(" FoundWindowsFiltered3 "/" id_array_count ")"
 	GuiControl, , %FilterGroup4InfoID%,  % "(" FoundWindowsFiltered4 "/" id_array_count ")"
+	
+	if ( FilterGroup == 1 ){
+		positionMatchStr = % "All " . id_array_count " window(s)"
+	} else if ( FilterGroup == 2 ){
+		positionMatchStr = % "Pattern: " . filt2str . "`rMatches: " FoundWindowsFiltered2 "/" id_array_count
+	} else if ( FilterGroup == 3 ){
+		positionMatchStr = % "Pattern: 0x" . FindFilterTxt . "`rMatches" FoundWindowsFiltered3 "/" id_array_count
+	} else if ( FilterGroup == 4 ){
+		positionMatchStr = % "Pattern: " . filt4str . "`rMatches:" FoundWindowsFiltered4 "/" id_array_count
+	}
+	InputBox_TT = %titleMatchRegexp%`r%positionMatchStr%
 Return
 
 Tile:
@@ -2134,7 +2151,7 @@ Find:
 		titletmp = % titletmp . "|(" . title5 . ")"
 	  }
 	  titletmp := LTrim(titletmp, "|")
-	  title := % "^((?!" . titletmp . ").)*$"
+	  titleMatchRegexp := % "^((?!" . titletmp . ").)*$"
   } else {
 	  if( check1 && title1 != "" )
 		titletmp = % (checkinv1 ? "^((?!" : "(") . title1 . (checkinv1 ? ").)*$" : ")")
@@ -2150,9 +2167,9 @@ Find:
 	  if( check5 && title5 != "" ) {
 		titletmp = % titletmp . (checkinv5 ? "|^((?!" : "|(") . title5 . (checkinv5 ? ").)*$" : ")")
 	  }
-	  title := LTrim(titletmp, "|")
+	  titleMatchRegexp := LTrim(titletmp, "|")
   }
-  if( title != "")
+  if( titleMatchRegexp != "")
   {
 	id_array_count := id_array._MaxIndex()
 	if (id_array_count > 0)
@@ -2164,7 +2181,7 @@ Find:
 	{
 		this_id_find := puttyids%A_Index%
 		WinGetTitle, thistitle, ahk_id  %this_id_find%
-		if (RegExMatch(thistitle, title) > 0) {
+		if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 			id_array.Push(this_id_find)
 		}
 	}
@@ -2174,7 +2191,7 @@ Find:
 	{
 		this_id_find := kittyids%A_Index%
 		WinGetTitle, thistitle, ahk_id  %this_id_find%
-		if (RegExMatch(thistitle, title) > 0) {
+		if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 			id_array.Push(this_id_find)
 		}
 	}
@@ -2189,7 +2206,7 @@ Find:
 			if ( RegExMatch(A_LoopField, "PuTTY\d+") > 0) {
 			ControlGet, ControlID, Hwnd,, %A_LoopField%, ahk_id %this_id_find%
 				WinGetTitle, thistitle, ahk_id  %ControlID%
-				if (RegExMatch(thistitle, title) > 0) {
+				if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 					id_array.Push(ControlID)
 				}
 			}
@@ -2205,7 +2222,7 @@ Find:
 			if ( RegExMatch(A_LoopField, "AfxFrameOrView\d+") > 0) {
 			ControlGet, ControlID, Hwnd,, %A_LoopField%, ahk_id %this_id_find%
 				WinGetTitle, thistitle, ahk_id  %ControlID%
-				if (RegExMatch(thistitle, title) > 0) {
+				if (RegExMatch(thistitle, titleMatchRegexp) > 0) {
 					id_array.Push(ControlID)
 				}
 			}
@@ -2233,6 +2250,7 @@ Find:
 	GoSub, UpdateFoundWindowsFilteredGui
   }
 
+	
 
 Alpha:
   GuiControlGet, alpha, ,msctls_trackbar321
