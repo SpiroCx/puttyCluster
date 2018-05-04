@@ -136,6 +136,8 @@ So the individual invert flags are ignored, in favour of combining all the title
 
 * Add sanity checking to the launchers.  The script throws and error for invalid paths/commands. Script still works ok (doesn't crash) but it's ugly.
 * Find space for the label "Select Monitor" above the monitor selection radio buttons
+* Make the hotkeys configurable
+* Add shortcut for Always On Top
 
 ### license
 * free as in free beer and free as in free speech
