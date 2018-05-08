@@ -1725,7 +1725,12 @@ ToFront:
 	Gosub, Find 
 	GoSub, DisableTimers
 
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+		WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
@@ -1763,7 +1768,12 @@ ToBack:
 	Gosub, Find 
 	GoSub, DisableTimers
 
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		;WinMinimize, ahk_id %this_id_toback%,			
+		WinSet, Bottom, , ahk_id %this_id%
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
@@ -1803,7 +1813,11 @@ CloseWin:
 	x:=0
 	y:=0
 
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		WinClose, ahk_id %this_id%,
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
@@ -1952,7 +1966,17 @@ Locate:
     Gosub, Find 
 	GoSub, DisableTimers
 
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+		WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+		WinSet, Transparent, 30, ahk_id %this_id%
+		Sleep, 200
+		WinSet, Transparent, %alpha%, ahk_id %this_id%
+		; PostMessage, 0x112, 0xF020,,, ahk_id %this_id%,
+		; PostMessage, 0x112, 0xF120,,, ahk_id %this_id%,
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
