@@ -1195,23 +1195,24 @@ AboutBox:
 	AboutMessage5 = % "`r" . "Win-Alt-C 	 Bring ClusterPutty window to the top"
 	AboutMessage6 = Win-Alt-D 	 Toggle the launcher sidebar (+ bring to top)
 	AboutMessage7 = Win-Alt-T 	 Tile Putty windows
-	AboutMessage8 = Win-Alt-F 	 Bring Putty windows to the top of the desktop
-	AboutMessage9 = Win-Alt-B 	 Push Putty windows to the back of the desktop (hide them)
-	AboutMessage10 = Win-Alt-V 	 Paste current clipboard to all windows
-	AboutMessage11 = Win-Alt-L 	 Toggle 'Append CrLf' flag
-	AboutMessage12 = Win-Alt-O 	 Locate Putty windows
-	AboutMessage13 = Win-Alt-S 	 Toggle 'Single Regex Match' flag
-	AboutMessage14 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
-	AboutMessage15 = Win-Alt-I 	 Toggle Mini mode
-	AboutMessage16 = Win-Alt-N 	 Toggle Invert Match flag
-	AboutMessage17 = Win-Alt-Left 	 Focus previous Title/Position matched window
-	AboutMessage18 = Win-Alt-Right 	 Focus next Title/Position matched window
+	AboutMessage8 = Win-Alt-Y 	 Tile Putty windows on other monitor
+	AboutMessage9 = Win-Alt-F 	 Bring Putty windows to the top of the desktop
+	AboutMessage10 = Win-Alt-B 	 Push Putty windows to the back of the desktop (hide them)
+	AboutMessage11 = Win-Alt-V 	 Paste current clipboard to all windows
+	AboutMessage12 = Win-Alt-L 	 Toggle 'Append CrLf' flag
+	AboutMessage13 = Win-Alt-O 	 Locate Putty windows
+	AboutMessage14 = Win-Alt-S 	 Toggle 'Single Regex Match' flag
+	AboutMessage15 = Win-Alt-1..5 	 Toggle Enable 1..5 flag
+	AboutMessage16 = Win-Alt-I 	 Toggle Mini mode
+	AboutMessage17 = Win-Alt-N 	 Toggle Invert Match flag
+	AboutMessage18 = Win-Alt-Left 	 Focus previous Title/Position matched window
+	AboutMessage19 = Win-Alt-Right 	 Focus next Title/Position matched window
 	AboutMessage=
 	(
 		%AboutMessage1%
 		%AboutMessage2%
 		%AboutMessage3%`r%AboutMessage4%
-		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%`r%AboutMessage16%`r%AboutMessage17%`r%AboutMessage18%
+		%AboutMessage5%`r%AboutMessage6%`r%AboutMessage7%`r%AboutMessage8%`r%AboutMessage9%`r%AboutMessage10%`r%AboutMessage11%`r%AboutMessage12%`r%AboutMessage13%`r%AboutMessage14%`r%AboutMessage15%`r%AboutMessage16%`r%AboutMessage17%`r%AboutMessage18%`r%AboutMessage19%
 	)
 
 	Gui, 2:Font, cBlue
@@ -2343,6 +2344,26 @@ Return
 ; Win+Alt+T
 #!t::
 	GoSub, Tile
+Return
+
+#!y::
+	currmonitor := MonitorGroup
+	If (MonitorGroup != RightClickMonitor1) {
+		pcontrolID = % "Monitor" . RightClickMonitor1
+		controlID := %pcontrolID%
+		ControlSend, , {Space}, ahk_id %controlID%
+	} else {
+		pcontrolID = % "Monitor" . RightClickMonitor2
+		controlID := %pcontrolID%
+		ControlSend, , {Space}, ahk_id %controlID%
+	}
+	GoSub, RadioCheck
+	GoSub, Tile
+	MonitorGroup := currmonitor
+	pcontrolID = % "Monitor" . currmonitor
+	controlID := %pcontrolID%
+	ControlSend, , {Space}, ahk_id %controlID%
+	GoSub, RadioCheck
 Return
 
 ; Win+Alt+F
