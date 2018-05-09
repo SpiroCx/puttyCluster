@@ -1905,9 +1905,9 @@ GoPaste:
 		GoSub, SendString_LeaveTimers
 	}
 	paste=0
-	ControlSetText, , , ahk_id %InputBoxID% 
-	ControlFocus, , ahk_id %InputBoxID%
-	WinActivate, %windowname%
+	;ControlSetText, , , ahk_id %InputBoxID% 
+	;ControlFocus, , ahk_id %InputBoxID%
+	;WinActivate, %windowname%
 	GoSub, EnableTimers
 Return
 
