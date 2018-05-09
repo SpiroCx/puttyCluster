@@ -573,6 +573,12 @@ WM_MOUSEMOVE()
 	return
 }
 
+RemoveToolTip_global() {
+		SetTimer, RemoveToolTip, Off
+		ToolTip
+	return
+}
+
 key(wParam, lParam, msg, hwnd)
 { 
   global paste
@@ -2402,6 +2408,9 @@ Return
 		ControlSend, , {Space}, ahk_id %check1ID%
 	else
 		ControlClick, , ahk_id %InvertMatchID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 Return
 
 ; Win+Alt+2
@@ -2410,6 +2419,9 @@ Return
 		ControlSend, , {Space}, ahk_id %check2ID%
 	else
 		ControlClick, , ahk_id %InvertMatchID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 Return
 
 ; Win+Alt+3
@@ -2418,6 +2430,9 @@ Return
 		ControlSend, , {Space}, ahk_id %check3ID%
 	else
 		ControlClick, , ahk_id %InvertMatchID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 Return
 
 ; Win+Alt+4
@@ -2426,6 +2441,9 @@ Return
 		ControlSend, , {Space}, ahk_id %check4ID%
 	else
 		ControlClick, , ahk_id %InvertMatchID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 Return
 
 ; Win+Alt+5
@@ -2434,6 +2452,9 @@ Return
 		ControlSend, , {Space}, ahk_id %check5ID%
 	else
 		ControlClick, , ahk_id %InvertMatchID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 Return
 
 ; Win+Alt+I
@@ -2445,6 +2466,9 @@ Return
 ; Win+Alt+N
 #!n::
 	ControlClick, , ahk_id %InvertMatchID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 Return
 
 ; Win+Alt+Right
