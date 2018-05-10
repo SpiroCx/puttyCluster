@@ -2330,6 +2330,9 @@ InsertionSort(ar)
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
 	if (autofocusflag == 0)
 		ControlSend, , {Space}, ahk_id %AutoFocusID%
+	GoSub Find
+	Tooltip %InputBox_TT%
+	SetTimer, RemoveToolTip_global, 3000
 	WinActivate, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
 	WinSet, AlwaysOnTop, Toggle, %windowname%
@@ -2352,6 +2355,7 @@ Return
 	GoSub, Tile
 Return
 
+; Win+Alt+Y
 #!y::
 	currmonitor := MonitorGroup
 	If (MonitorGroup != RightClickMonitor1) {
@@ -2387,7 +2391,7 @@ Return
 	GoSub, GoPaste
 Return
 
-; Win+Alt+R
+; Win+Alt+L
 #!l::
 	ControlSend, , {Space}, ahk_id %CrLfID%
 Return
