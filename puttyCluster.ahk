@@ -51,6 +51,7 @@ global MatchBits2
 global currentwindow := 0
 global titleMatchRegexp
 global positionMatchStr = ""
+global ControlIndex
 
 ; ***** Title Row
 Iniread, currentTitleMatchini, %inifilename%, TitleMatches, CurrentIni, 1
@@ -1268,12 +1269,13 @@ titleDoSingle:
 	gui, submit, nohide	
 	if (SingleMatch != 1)
 		Return
-	Index := SubStr(A_GuiControl, 6, 1)
-	controlVal := check%Index%
+	ControlIndex := SubStr(A_GuiControl, 6, 1)
+	controlVal := check%ControlIndex%
 	if (controlVal != 1)
 		Return
+titleDoSingle_presetIndex:
 	Loop, 5 {
-		If (Index == A_Index)
+		If (ControlIndex == A_Index)
 			Continue
 		controlVal := check%A_Index%
 		If (controlVal == 1) {
@@ -2337,7 +2339,6 @@ InsertionSort(ar)
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
 	if (autofocusflag == 0)
 		ControlSend, , {Space}, ahk_id %AutoFocusID%
-	GoSub Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
 	WinActivate, %windowname%
@@ -2415,57 +2416,77 @@ Return
 
 ; Win+Alt+1
 #!1::
-	if (!check1)
+    GoSub, DisableTimers
+	if (!check1) {
 		ControlSend, , {Space}, ahk_id %check1ID%
-	else
+        ControlIndex = 1
+		GoSub, titleDoSingle_presetIndex
+	} else
 		ControlClick, , ahk_id %InvertMatchID%
-	GoSub Find
+	GoSub, Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
+	GoSub, EnableTimers
 Return
 
 ; Win+Alt+2
 #!2::
-	if (!check2)
+    GoSub, DisableTimers
+	if (!check2) {
 		ControlSend, , {Space}, ahk_id %check2ID%
-	else
+        ControlIndex = 2
+		GoSub, titleDoSingle_presetIndex
+	} else
 		ControlClick, , ahk_id %InvertMatchID%
-	GoSub Find
+	GoSub, Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
+	GoSub, EnableTimers
 Return
 
 ; Win+Alt+3
 #!3::
-	if (!check3)
+    GoSub, DisableTimers
+	if (!check3) {
 		ControlSend, , {Space}, ahk_id %check3ID%
-	else
+        ControlIndex = 3
+		GoSub, titleDoSingle_presetIndex
+	} else
 		ControlClick, , ahk_id %InvertMatchID%
-	GoSub Find
+	GoSub, Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
+	GoSub, EnableTimers
 Return
 
 ; Win+Alt+4
 #!4::
-	if (!check4)
+    GoSub, DisableTimers
+	if (!check4) {
 		ControlSend, , {Space}, ahk_id %check4ID%
-	else
+        ControlIndex = 4
+        GoSub, titleDoSingle_presetIndex
+    } else
 		ControlClick, , ahk_id %InvertMatchID%
-	GoSub Find
+	GoSub, Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
+	GoSub, EnableTimers
 Return
 
 ; Win+Alt+5
 #!5::
-	if (!check5)
+    GoSub, DisableTimers
+	if (!check5) {
 		ControlSend, , {Space}, ahk_id %check5ID%
-	else
+        ControlIndex = 5
+        GoSub, titleDoSingle_presetIndex
+	} else
 		ControlClick, , ahk_id %InvertMatchID%
-	GoSub Find
+	GoSub, Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
+	GoSub, EnableTimers
 Return
 
 ; Win+Alt+I
@@ -2477,7 +2498,7 @@ Return
 ; Win+Alt+N
 #!n::
 	ControlClick, , ahk_id %InvertMatchID%
-	GoSub Find
+	GoSub, Find
 	Tooltip %InputBox_TT%
 	SetTimer, RemoveToolTip_global, 3000
 Return
