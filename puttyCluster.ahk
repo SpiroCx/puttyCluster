@@ -422,7 +422,7 @@ GoSub, LoadCmdLaunchers
 Iniread, autofocusflag, %inifilenameCmdLaunchers%, Options, AutoFocus, 0
 xautofocus := xsidepanelbutton + 95
 yautofocus := ysidepanel + 25
-Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  AutoFocus
+Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  SendToAll
 AutoFocusVal_TT := "Autofocus - Clicking on command button activates puttyCluster and sends to all Putty windows even when puttyCluster is not the active window"
 
 
@@ -593,8 +593,15 @@ key(wParam, lParam, msg, hwnd)
 	global FindFilterTxt
 	global MatchBits1
 	global MatchBits2
+	global AutoFocusID
+	global id_array
+	global currentwindow
 
-	if ( FilterGroup == 1 ){
+	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
+	if ((autofocusflag == 0) && (currentwindow > 0)) {
+		this_id := id_array[currentwindow]
+		PostMessage, %msg%,%wParam%, %lParam%  , ,ahk_id %this_id%,
+	} else if ( FilterGroup == 1 ){
 		Loop, %id_array_count%
 	    {
 			this_id := id_array[A_Index]
