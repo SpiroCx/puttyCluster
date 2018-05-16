@@ -994,8 +994,10 @@ Return
 AutoFocusCheck:
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
 	IniWrite, %autofocusflag%, %inifilenameCmdLaunchers%, Options, AutoFocus
-	if (autofocusflag == 1)
+	if (autofocusflag == 1) {
 		currentwindow := 0
+		ControlFocus, , ahk_id %InputBoxID%
+	}
 Return
 
 PSLaunchersClick:
