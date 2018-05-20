@@ -49,6 +49,7 @@ global enableGuiUpdates := 1
 global MatchBits1
 global MatchBits2
 global currentwindow := 0
+global previouswindow := 0
 global titleMatchRegexp
 global positionMatchStr = ""
 global ControlIndex
@@ -420,10 +421,12 @@ Loop, 6 {
 GoSub, LoadCmdLaunchers
 
 ; Autofocus checkbox
-Iniread, autofocusflag, %inifilenameCmdLaunchers%, Options, AutoFocus, 0
+;Iniread, autofocusflag, %inifilenameCmdLaunchers%, Options, AutoFocus, 0
+autofocusflag := 1
 xautofocus := xsidepanelbutton + 95
 yautofocus := ysidepanel + 25
-Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  SendToAll
+;Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  SendToAll
+Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck Checked",  SendToAll
 AutoFocusVal_TT := "Autofocus - Clicking on command button activates puttyCluster and sends to all Putty windows even when puttyCluster is not the active window"
 
 
@@ -993,8 +996,9 @@ Return
 
 AutoFocusCheck:
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
-	IniWrite, %autofocusflag%, %inifilenameCmdLaunchers%, Options, AutoFocus
+	;IniWrite, %autofocusflag%, %inifilenameCmdLaunchers%, Options, AutoFocus
 	if (autofocusflag == 1) {
+        previouswindow := currentwindow
 		currentwindow := 0
 		ControlFocus, , ahk_id %InputBoxID%
 	}
@@ -2041,6 +2045,10 @@ FocusNextWindow:
     Gosub, Find 
 	GoSub, DisableTimers
 
+    if (previouswindow > 0) {
+        currentwindow := previouswindow
+        previouswindow := 0
+    }
 	if ( FilterGroup == 1 ){
 		if (id_array_count > 0)
 		{
@@ -2113,6 +2121,10 @@ FocusPrevWindow:
     Gosub, Find 
 	GoSub, DisableTimers
 
+    if (previouswindow > 0) {
+        currentwindow := previouswindow
+        previouswindow := 0
+    }
 	if ( FilterGroup == 1 ){
 		if (id_array_count > 0)
 		{
@@ -2339,14 +2351,24 @@ InsertionSort(ar)
 ; Win+Alt+C
 #!c::
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
-	if (autofocusflag == 0)
-		ControlSend, , {Space}, ahk_id %AutoFocusID%
-	Tooltip %InputBox_TT%
-	SetTimer, RemoveToolTip_global, 3000
-	WinActivate, %windowname%
-	WinSet, AlwaysOnTop, Toggle, %windowname%
-	WinSet, AlwaysOnTop, Toggle, %windowname%
-	ControlFocus, , ahk_id %InputBoxID%
+	if (autofocusflag == 0) {
+        ControlSend, , {Space}, ahk_id %AutoFocusID%
+        Tooltip %InputBox_TT%
+        SetTimer, RemoveToolTip_global, 3000
+        WinActivate, %windowname%
+        WinSet, AlwaysOnTop, Toggle, %windowname%
+        WinSet, AlwaysOnTop, Toggle, %windowname%
+        ControlFocus, , ahk_id %InputBoxID%
+    } else {
+        if (previouswindow > 0) {
+            ControlSend, , {Space}, ahk_id %AutoFocusID%
+            this_id := id_array[previouswindow]
+            WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+            WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+            WinActivate, ahk_id %this_id%
+        }
+    }
+    ;GoSub, Locate
 Return
 
 ; Win+Alt+D
