@@ -403,7 +403,6 @@ InitIni := % "Ini" . currentCmdLauncher
 Iniread, inifilenameCmdLaunchers, %inifilename%, CommandLaunchers, %InitIni%, Commands1.ini
 xsidepanel := xsidepanelbutton + 30
 ysidepanel += 30
-;yautofocus := ysidepanel + 10
 Gui, Add, button, x%xsidepanel% y%ysidepanel% vbtnCmdLaunchers gCmdLaunchersClick HwndbtnCmdLaunchersID w28 -default, % currentCmdLauncher . "/" . maxCmdLauncher
 xsidepanel := xsidepanel + 30
 ysidepanel += 5
@@ -421,11 +420,9 @@ Loop, 6 {
 GoSub, LoadCmdLaunchers
 
 ; Autofocus checkbox
-;Iniread, autofocusflag, %inifilenameCmdLaunchers%, Options, AutoFocus, 0
 autofocusflag := 1
 xautofocus := xsidepanelbutton + 95
 yautofocus := ysidepanel + 25
-;Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck" .  ( autofocusflag ? " Checked" : "" ),  SendToAll
 Gui, Add, Checkbox, % "x" . xautofocus . " y" . yautofocus . " HwndAutoFocusID vAutoFocusVal gAutoFocusCheck Checked",  SendToAll
 AutoFocusVal_TT := "Autofocus - Clicking on command button activates puttyCluster and sends to all Putty windows even when puttyCluster is not the active window"
 
@@ -996,12 +993,25 @@ Return
 
 AutoFocusCheck:
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
-	;IniWrite, %autofocusflag%, %inifilenameCmdLaunchers%, Options, AutoFocus
 	if (autofocusflag == 1) {
         previouswindow := currentwindow
 		currentwindow := 0
-		ControlFocus, , ahk_id %InputBoxID%
-	}
+        Tooltip %InputBox_TT%
+        SetTimer, RemoveToolTip_global, 3000
+        WinActivate, %windowname%
+        WinSet, AlwaysOnTop, Toggle, %windowname%
+        WinSet, AlwaysOnTop, Toggle, %windowname%
+        ControlFocus, , ahk_id %InputBoxID%
+    } else {
+        if (previouswindow > 0) {
+			currentwindow := previouswindow
+            this_id := id_array[currentwindow]
+            WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+            WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
+            WinActivate, ahk_id %this_id%
+        }
+    }
+
 Return
 
 PSLaunchersClick:
@@ -2351,24 +2361,10 @@ InsertionSort(ar)
 ; Win+Alt+C
 #!c::
 	ControlGet, autofocusflag, Checked, , , ahk_id %AutoFocusID%
-	if (autofocusflag == 0) {
-        ControlSend, , {Space}, ahk_id %AutoFocusID%
-        Tooltip %InputBox_TT%
-        SetTimer, RemoveToolTip_global, 3000
-        WinActivate, %windowname%
-        WinSet, AlwaysOnTop, Toggle, %windowname%
-        WinSet, AlwaysOnTop, Toggle, %windowname%
-        ControlFocus, , ahk_id %InputBoxID%
-    } else {
-        if (previouswindow > 0) {
-            ControlSend, , {Space}, ahk_id %AutoFocusID%
-            this_id := id_array[previouswindow]
-            WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
-            WinSet, AlwaysOnTop, Toggle, ahk_id %this_id%
-            WinActivate, ahk_id %this_id%
-        }
-    }
-    ;GoSub, Locate
+	if ((autofocusflag == 1)&&(previouswindow == 0))
+		return
+	WinActivate, %windowname%
+    ControlSend, , {Space}, ahk_id %AutoFocusID%
 Return
 
 ; Win+Alt+D
